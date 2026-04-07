@@ -1,8 +1,10 @@
 "use client";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Login() {
+  const router = useRouter(); // 2. INITIALISATION
   const [isLogin, setIsLogin] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
@@ -12,37 +14,8 @@ export default function Login() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-  
-    // 1. On récupère la liste des utilisateurs (ou un tableau vide [])
-    const storedUsers = JSON.parse(localStorage.getItem("users") || "[]");
-  
-    if (isLogin) {
-      // --- MODE CONNEXION ---
-      const user = storedUsers.find(
-        (u: any) => u.username === formData.username && u.password === formData.password
-         );
-  
-      if (user) {
-        alert("✅ Tonga soa " + user.username + " !");
-        localStorage.setItem("currentUser", user.username);
-     // Plus tard : router.push('/dashboard')
-      } else {
-        alert("❌ Erreur : Pseudo ou mot de passe incorrect.");
-      }
-    } else {
-      // --- MODE INSCRIPTION ---
-      const userExists = storedUsers.find((u: any) => u.username === formData.username);
-  
-      if (userExists) {
-        alert("⚠️ Ce nom est déjà pris !");
-      } else {
-        const newUser = { username: formData.username, password: formData.password };
-        storedUsers.push(newUser);
-        localStorage.setItem("users", JSON.stringify(storedUsers));
-        alert("🎉 Compte créé ! Tu peux te connecter.");
-        setIsLogin(true); // On bascule sur l'écran de connexion
-      }
-    }
+    // On ignore les vérifications et on fonce au dashboard
+    router.push('/dashboard');
   };
 
   return (
