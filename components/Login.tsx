@@ -19,7 +19,7 @@ export default function Login() {
   };
 
   return (
-    // Remplace ta ligne 46 par celle-ci :
+    
     <section className="relative min-h-screen flex flex-col items-center justify-start overflow-y-auto py-10 px-6 bg-black">
       {/* 1. EFFETS DE FOND ANIMÉS (Gardés de ton code) */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
