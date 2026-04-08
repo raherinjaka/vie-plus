@@ -3,6 +3,7 @@ import { useState, useEffect } from "react";
 import { PlusCircle, MinusCircle, Trash2 } from "lucide-react";
 import Sidebar from "@/components/Sidebar";
 import { createClient } from '@supabase/supabase-js';
+import MobileHeader from "@/components/MobileHeader";
 
 // Initialisation du client (Utilise tes vraies clés ici)
 const supabase = createClient(
@@ -93,6 +94,7 @@ export default function DepensePage() {
   return (
     <div className="flex h-screen w-full bg-black overflow-y-auto">
       <Sidebar />
+      <MobileHeader />
       <div className="flex-1 min-h-screen p-6 lg:p-12 pt-24 pb-32">
         <div className="max-w-4xl mx-auto space-y-8">
           
