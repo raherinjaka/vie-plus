@@ -1,8 +1,8 @@
 "use client";
 
+import MenuButton from "./MenuButton";
 import Link from 'next/link';
-// On utilise des icônes simples qui fonctionnent bien : Utilisateur, Aide, Message
-import { User, Info, LayoutDashboard, Wallet, CheckSquare, Target } from 'lucide-react';
+
 import './CreativeText.css'; 
 
 export default function Navbar() {
@@ -14,14 +14,6 @@ export default function Navbar() {
     { name: "À propos", href: "/dashboard/about" },
   ];
 
-  // On remplace Facebook/Github par des icônes de profil et d'info
-  const socialLinks = [
-    { icon: <Target size={20} />, href: "/dashboard/goals" },
-    { icon: <CheckSquare size={20} />, href: "/dashboard/tasks" },
-    { icon: <Wallet size={20} />, href: "/dashboard/budget" },
-    { icon: <Info size={20} />, href: "/dashboard/about" },
-    { icon: <User size={20} />, href: "#" },
-  ];
 
   return (
     <nav className="fixed top-0 w-full z-50 flex justify-between items-center py-5 px-10 bg-black/80 backdrop-blur-md border-b border-white/10 text-white">
@@ -49,19 +41,10 @@ export default function Navbar() {
         ))}
       </div>
 
-      {/* DROITE : Icônes utilitaires (Arrivent de la droite) */}
-      <div className="flex gap-5 items-center text-gray-400">
-        {socialLinks.map((social, index) => (
-          <a 
-            key={index}
-            href={social.href} 
-            className="reveal-right hover:text-red-600 transition-colors"
-            style={{ animationDelay: `${0.8 + index * 0.1}s` }}
-          >
-            {social.icon}
-          </a>
-        ))}
+      <div className="flex items-center gap-4">
+        <MenuButton />
       </div>
+
     </nav>
   );
 }
