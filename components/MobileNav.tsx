@@ -10,7 +10,7 @@ export default function MobileNav() {
   const isActive = (path: string) => pathname === path;
 
   return (
-    <nav className="lg:hidden fixed bottom-6 left-6 right-6 bg-red-600 backdrop-blur-2xl border border-white/10 px-2 py-3 flex justify-around items-center z-50 rounded-3xl shadow-2xl">
+    <nav className="lg:hidden fixed bottom-6 left-6 right-6 bg-slate-950/90 backdrop-blur-2xl border border-white/10 px-2 py-3 flex justify-around items-center z-50 rounded-3xl shadow-2xl">
       
       {/* Dashboard */}
       <Link href="/dashboard" className={`p-4 transition-colors ${isActive('/dashboard') ? 'text-cyan-400' : 'text-slate-500'}`}>
