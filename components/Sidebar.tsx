@@ -40,7 +40,7 @@ export default function Sidebar() {
                 active={pathname === '/dashboard'} 
             />
             <NavItem 
-                href="/argent" 
+                href="/depenses" 
                 icon={<Wallet size={22} />} 
                 label="Mon Argent" 
                 active={pathname === '/argent'} 
