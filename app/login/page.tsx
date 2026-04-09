@@ -25,9 +25,13 @@ export default function Login() {
     setIsLoading(true);
     setNotif(null);
     try {
+      // Ligne 34 environ
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
-        options: { redirectTo: `${window.location.origin}/dashboard` },
+        options: { 
+          // On utilise l'URL dynamique pour que ça marche sur PC ET sur ton Redmi
+          redirectTo: `${window.location.origin}/dashboard` 
+        },
       });
       if (error) throw error;
     } catch (err: any) {
