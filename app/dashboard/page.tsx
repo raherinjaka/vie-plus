@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import Navbar from "@/components/Navbar";
+import { createClient } from '@supabase/supabase-js';
 
 // 1. TON MOTEUR DE STYLE (ON NE TOUCHE PAS, IL EST TOP)
 function GlassBlock({ children, className = "" }: { children: React.ReactNode, className?: string }) {
@@ -38,15 +39,27 @@ function GlassBlock({ children, className = "" }: { children: React.ReactNode, c
   );
 }
 
-// 2. TA PAGE DASHBOARD NETTOYÉE (VUE D'ENSEMBLE VIDE)
 export default function DashboardPage() {
   const [userName, setUserName] = useState("Utilisateur");
+
+  const supabase = createClient(
+    'https://ykwcledsxlnqkkczcemt.supabase.co', 
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd2NsZWRzeGxucWtrY3pjZW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDcwOTgsImV4cCI6MjA5MTIyMzA5OH0.Q1H_DSVr_OSKepBPdnA8r9qk0rkLEqY0S5k5KsBmnTc'
+  );
+
   useEffect(() => {
-    const savedName = localStorage.getItem("user_name");
-    if (savedName) {
-      setUserName(savedName);
-    }
+    const fetchUser = async () => {
+      const { data: { user } } = await supabase.auth.getUser();
+      
+      if (user) {
+        const fullName = user.user_metadata?.full_name || user.email?.split('@')[0];
+        const firstName = fullName.split(" ")[0];      
+        setUserName(firstName);
+      }
+    };
+    fetchUser();
   }, []);
+  
   return (
     <div className="flex h-screen w-full bg-black overflow-hidden">
       
