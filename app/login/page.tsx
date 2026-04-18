@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 const GithubIcon = ({ size = 20 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -13,13 +13,28 @@ const GithubIcon = ({ size = 20 }: { size?: number }) => (
 );
 
 export default function Login() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [notif, setNotif] = useState<{msg: string, type: 'error' | 'success'} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
-  const supabase = createClient(
-    'https://ykwcledsxlnqkkczcemt.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd2NsZWRzeGxucWtrY3pjZW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDcwOTgsImV4cCI6MjA5MTIyMzA5OH0.Q1H_DSVr_OSKepBPdnA8r9qk0rkLEqY0S5k5KsBmnTc'
-  );
+  const handleLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsLoading(true);
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+
+    if (error) {
+      setNotif({ msg: error.message, type: 'error' });
+    } else {
+      setNotif({ msg: "Connexion réussie !", type: 'success' });
+      // Redirection ou action après succès
+    }
+    setIsLoading(false);
+  };
 
   const handleOAuthLogin = async (provider: 'google' | 'github') => {
     setIsLoading(true);
@@ -29,7 +44,6 @@ export default function Login() {
       const { error } = await supabase.auth.signInWithOAuth({
         provider,
         options: { 
-          // On utilise l'URL dynamique pour que ça marche sur PC ET sur ton Redmi
           redirectTo: `${window.location.origin}/dashboard` 
         },
       });
@@ -141,7 +155,38 @@ export default function Login() {
             <span className="text-xs text-white/30 uppercase tracking-widest">ou</span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
-
+          
+          {/* ── FORMULAIRE CLASSIQUE ── */}
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <div className="space-y-2">
+              <input
+                type="email"
+                placeholder="Email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-cyan-500/50 transition-all"
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <input
+                type="password"
+                placeholder="Mot de passe"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-cyan-500/50 transition-all"
+                required
+              />
+            </div>
+            
+            <button
+              type="submit"
+              disabled={isLoading}
+              className="w-full bg-cyan-500 hover:bg-cyan-400 text-[#0f0f0f] font-bold py-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center"
+            >
+              {isLoading ? <Loader2 className="animate-spin" /> : "Se connecter"}
+            </button>
+          </form>
           <p className="text-sm text-white/40 text-center">
             Pas encore de profil ?{" "}
             <Link href="/register" className="text-white hover:text-cyan-400 font-semibold transition-colors underline underline-offset-4">

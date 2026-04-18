@@ -1,20 +1,19 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import Sidebar from "@/components/Sidebar";
 import MobileNav from "@/components/MobileNav";
 import Navbar from "@/components/Navbar";
-import { createClient } from '@supabase/supabase-js';
+import { supabase } from "@/lib/supabase";
 
-// 1. TON MOTEUR DE STYLE (ON NE TOUCHE PAS, IL EST TOP)
 function GlassBlock({ children, className = "" }: { children: React.ReactNode, className?: string }) {
   function handleMouseMove(e: React.MouseEvent<HTMLDivElement>) {
     const rect = e.currentTarget.getBoundingClientRect();
     e.currentTarget.style.setProperty("--x", `${e.clientX - rect.left}px`);
     e.currentTarget.style.setProperty("--y", `${e.clientY - rect.top}px`);
   }
-
   return (
     <motion.div
       onMouseMove={handleMouseMove}
@@ -28,12 +27,6 @@ function GlassBlock({ children, className = "" }: { children: React.ReactNode, c
       <div className="absolute inset-0 opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity duration-300"
         style={{ background: "radial-gradient(400px circle at var(--x) var(--y), rgba(34,211,238,0.1), transparent 40%)" }}
       />
-      <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
-        <div className="absolute inset-0" style={{
-            backgroundImage: `linear-gradient(rgba(34, 211, 238, 0.8) 1px, transparent 1px), linear-gradient(90deg, rgba(34, 211, 238, 0.8) 1px, transparent 1px)`,
-            backgroundSize: "30px 30px"
-        }} />
-      </div>
       <div className="relative z-10 h-full p-6">{children}</div>
     </motion.div>
   );
@@ -41,42 +34,38 @@ function GlassBlock({ children, className = "" }: { children: React.ReactNode, c
 
 export default function DashboardPage() {
   const [userName, setUserName] = useState("Utilisateur");
-
-  const supabase = createClient(
-    'https://ykwcledsxlnqkkczcemt.supabase.co', 
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd2NsZWRzeGxucWtrY3pjZW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDcwOTgsImV4cCI6MjA5MTIyMzA5OH0.Q1H_DSVr_OSKepBPdnA8r9qk0rkLEqY0S5k5KsBmnTc'
-  );
+  const router = useRouter();
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const { data: { user } } = await supabase.auth.getUser();
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       
-      if (user) {
-        const fullName = user.user_metadata?.full_name || user.email?.split('@')[0];
-        const firstName = fullName.split(" ")[0];      
-        setUserName(firstName);
+      if (event === "SIGNED_OUT" || !session) {
+        router.replace("/login");
+
+        if (typeof window !== "undefined") {
+          window.location.reload();
+        }
       }
-    };
-    fetchUser();
-  }, []);
+    });
   
+    return () => subscription.unsubscribe();
+  }, [router, supabase]);
+  
+  // LE RESTE DE TON CODE (DESIGN) NE CHANGE PAS
   return (
     <div className="flex h-screen w-full bg-black overflow-hidden">
-      
       <Sidebar />
       <Navbar />
-
       <div className="flex-1 h-full overflow-y-auto scroll-smooth no-scrollbar">
         <div className="space-y-10 max-w-7xl mx-auto px-6 lg:px-12 pt-10 pb-32">
-            
-            {/* HEADER : DATE + BIENVENUE */}
             <header className="mb-16 relative">
               <motion.div initial="hidden" animate="visible" className="space-y-4">
                 <h2 className="text-3xl md:text-4xl font-bold tracking-tight">
                   <span className="text-slate-400 font-light italic">Bienvenue,</span>
                   <span className="text-white ml-2">{userName}</span>
                 </h2>
-
                 <div className="relative w-full max-w-2xl">
                   <motion.div 
                     initial={{ width: 0, opacity: 0 }}
@@ -85,14 +74,7 @@ export default function DashboardPage() {
                     className="h-[1px] bg-gradient-to-r from-cyan-500 via-blue-500/30 to-transparent"
                   />
                 </div>
-
-                <motion.p 
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 0.5 }}
-                  transition={{ delay: 0.8 }}
-                  className="text-[10px] text-slate-500 uppercase tracking-[0.5em] font-medium"
-                >
-                  {/* Date automatique en français */}
+                <motion.p className="text-[10px] text-slate-500 uppercase tracking-[0.5em] font-medium">
                   {new Date().toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' })}
                 </motion.p>
               </motion.div>
@@ -100,8 +82,6 @@ export default function DashboardPage() {
 
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
             <div className="lg:col-span-2 space-y-6">
-              
-              {/* LES 4 PILIERS (VIDES) */}
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                 <GlassBlock className="h-32 flex flex-col justify-center items-center text-center">
                   <span className="text-slate-500 text-[9px] uppercase font-bold tracking-widest">Finances</span>
@@ -120,8 +100,6 @@ export default function DashboardPage() {
                   <p className="text-xl font-bold text-slate-700 mt-1 italic">-- %</p>
                 </GlassBlock>
               </div>
-
-              {/* MONITEUR DE BUDGET (VIDE) */}
               <GlassBlock className="h-[350px] flex flex-col justify-center items-center text-center">
                   <h3 className="text-slate-500 text-[10px] font-black uppercase tracking-[0.3em] mb-4">Vue d'ensemble du budget</h3>
                   <div className="w-16 h-1 w-full max-w-xs bg-white/5 rounded-full overflow-hidden">
@@ -130,8 +108,6 @@ export default function DashboardPage() {
                   <p className="text-slate-600 text-xs mt-6 italic">En attente de configuration budgétaire...</p>
               </GlassBlock>
             </div>
-
-            {/* FLUX DE VIE (VIDE) */}
             <aside className="h-full">
               <GlassBlock className="h-full min-h-[500px] flex flex-col">
                  <h3 className="text-sm font-bold text-white uppercase tracking-widest border-b border-white/5 pb-4 mb-6">Flux de Vie</h3>
@@ -141,10 +117,8 @@ export default function DashboardPage() {
               </GlassBlock>
             </aside>
           </div>
-
         </div>
       </div>
-
       <MobileNav />
     </div>
   );

@@ -1,10 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { createClient } from '@supabase/supabase-js';
 import { motion, AnimatePresence } from "framer-motion";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
+import { supabase } from "@/lib/supabase";
 
 const GithubIcon = ({ size = 18 }: { size?: number }) => (
   <svg xmlns="http://www.w3.org/2000/svg" width={size} height={size} viewBox="0 0 24 24" fill="currentColor">
@@ -24,11 +24,11 @@ const GithubIcon = ({ size = 18 }: { size?: number }) => (
 export default function Register() {
   const [notif, setNotif] = useState<{msg: string, type: 'error' | 'success'} | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
-  const supabase = createClient(
-    'https://ykwcledsxlnqkkczcemt.supabase.co',
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlrd2NsZWRzeGxucWtrY3pjZW10Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzU2NDcwOTgsImV4cCI6MjA5MTIyMzA5OH0.Q1H_DSVr_OSKepBPdnA8r9qk0rkLEqY0S5k5KsBmnTc'
-  );
+  const [acceptedTerms, setAcceptedTerms] = useState(false);
+  const [data, setData] = useState(null);
+  const maFonction = async () => {
+    const { data } = await supabase.from('table').select();
+  };
 
   const handleOAuthLogin = async (provider: 'google' | 'github') => {
     setIsLoading(true);
@@ -94,12 +94,26 @@ export default function Register() {
           <h1 className="text-white text-3xl font-bold mb-10 leading-tight">
             Créer votre compte
           </h1>
+          
+          {/* Case à cocher pour les conditions */}
+          <div className="flex items-start gap-3 mb-6 group cursor-pointer" onClick={() => setAcceptedTerms(!acceptedTerms)}>
+            <div className={`mt-0.5 w-5 h-5 shrink-0 rounded border flex items-center justify-center transition-all ${acceptedTerms ? 'bg-cyan-500 border-cyan-500' : 'border-white/20 group-hover:border-white/40'}`}>
+              {acceptedTerms && (
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round">
+                  <polyline points="20 6 9 17 4 12" />
+                </svg>
+              )}
+            </div>
 
+            <p className="text-xs text-white/50 leading-relaxed select-none">
+              J'accepte que <span className="text-white">Vie+</span> gère mes données personnelles conformément à la politique de confidentialité.
+            </p>
+          </div>
           <div className="flex flex-col gap-3">
             {/* Bouton Google */}
             <button
               onClick={() => handleOAuthLogin('google')}
-              disabled={isLoading}
+              disabled={isLoading || !acceptedTerms}
               className="group relative flex items-center justify-center gap-3 w-full bg-white hover:bg-gray-100 text-[#0f0f0f] text-sm font-semibold py-3.5 px-5 rounded-full transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {isLoading ? <Loader2 size={18} className="animate-spin" /> : (
