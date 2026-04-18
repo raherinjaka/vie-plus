@@ -96,7 +96,7 @@ export default function DashboardPage() {
                   <p className="text-xl font-bold text-slate-700 mt-1 italic">...</p>
                 </GlassBlock>
                 <GlassBlock className="h-32 flex flex-col justify-center items-center text-center">
-                  <span className="text-slate-500 text-[9px] uppercase font-bold tracking-widest">Objectif</span>
+                  <span className="text-slate-500 text-[9px] uppercase font-bold tracking-widest">Objectifff</span>
                   <p className="text-xl font-bold text-slate-700 mt-1 italic">-- %</p>
                 </GlassBlock>
               </div>

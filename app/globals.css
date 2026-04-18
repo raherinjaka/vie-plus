@@ -6,11 +6,11 @@
 /* 2. VARIABLES DE COULEURS */
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: #cf3e3e;
 }
 
 .dark {
-  --background: #050505;
+  --background: #a71616;
   --foreground: #ededed;
 }
 
