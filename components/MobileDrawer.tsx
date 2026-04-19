@@ -1,7 +1,23 @@
 "use client";
-import { LayoutDashboard, Wallet, ClipboardList, Target, LogOut, X } from 'lucide-react';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+
+import { useEffect, useState, useRef } from "react";
+import { usePathname } from "next/navigation";
+import {
+  LayoutDashboard, Wallet, ClipboardList, Target,
+  Info, LogOut, X, Menu,
+} from "lucide-react";
+import Link from "next/link";
+import { motion, AnimatePresence } from "framer-motion";
+import { supabase } from "@/lib/supabase";
+
+// Configuration des liens identique à ton NavDrawer
+const NAV_ITEMS = [
+  { label: "Tableau de bord", icon: LayoutDashboard, href: "/dashboard",  color: "text-cyan-400",    bg: "bg-cyan-500/10",    border: "border-cyan-500/20"   },
+  { label: "Mon Argent",      icon: Wallet,          href: "/depenses",   color: "text-emerald-400", bg: "bg-emerald-500/10", border: "border-emerald-500/20"},
+  { label: "Mes Tâches",      icon: ClipboardList,   href: "/taches",     color: "text-violet-400",  bg: "bg-violet-500/10",  border: "border-violet-500/20" },
+  { label: "Objectifs",       icon: Target,          href: "/objectifs",  color: "text-yellow-400",  bg: "bg-yellow-500/10",  border: "border-yellow-500/20" },
+  { label: "À propos",        icon: Info,            href: "/a-propos",   color: "text-slate-400",   bg: "bg-slate-500/10",   border: "border-slate-500/20"  },
+];
 
 interface MobileDrawerProps {
   isOpen: boolean;
@@ -9,54 +25,140 @@ interface MobileDrawerProps {
 }
 
 export default function MobileDrawer({ isOpen, onClose }: MobileDrawerProps) {
+  const [loggingOut, setLoggingOut] = useState(false);
+  const [userData, setUserData] = useState({ name: "", email: "", avatar: "", initial: "?" });
   const pathname = usePathname();
-  const menuItems = [
-    { name: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
-    { name: "Dépenses", icon: Wallet, href: "/depenses" },
-    { name: "Tâches", icon: ClipboardList, href: "/taches" },
-    { name: "Objectifs", icon: Target, href: "/objectifs" },
-  ];
+  const drawerRef = useRef<HTMLDivElement>(null);
+
+  // Fetch de l'utilisateur Supabase
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      const email = user.email ?? "";
+      const name = (user.user_metadata?.full_name ?? email.split("@")[0]).split(" ")[0];
+      const avatar = user.user_metadata?.avatar_url ?? "";
+      const initial = email ? email[0].toUpperCase() : "?";
+      setUserData({ name, email, avatar, initial });
+    });
+  }, []);
+
+  // Fermeture automatique lors du changement de page
+  useEffect(() => { onClose(); }, [pathname]);
+
+  const handleLogout = async () => {
+    setLoggingOut(true);
+    try { 
+        await supabase.auth.signOut(); 
+        window.location.replace("/login");
+    } catch (err) { 
+        console.error("Logout error:", err); 
+        setLoggingOut(false);
+    }
+  };
 
   return (
     <>
-      {/* Overlay qui assombrit le fond */}
-      <div 
-        className={`fixed inset-0 bg-black/60 backdrop-blur-sm z-[998] transition-opacity duration-300 ${isOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`} 
-        onClick={onClose}
-      />
+      {/* ── OVERLAY ── */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-[998] bg-slate-950/70 backdrop-blur-sm"
+            onClick={onClose}
+          />
+        )}
+      </AnimatePresence>
 
-      {/* Le Tiroir qui slide depuis la droite */}
-      <div className={`fixed top-0 right-0 h-full w-[280px] bg-slate-950 border-l border-white/5 z-[999] shadow-2xl p-6 transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : 'translate-x-full'}`}>
-        <div className="flex justify-between items-center mb-10">
-          <span className="text-xl font-black text-white italic">VIE<span className="text-cyan-500">.</span>PLUS</span>
-          <button onClick={onClose} className="p-2 text-slate-500 hover:text-white">
-            <X size={24} />
-          </button>
-        </div>
-
-        <nav className="space-y-2">
-          {menuItems.map((item) => {
-            const Icon = item.icon;
-            const active = pathname === item.href;
-            return (
-              <Link 
-                key={item.href} 
-                href={item.href} 
+      {/* ── DRAWER ── */}
+      <AnimatePresence>
+        {isOpen && (
+          <motion.div
+            ref={drawerRef}
+            initial={{ x: "100%" }}
+            animate={{ x: 0 }}
+            exit={{ x: "100%" }}
+            transition={{ type: "spring", stiffness: 300, damping: 30 }}
+            className="fixed top-0 right-0 bottom-0 z-[999] w-[300px] flex flex-col
+              bg-slate-950 border-l border-white/[0.06] shadow-2xl overflow-hidden"
+          >
+            {/* Header Profil */}
+            <div className="px-6 pt-10 pb-6 border-b border-white/[0.05] bg-gradient-to-b from-white/[0.02] to-transparent">
+              <button 
                 onClick={onClose}
-                className={`flex items-center gap-4 p-4 rounded-2xl transition-all ${active ? 'bg-cyan-500/10 text-cyan-400' : 'text-slate-400 hover:bg-white/5'}`}
+                className="absolute top-4 right-4 p-2 text-slate-500 hover:text-white"
               >
-                <Icon size={22} />
-                <span className="font-bold">{item.name}</span>
-              </Link>
-            );
-          })}
-        </nav>
+                <X size={20} />
+              </button>
 
-        <button className="mt-auto absolute bottom-10 left-6 right-6 flex items-center gap-4 p-4 rounded-2xl text-red-400 hover:bg-red-400/10 transition-all">
-          <LogOut size={22} />
-          <span className="font-bold">Déconnexion</span>
-        </button>
-      </div>
+              <div className="flex flex-col items-center text-center gap-3">
+                <div className="relative">
+                  <div className="w-20 h-20 rounded-3xl bg-gradient-to-br from-cyan-500/30 to-violet-500/20 
+                    border border-cyan-500/20 flex items-center justify-center overflow-hidden shadow-xl">
+                    {userData.avatar ? (
+                      <img src={userData.avatar} alt="Avatar" className="w-full h-full object-cover" />
+                    ) : (
+                      <span className="text-2xl font-black text-cyan-300">{userData.initial}</span>
+                    )}
+                  </div>
+                  <span className="absolute bottom-1 right-1 w-4 h-4 rounded-full bg-emerald-400 border-4 border-slate-950" />
+                </div>
+                
+                <div className="mt-2">
+                  <p className="text-lg font-black text-white capitalize">{userData.name || "Utilisateur"}</p>
+                  <p className="text-xs text-slate-500 font-mono truncate max-w-[200px]">{userData.email}</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Navigation */}
+            <nav className="flex-1 overflow-y-auto px-4 py-6 space-y-2">
+              <p className="px-4 text-[10px] font-black uppercase tracking-[0.3em] text-slate-600 mb-4">Menu Principal</p>
+              {NAV_ITEMS.map((item, idx) => {
+                const Icon = item.icon;
+                const active = pathname === item.href;
+                return (
+                  <motion.div
+                    key={item.href}
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: idx * 0.05 }}
+                  >
+                    <Link
+                      href={item.href}
+                      className={`flex items-center gap-4 px-4 py-4 rounded-2xl font-bold transition-all
+                        ${active 
+                          ? `${item.bg} ${item.color} border ${item.border}` 
+                          : "text-slate-400 hover:bg-white/5"}`}
+                    >
+                      <Icon size={20} />
+                      <span>{item.label}</span>
+                    </Link>
+                  </motion.div>
+                );
+              })}
+            </nav>
+
+            {/* Footer / Déconnexion */}
+            <div className="p-4 border-t border-white/[0.05]">
+              <button
+                onClick={handleLogout}
+                disabled={loggingOut}
+                className="w-full flex items-center gap-4 px-4 py-4 rounded-2xl font-bold
+                  text-red-400 hover:bg-red-400/10 transition-all disabled:opacity-50"
+              >
+                {loggingOut ? (
+                  <div className="w-5 h-5 border-2 border-red-400/30 border-t-red-400 rounded-full animate-spin" />
+                ) : (
+                  <LogOut size={20} />
+                )}
+                <span>{loggingOut ? "Déconnexion..." : "Se déconnecter"}</span>
+              </button>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </>
   );
 }

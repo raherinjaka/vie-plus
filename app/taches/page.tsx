@@ -1,1 +1,1 @@
-export default function Page() { return <h1 className="text-white">Bonjours Page en courss...</h1> }
+export default function Page() { return <h1 className="text-white">Page en cours...</h1> }

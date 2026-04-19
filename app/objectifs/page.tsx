@@ -4,6 +4,8 @@ import { useEffect, useRef, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence, useMotionValue, useTransform, useSpring } from "framer-motion";
 import { supabase } from "@/lib/supabase";
+import NavDrawer from "@/components/NavDrawer";
+
 // ─── Types ────────────────────────────────────────────────────────────────────
 type Category = "Projet" | "Santé" | "Argent" | "Études";
 
@@ -209,38 +211,21 @@ export default function ObjectifsPage() {
   // Confetti
   const [confettiId, setConfettiId] = useState<string | null>(null);
 
+  // Modal state
+  const [creating, setCreating] = useState(false);
+  const [createError, setCreateError] = useState<string | null>(null);
+
   // ── Auth Check ──────────────────────────────────────────────────────────────
-    // ── AUTH CHECK RADICAL (Remplace ton bloc actuel) ──────────────────
-useEffect(() => {
-    console.log("🚀 Démarrage du composant...");
-    
-    const init = async () => {
-      try {
-        // 1. On essaie de récupérer la session
-        const { data, error } = await supabase.auth.getSession();
-        
-        if (error) {
-          console.error("❌ Erreur Supabase:", error.message);
-        }
-  
-        if (data?.session) {
-          console.log("✅ Session trouvée:", data.session.user.id);
-          setUserId(data.session.user.id);
-          await fetchObjectifs(data.session.user.id);
-        } else {
-          console.warn("⚠️ Aucune session. (Je débloque quand même l'affichage pour tester)");
-        }
-      } catch (err) {
-        console.error("💥 Crash dans le useEffect:", err);
-      } finally {
-        // FORCE l'arrêt du spinner quoi qu'il arrive
-        console.log("🏁 Fin du loading.");
-        setLoading(false); 
-      }
-    };
-  
-    init();
+  useEffect(() => {
+    (async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (!session) { router.replace("/login"); return; }
+      setUserId(session.user.id);
+      await fetchObjectifs(session.user.id);
+      setLoading(false);
+    })();
   }, []);
+
   // ── Fetch ───────────────────────────────────────────────────────────────────
   const fetchObjectifs = async (uid: string) => {
     const { data } = await supabase
@@ -273,11 +258,19 @@ useEffect(() => {
 
   // ── Create ──────────────────────────────────────────────────────────────────
   const createObjectif = async () => {
-    if (!form.titre.trim() || !userId) return;
-    const { data } = await supabase
+    if (!form.titre.trim()) return;
+    setCreating(true);
+    setCreateError(null);
+
+    // Récupère la session en temps réel (évite le bug de race condition sur userId)
+    const { data: { session } } = await supabase.auth.getSession();
+    const uid = session?.user?.id ?? userId;
+    if (!uid) { setCreateError("Session expirée, reconnecte-toi."); setCreating(false); return; }
+
+    const { data, error } = await supabase
       .from("objectifs")
       .insert({
-        user_id: userId,
+        user_id: uid,
         titre: form.titre.trim(),
         categorie: form.categorie,
         progression: 0,
@@ -285,9 +278,25 @@ useEffect(() => {
       })
       .select()
       .single();
-    if (data) setObjectifs((prev) => [data, ...prev]);
+
+    if (error) {
+      console.error("Supabase insert error:", error);
+      setCreateError(`Erreur : ${error.message}`);
+      setCreating(false);
+      return;
+    }
+
+    if (data) {
+      // Mise à jour optimiste directe
+      setObjectifs((prev) => [data, ...prev]);
+    } else {
+      // Fallback : refetch complet si Supabase ne retourne pas data
+      await fetchObjectifs(uid);
+    }
+
     setShowModal(false);
     setForm({ titre: "", categorie: "Projet", deadline: "" });
+    setCreating(false);
   };
 
   // ── Derived Stats ────────────────────────────────────────────────────────────
@@ -323,6 +332,11 @@ useEffect(() => {
       />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        
+      {/* ── BARRE TOP DROITE ── */}
+      <div className="fixed top-4 right-4 z-50">
+        <NavDrawer />
+      </div>
 
         {/* ── HEADER ─────────────────────────────────────────────────────────── */}
         <motion.div
@@ -636,20 +650,41 @@ useEffect(() => {
                   />
                 </div>
 
+                {/* Error */}
+                {createError && (
+                  <motion.p
+                    initial={{ opacity: 0, y: -6 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="text-red-400 text-sm font-medium bg-red-500/10 border border-red-500/30 rounded-xl px-4 py-2"
+                  >
+                    {createError}
+                  </motion.p>
+                )}
+
                 {/* Actions */}
                 <div className="flex gap-3 pt-2">
                   <button
-                    onClick={() => setShowModal(false)}
-                    className="flex-1 py-3 rounded-xl border border-slate-700 text-slate-400 font-semibold hover:border-slate-500 transition-colors"
+                    onClick={() => { setShowModal(false); setCreateError(null); }}
+                    disabled={creating}
+                    className="flex-1 py-3 rounded-xl border border-slate-700 text-slate-400 font-semibold hover:border-slate-500 transition-colors disabled:opacity-40"
                   >
                     Annuler
                   </button>
                   <button
                     onClick={createObjectif}
-                    disabled={!form.titre.trim()}
-                    className="flex-1 py-3 rounded-xl bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed"
+                    disabled={!form.titre.trim() || creating}
+                    className="flex-1 py-3 rounded-xl bg-cyan-500 text-slate-950 font-bold hover:bg-cyan-400 transition-colors disabled:opacity-40 disabled:cursor-not-allowed flex items-center justify-center gap-2"
                   >
-                    Créer
+                    {creating ? (
+                      <>
+                        <motion.span
+                          animate={{ rotate: 360 }}
+                          transition={{ duration: 0.8, repeat: Infinity, ease: "linear" }}
+                          className="inline-block w-4 h-4 border-2 border-slate-950/40 border-t-slate-950 rounded-full"
+                        />
+                        Création…
+                      </>
+                    ) : "Créer"}
                   </button>
                 </div>
               </div>
