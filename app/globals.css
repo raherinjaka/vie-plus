@@ -50,3 +50,52 @@ html {
   -ms-overflow-style: none;  /* IE and Edge */
   scrollbar-width: none;     /* Firefox */
 }
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ... (garde tes sections 1, 2, 3 et 4 identiques) ... */
+
+@layer utilities {
+  /* Phase 1 : le + apparaît avec un petit scale */
+  .animate-plus-in {
+    animation: plusIn 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+  }
+
+  @keyframes plusIn {
+    from { transform: scale(0) rotate(-90deg); opacity: 0; }
+    to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+  }
+
+  /* Phase 2 : rotation glitch qui ne revient jamais en arrière */
+  .animate-spin-glitch {
+    animation: spinGlitch 1.8s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  @keyframes spinGlitch {
+    0%   { transform: rotate(0deg); }
+    18%  { transform: rotate(90deg); }
+    38%  { transform: rotate(90deg); }   /* pause à 90° */
+    55%  { transform: rotate(180deg); }
+    68%  { transform: rotate(180deg); }  /* pause à 180° */
+    82%  { transform: rotate(270deg); }
+    92%  { transform: rotate(360deg); }
+    100% { transform: rotate(360deg); }  /* pause à 360° */
+  }
+
+  /* Fade-out du loader */
+  .animate-fade-out {
+    animation: fadeOut 0.5s ease forwards;
+  }
+
+  @keyframes fadeOut {
+    from { opacity: 1; }
+    to   { opacity: 0; pointer-events: none; }
+  }
+
+  @keyframes slideInLeft {
+    from { transform: translateX(-8px); opacity: 0; }
+    to   { transform: translateX(0);    opacity: 1; }
+  }
+}

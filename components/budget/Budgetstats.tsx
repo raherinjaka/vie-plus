@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingDown, TrendingUp, Wallet, Sparkles, Flame, BarChart3, X } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface CatStat {
@@ -31,8 +32,8 @@ function AnimNum({ value, prefix = "", className = "" }: {
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     let raf: number;
-    const dur = 800;
-    const t0  = performance.now();
+    const dur  = 800;
+    const t0   = performance.now();
     const from = display;
     const tick = (now: number) => {
       const p = Math.min((now - t0) / dur, 1);
@@ -83,12 +84,14 @@ function StatCard({
   );
 }
 
-// ─── Stats panel (category breakdown) ─────────────────────────────────────────
+// ─── Stats panel ──────────────────────────────────────────────────────────────
 function StatsPanel({ catStats, totalDepenses, onClose }: {
   catStats: CatStat[];
   totalDepenses: number;
   onClose: () => void;
 }) {
+  const { t } = useLanguage() as any;
+
   return (
     <motion.div
       initial={{ opacity: 0, height: 0 }}
@@ -102,7 +105,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
           <div className="flex items-center gap-2">
             <div className="w-px h-4 bg-emerald-400 rounded-full" />
             <h3 className="text-xs font-black uppercase tracking-widest text-slate-500">
-              Répartition par catégorie
+              {t?.budgetStats?.panel?.title}
             </h3>
           </div>
           <button onClick={onClose}
@@ -140,7 +143,8 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
                     />
                   </div>
                   <p className="text-[9px] text-slate-600 font-mono mt-0.5">
-                    {Math.round(pct)}% des dépenses
+                    {t?.budgetStats?.panel?.pctLabel
+                      ?.replace("{pct}", Math.round(pct))}
                   </p>
                 </div>
               </motion.div>
@@ -158,8 +162,8 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
             <span className="text-lg">{catStats[0].icon}</span>
             <p className="text-xs text-slate-400">
               <span className="font-black text-yellow-300">{catStats[0].label}</span>
-              {" "}est ta plus grosse dépense avec{" "}
-              <span className="font-mono font-black">{catStats[0].total.toLocaleString()} Ar</span>
+              {" "}{t?.budgetStats?.panel?.topCategory
+                ?.replace("{amount}", catStats[0].total.toLocaleString())}
             </p>
           </motion.div>
         )}
@@ -172,6 +176,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
 export default function BudgetStats({
   budgetFixe, totalAjouts, totalDepenses, soldeRestant, pct, catStats,
 }: Props) {
+  const { t } = useLanguage() as any;
   const [showPanel, setShowPanel] = useState(false);
   const isDanger = pct < 20;
 
@@ -185,7 +190,7 @@ export default function BudgetStats({
       {/* Cards grid */}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
         <StatCard
-          label="Budget fixe"
+          label={t?.budgetStats?.cards?.fixed}
           icon={Wallet}
           value={budgetFixe}
           color="text-white"
@@ -195,7 +200,7 @@ export default function BudgetStats({
           iconColor="text-slate-500"
         />
         <StatCard
-          label="Ajouté"
+          label={t?.budgetStats?.cards?.added}
           icon={TrendingUp}
           value={totalAjouts}
           prefix="+"
@@ -206,7 +211,7 @@ export default function BudgetStats({
           iconColor="text-emerald-400/60"
         />
         <StatCard
-          label="Dépensé"
+          label={t?.budgetStats?.cards?.spent}
           icon={TrendingDown}
           value={totalDepenses}
           prefix="-"
@@ -217,7 +222,7 @@ export default function BudgetStats({
           iconColor="text-red-400/60"
         />
         <StatCard
-          label="Solde"
+          label={t?.budgetStats?.cards?.balance}
           icon={isDanger ? Flame : Sparkles}
           value={soldeRestant}
           color={isDanger ? "text-red-300" : "text-cyan-300"}
@@ -240,7 +245,7 @@ export default function BudgetStats({
             }`}
         >
           <BarChart3 size={13} />
-          Statistiques
+          {t?.budgetStats?.toggleBtn}
         </button>
       </div>
 

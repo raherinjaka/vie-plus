@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wallet, Clock, Calendar, Zap, ArrowRight, Check } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type PeriodeType = "jours" | "semaines" | "mois";
@@ -19,13 +20,13 @@ interface Props {
   onConfirm: (config: BudgetConfig) => void;
 }
 
-// ─── Période options ───────────────────────────────────────────────────────────
+// ─── Période options ──────────────────────────────────────────────────────────
 const PERIODES = [
   {
     type: "jours" as PeriodeType,
-    label: "Jours",
+    labelKey: "jours",
     icon: Zap,
-    desc: "Budget quotidien ou sur quelques jours",
+    descKey: "joursDesc",
     color: "text-cyan-300",
     bg: "bg-cyan-500/10",
     border: "border-cyan-500/25",
@@ -34,9 +35,9 @@ const PERIODES = [
   },
   {
     type: "semaines" as PeriodeType,
-    label: "Semaines",
+    labelKey: "semaines",
     icon: Calendar,
-    desc: "Budget hebdomadaire idéal",
+    descKey: "semainesDesc",
     color: "text-violet-300",
     bg: "bg-violet-500/10",
     border: "border-violet-500/25",
@@ -45,9 +46,9 @@ const PERIODES = [
   },
   {
     type: "mois" as PeriodeType,
-    label: "Mois",
+    labelKey: "mois",
     icon: Clock,
-    desc: "Budget mensuel pour le long terme",
+    descKey: "moisDesc",
     color: "text-emerald-300",
     bg: "bg-emerald-500/10",
     border: "border-emerald-500/25",
@@ -82,8 +83,10 @@ function StepDot({ active, done, n }: { active: boolean; done: boolean; n: numbe
   );
 }
 
-// ─── BudgetSetup ─────────────────────────────────────────────────────────────
+// ─── BudgetSetup ──────────────────────────────────────────────────────────────
 export default function BudgetSetup({ onConfirm }: Props) {
+  const { t } = useLanguage() as any;
+
   const [step, setStep]             = useState<1 | 2>(1);
   const [montant, setMontant]       = useState("");
   const [periodeType, setPeriode]   = useState<PeriodeType>("semaines");
@@ -94,6 +97,8 @@ export default function BudgetSetup({ onConfirm }: Props) {
   const montantNum      = Number(montant);
   const step1Valid      = montantNum > 0;
   const step2Valid      = duree > 0;
+
+  const locale = t?.meta?.locale ?? "fr-FR";
 
   const handleConfirm = async () => {
     if (!step1Valid || !step2Valid) return;
@@ -119,7 +124,6 @@ export default function BudgetSetup({ onConfirm }: Props) {
           bg-cyan-500/5 blur-[120px]" />
         <div className="absolute bottom-1/4 right-1/4 w-80 h-80 rounded-full
           bg-violet-500/5 blur-[100px]" />
-        {/* Grid */}
         <div className="absolute inset-0 opacity-[0.02]"
           style={{
             backgroundImage: "linear-gradient(#22d3ee 1px,transparent 1px),linear-gradient(90deg,#22d3ee 1px,transparent 1px)",
@@ -134,7 +138,6 @@ export default function BudgetSetup({ onConfirm }: Props) {
         transition={{ type: "spring", stiffness: 260, damping: 26 }}
         className="relative w-full max-w-lg"
       >
-        {/* Card */}
         <div className="relative rounded-3xl border border-white/[0.08]
           bg-slate-950/95 backdrop-blur-3xl shadow-2xl overflow-hidden">
 
@@ -145,7 +148,6 @@ export default function BudgetSetup({ onConfirm }: Props) {
           {/* Header */}
           <div className="px-8 pt-8 pb-6 border-b border-white/[0.05]">
             <div className="flex items-center justify-between mb-5">
-              {/* Logo mark */}
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20
                   flex items-center justify-center">
@@ -153,9 +155,11 @@ export default function BudgetSetup({ onConfirm }: Props) {
                 </div>
                 <div>
                   <p className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-600">
-                    Vie+ Budget
+                    {t?.budgetSetup?.brand}
                   </p>
-                  <p className="text-sm font-black text-white">Nouveau cycle</p>
+                  <p className="text-sm font-black text-white">
+                    {t?.budgetSetup?.newCycle}
+                  </p>
                 </div>
               </div>
 
@@ -173,10 +177,10 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}>
                   <h2 className="text-2xl font-black text-white tracking-tight">
-                    Quel est ton budget ?
+                    {t?.budgetSetup?.step1?.title}
                   </h2>
                   <p className="text-slate-500 text-sm mt-1">
-                    Ce montant sera verrouillé pour tout le cycle.
+                    {t?.budgetSetup?.step1?.subtitle}
                   </p>
                 </motion.div>
               ) : (
@@ -184,10 +188,10 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   initial={{ opacity: 0, x: -12 }} animate={{ opacity: 1, x: 0 }}
                   exit={{ opacity: 0, x: 12 }} transition={{ duration: 0.2 }}>
                   <h2 className="text-2xl font-black text-white tracking-tight">
-                    Sur quelle durée ?
+                    {t?.budgetSetup?.step2?.title}
                   </h2>
                   <p className="text-slate-500 text-sm mt-1">
-                    Choisis ta période et la durée du cycle.
+                    {t?.budgetSetup?.step2?.subtitle}
                   </p>
                 </motion.div>
               )}
@@ -205,7 +209,6 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   exit={{ opacity: 0, x: 20 }} transition={{ duration: 0.25 }}
                   className="space-y-6"
                 >
-                  {/* Amount input */}
                   <div className="relative">
                     <div className="flex items-end gap-3 p-5 rounded-2xl
                       bg-white/[0.02] border border-white/[0.08]
@@ -234,13 +237,12 @@ export default function BudgetSetup({ onConfirm }: Props) {
                               ? "bg-cyan-500/15 border-cyan-500/35 text-cyan-300"
                               : "bg-white/[0.03] border-white/[0.07] text-slate-500 hover:text-slate-300 hover:border-white/15"
                             }`}>
-                          {(v / 1000)}k
+                          {v / 1000}k
                         </button>
                       ))}
                     </div>
                   </div>
 
-                  {/* Preview */}
                   {montantNum > 0 && (
                     <motion.div
                       initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
@@ -248,9 +250,8 @@ export default function BudgetSetup({ onConfirm }: Props) {
                         bg-emerald-500/[0.05] border border-emerald-500/15">
                       <Check size={15} className="text-emerald-400 flex-shrink-0" />
                       <p className="text-sm text-emerald-300 font-bold">
-                        Budget de{" "}
-                        <span className="font-mono">{montantNum.toLocaleString()} Ar</span>{" "}
-                        — verrouillé après confirmation
+                        {t?.budgetSetup?.step1?.preview
+                          ?.replace("{amount}", montantNum.toLocaleString())}
                       </p>
                     </motion.div>
                   )}
@@ -267,10 +268,11 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   {/* Période type */}
                   <div className="grid grid-cols-3 gap-3">
                     {PERIODES.map((p) => {
-                      const Icon    = p.icon;
-                      const active  = periodeType === p.type;
+                      const Icon   = p.icon;
+                      const active = periodeType === p.type;
                       return (
-                        <button key={p.type} onClick={() => { setPeriode(p.type); setDuree(p.options[0]); }}
+                        <button key={p.type}
+                          onClick={() => { setPeriode(p.type); setDuree(p.options[0]); }}
                           className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl
                             border transition-all duration-200
                             ${active
@@ -281,7 +283,7 @@ export default function BudgetSetup({ onConfirm }: Props) {
                         >
                           <Icon size={20} />
                           <span className="text-xs font-black uppercase tracking-wider">
-                            {p.label}
+                            {t?.budgetSetup?.periodes?.[p.labelKey]}
                           </span>
                           {active && (
                             <motion.div layoutId="periode-active"
@@ -294,9 +296,9 @@ export default function BudgetSetup({ onConfirm }: Props) {
 
                   {/* Durée */}
                   <div>
-                    <p className="text-[10px] font-black uppercase tracking-widest
-                      text-slate-600 mb-3">
-                      Nombre de {selectedPeriode.label.toLowerCase()}
+                    <p className="text-[10px] font-black uppercase tracking-widest text-slate-600 mb-3">
+                      {t?.budgetSetup?.step2?.durationLabel
+                        ?.replace("{periode}", t?.budgetSetup?.periodes?.[selectedPeriode.labelKey]?.toLowerCase())}
                     </p>
                     <div className="flex gap-2">
                       {selectedPeriode.options.map((opt) => (
@@ -315,25 +317,31 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   {/* Summary card */}
                   <div className="p-5 rounded-2xl bg-white/[0.025] border border-white/[0.07] space-y-3">
                     <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">
-                      Récapitulatif du cycle
+                      {t?.budgetSetup?.summary?.title}
                     </p>
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <p className="text-[10px] text-slate-500 mb-0.5">Budget verrouillé</p>
+                        <p className="text-[10px] text-slate-500 mb-0.5">
+                          {t?.budgetSetup?.summary?.lockedBudget}
+                        </p>
                         <p className="text-lg font-black text-white font-mono">
                           {montantNum.toLocaleString()} Ar
                         </p>
                       </div>
                       <div>
-                        <p className="text-[10px] text-slate-500 mb-0.5">Durée</p>
+                        <p className="text-[10px] text-slate-500 mb-0.5">
+                          {t?.budgetSetup?.summary?.duration}
+                        </p>
                         <p className="text-lg font-black text-white">
-                          {duree} {selectedPeriode.label.toLowerCase()}
+                          {duree} {t?.budgetSetup?.periodes?.[selectedPeriode.labelKey]?.toLowerCase()}
                         </p>
                       </div>
                       <div className="col-span-2">
-                        <p className="text-[10px] text-slate-500 mb-0.5">Fin du cycle</p>
+                        <p className="text-[10px] text-slate-500 mb-0.5">
+                          {t?.budgetSetup?.summary?.endDate}
+                        </p>
                         <p className="text-sm font-bold text-slate-300">
-                          {new Date(computeDateFin(periodeType, duree)).toLocaleDateString("fr-FR", {
+                          {new Date(computeDateFin(periodeType, duree)).toLocaleDateString(locale, {
                             weekday: "long", day: "numeric", month: "long", year: "numeric",
                           })}
                         </p>
@@ -352,7 +360,7 @@ export default function BudgetSetup({ onConfirm }: Props) {
                 className="px-5 py-3.5 rounded-2xl border border-white/[0.08]
                   text-slate-400 font-bold text-sm hover:border-white/15 hover:text-slate-200
                   transition-all">
-                Retour
+                {t?.budgetSetup?.back}
               </button>
             )}
 
@@ -372,7 +380,7 @@ export default function BudgetSetup({ onConfirm }: Props) {
                   className="w-4 h-4 border-2 border-slate-950/30 border-t-slate-950 rounded-full" />
               ) : (
                 <>
-                  {step === 1 ? "Suivant" : "Lancer le cycle"}
+                  {step === 1 ? t?.budgetSetup?.next : t?.budgetSetup?.launch}
                   <ArrowRight size={16} />
                 </>
               )}

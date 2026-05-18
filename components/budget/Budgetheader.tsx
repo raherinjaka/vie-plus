@@ -4,23 +4,24 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, RotateCcw, Clock, AlertTriangle, CheckCircle, Flame } from "lucide-react";
 import type { BudgetConfig } from "./Budgetsetup.tsx";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface Props {
   config: BudgetConfig;
   onReset: () => void;
+  montantRestant: number;
 }
 
-// ─── Time helpers ─────────────────────────────────────────────────────────────
+// ─── Countdown ────────────────────────────────────────────────────────────────
 function useCountdown(dateFin: string) {
   const [remaining, setRemaining] = useState({ days: 0, hours: 0, mins: 0, secs: 0, pct: 100, expired: false });
 
   useEffect(() => {
-    const dateDebut = new Date(dateFin).getTime() - (new Date(dateFin).getTime() - Date.now());
     const update = () => {
-      const now     = Date.now();
-      const end     = new Date(dateFin).getTime();
-      const diff    = end - now;
+      const now  = Date.now();
+      const end  = new Date(dateFin).getTime();
+      const diff = end - now;
       if (diff <= 0) {
         setRemaining({ days: 0, hours: 0, mins: 0, secs: 0, pct: 0, expired: true });
         return;
@@ -29,10 +30,7 @@ function useCountdown(dateFin: string) {
       const hours = Math.floor((diff % 86400000) / 3600000);
       const mins  = Math.floor((diff % 3600000) / 60000);
       const secs  = Math.floor((diff % 60000) / 1000);
-
-      // pct = temps restant / durée totale
-      const total   = end - (new Date(dateFin).getTime() - diff - 86400000); // approx
-      const pct     = Math.max(0, Math.min(100, (diff / (end - Date.now() + diff)) * 100));
+      const pct   = Math.max(0, Math.min(100, (diff / (end - Date.now() + diff)) * 100));
       setRemaining({ days, hours, mins, secs, pct, expired: false });
     };
     update();
@@ -45,6 +43,8 @@ function useCountdown(dateFin: string) {
 
 // ─── Confirm Reset Modal ──────────────────────────────────────────────────────
 function ResetModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: () => void }) {
+  const { t } = useLanguage() as any;
+
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -66,10 +66,8 @@ function ResetModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: 
             <RotateCcw size={20} className="text-orange-400" />
           </div>
           <div>
-            <p className="text-white font-black text-base">Réinitialiser le cycle ?</p>
-            <p className="text-slate-500 text-sm mt-1">
-              Toutes les opérations seront supprimées et tu pourras démarrer un nouveau cycle.
-            </p>
+            <p className="text-white font-black text-base">{t?.budgetHeader?.resetModal?.title}</p>
+            <p className="text-slate-500 text-sm mt-1">{t?.budgetHeader?.resetModal?.description}</p>
           </div>
         </div>
 
@@ -77,7 +75,7 @@ function ResetModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: 
           <div className="flex items-center gap-2">
             <AlertTriangle size={14} className="text-orange-400 flex-shrink-0" />
             <p className="text-orange-300/80 text-xs font-bold">
-              Cette action est irréversible. Les données du cycle actuel seront perdues.
+              {t?.budgetHeader?.resetModal?.warning}
             </p>
           </div>
         </div>
@@ -86,12 +84,12 @@ function ResetModal({ onConfirm, onCancel }: { onConfirm: () => void; onCancel: 
           <button onClick={onCancel}
             className="flex-1 py-3 rounded-2xl border border-white/10
               text-slate-400 font-bold text-sm hover:border-white/20 hover:text-slate-200 transition-all">
-            Annuler
+            {t?.budgetHeader?.resetModal?.cancel}
           </button>
           <button onClick={onConfirm}
             className="flex-1 py-3 rounded-2xl bg-orange-500/15 hover:bg-orange-500/25
               border border-orange-500/25 text-orange-300 font-black text-sm transition-all">
-            Réinitialiser
+            {t?.budgetHeader?.resetModal?.confirm}
           </button>
         </div>
       </motion.div>
@@ -126,17 +124,20 @@ function Digit({ value, label }: { value: number; label: string }) {
 }
 
 // ─── BudgetHeader ─────────────────────────────────────────────────────────────
-export default function BudgetHeader({ config, onReset }: Props) {
+export default function BudgetHeader({ config, onReset, montantRestant }: Props) {
+  const { t } = useLanguage() as any;
   const [showReset, setShowReset] = useState(false);
   const countdown = useCountdown(config.dateFin);
 
   const periodeLabel = {
-    jours: `${config.periodeDuree} jour${config.periodeDuree > 1 ? "s" : ""}`,
-    semaines: `${config.periodeDuree} semaine${config.periodeDuree > 1 ? "s" : ""}`,
-    mois: `${config.periodeDuree} mois`,
+    jours:    t?.budgetHeader?.periode?.days?.replace("{n}", config.periodeDuree)
+                + (config.periodeDuree > 1 ? "" : ""),
+    semaines: t?.budgetHeader?.periode?.weeks?.replace("{n}", config.periodeDuree),
+    mois:     t?.budgetHeader?.periode?.months?.replace("{n}", config.periodeDuree),
   }[config.periodeType];
 
-  const dateFin = new Date(config.dateFin).toLocaleDateString("fr-FR", {
+  const locale = t?.meta?.locale ?? "fr-FR";
+  const dateFin = new Date(config.dateFin).toLocaleDateString(locale, {
     day: "numeric", month: "long", year: "numeric",
   });
 
@@ -159,7 +160,6 @@ export default function BudgetHeader({ config, onReset }: Props) {
         transition={{ duration: 0.5 }}
         className="mb-6"
       >
-        {/* Main header card */}
         <div className={`relative rounded-3xl border overflow-hidden
           ${countdown.expired
             ? "border-orange-500/20 bg-orange-500/[0.04]"
@@ -186,13 +186,13 @@ export default function BudgetHeader({ config, onReset }: Props) {
                     <Lock size={12} className="text-slate-400" />
                   </div>
                   <span className="text-[9px] font-black uppercase tracking-[0.25em] text-slate-600">
-                    Budget verrouillé · {periodeLabel}
+                    {t?.budgetHeader?.locked} · {periodeLabel}
                   </span>
                 </div>
 
                 <div className="flex items-end gap-3 mb-3">
                   <p className="text-4xl font-black text-white font-mono tracking-tight">
-                    {config.montant.toLocaleString()}
+                    {montantRestant.toLocaleString()}
                   </p>
                   <p className="text-lg font-black text-slate-500 mb-1 font-mono">Ar</p>
                 </div>
@@ -202,14 +202,16 @@ export default function BudgetHeader({ config, onReset }: Props) {
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full
                       bg-orange-500/10 border border-orange-500/20">
                       <CheckCircle size={11} className="text-orange-400" />
-                      <span className="text-[10px] font-black text-orange-300">Cycle terminé !</span>
+                      <span className="text-[10px] font-black text-orange-300">
+                        {t?.budgetHeader?.cycleOver}
+                      </span>
                     </div>
                   ) : (
                     <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full
                       bg-emerald-500/10 border border-emerald-500/20">
                       <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
                       <span className="text-[10px] font-black text-emerald-300">
-                        Fin le {dateFin}
+                        {t?.budgetHeader?.endsOn?.replace("{date}", dateFin)}
                       </span>
                     </div>
                   )}
@@ -226,24 +228,26 @@ export default function BudgetHeader({ config, onReset }: Props) {
                       bg-orange-500/10 border border-orange-500/20"
                   >
                     <Flame size={18} className="text-orange-400" />
-                    <span className="text-orange-300 font-black text-sm">Cycle terminé</span>
+                    <span className="text-orange-300 font-black text-sm">
+                      {t?.budgetHeader?.cycleOver}
+                    </span>
                   </motion.div>
                 ) : (
                   <>
                     <div className="flex items-center gap-2">
-                      <Digit value={countdown.days} label="Jours" />
+                      <Digit value={countdown.days}  label={t?.budgetHeader?.countdown?.days} />
                       <span className="text-slate-600 font-black text-xl mb-5">:</span>
-                      <Digit value={countdown.hours} label="Heures" />
+                      <Digit value={countdown.hours} label={t?.budgetHeader?.countdown?.hours} />
                       <span className="text-slate-600 font-black text-xl mb-5">:</span>
-                      <Digit value={countdown.mins} label="Mins" />
+                      <Digit value={countdown.mins}  label={t?.budgetHeader?.countdown?.mins} />
                       <span className="text-slate-600 font-black text-xl mb-5">:</span>
-                      <Digit value={countdown.secs} label="Secs" />
+                      <Digit value={countdown.secs}  label={t?.budgetHeader?.countdown?.secs} />
                     </div>
                     <div className="flex items-center gap-1.5">
                       <Clock size={10} className={urgency ? "text-red-400" : "text-slate-600"} />
                       <span className={`text-[9px] font-bold uppercase tracking-widest
                         ${urgency ? "text-red-400" : "text-slate-600"}`}>
-                        {urgency ? "Dernières heures !" : "Temps restant"}
+                        {urgency ? t?.budgetHeader?.urgency : t?.budgetHeader?.timeLeft}
                       </span>
                     </div>
                   </>
@@ -261,12 +265,12 @@ export default function BudgetHeader({ config, onReset }: Props) {
                     transition-all duration-200 group"
                 >
                   <RotateCcw size={13} className="group-hover:rotate-[-180deg] transition-transform duration-500" />
-                  <span>Nouveau cycle</span>
+                  <span>{t?.budgetHeader?.newCycle}</span>
                 </button>
               </div>
             </div>
 
-            {/* Progress bar time */}
+            {/* Progress bar */}
             {!countdown.expired && (
               <div className="mt-5">
                 <div className="h-1 w-full rounded-full bg-white/5 overflow-hidden">
@@ -284,7 +288,7 @@ export default function BudgetHeader({ config, onReset }: Props) {
                   />
                 </div>
                 <p className="text-right text-[9px] font-mono text-slate-600 mt-1">
-                  {Math.round(countdown.pct)}% du temps restant
+                  {t?.budgetHeader?.pctLeft?.replace("{pct}", Math.round(countdown.pct))}
                 </p>
               </div>
             )}

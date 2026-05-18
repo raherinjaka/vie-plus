@@ -1,49 +1,42 @@
 "use client";
 
 import MenuButton from "./MenuButton";
-import Link from 'next/link';
-
-import './CreativeText.css'; 
+import './CreativeText.css';
 
 export default function Navbar() {
-  const navLinks = [
-    { name: "Tableau de bord", href: "/dashboard" },
-    { name: "Mon Argent", href: "/dashboard/budget" },
-    { name: "Mes Tâches", href: "/dashboard/tasks" },
-    { name: "Objectifs", href: "/dashboard/goals" },
-    { name: "À propos", href: "/dashboard/about" },
-  ];
-
-
   return (
     <nav className="fixed top-0 w-full z-50 flex justify-between items-center py-5 px-10 bg-black/80 backdrop-blur-md border-b border-white/10 text-white">
-      
-      {/* GAUCHE : Logo */}
-      <div className="reveal-left flex items-center gap-2 group cursor-pointer" style={{ animationDelay: '0.1s' }}>
-        <span className="text-xl uppercase font-mono font-bold tracking-tighter">
-          VIE<span className="text-red-600">.</span>PLUS
-        </span>
-      </div>
 
-      {/* CENTRE : Liens (Navigation) */}
-      <div className="hidden md:flex gap-10 items-center">
-        {navLinks.map((link, index) => (
-          <Link 
-            key={link.name} 
-            href={link.href} 
-            className="reveal-top relative text-sm font-medium text-gray-400 hover:text-white transition-colors duration-300 group"
-            style={{ animationDelay: `${0.2 + index * 0.15}s` }}
+      {/* LOGO — Variation B */}
+      <div className="flex items-center cursor-pointer select-none">
+        <svg width="140" height="36" viewBox="0 0 140 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* VIE en italique serif */}
+          <text
+            x="0" y="28"
+            fontFamily="Georgia, 'Times New Roman', serif"
+            fontSize="28"
+            fontWeight="700"
+            fontStyle="italic"
+            fill="white"
+            letterSpacing="-1"
           >
-            {link.name}
-            {/* Barre rouge au survol */}
-            <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-red-600 transition-all duration-300 group-hover:w-full"></span>
-          </Link>
-        ))}
+            VIE
+          </text>
+
+          {/* Séparateur discret */}
+          <line x1="82" y1="4" x2="82" y2="32" stroke="#ffffff18" strokeWidth="1"/>
+
+          {/* Cercle cyan */}
+          <circle cx="104" cy="18" r="14" stroke="#00E5FF" strokeWidth="1.5"/>
+
+          {/* Croix + à l'intérieur */}
+          <line x1="104" y1="10" x2="104" y2="26" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round"/>
+          <line x1="96"  y1="18" x2="112" y2="18" stroke="#00E5FF" strokeWidth="2.5" strokeLinecap="round"/>
+        </svg>
       </div>
 
-      <div className="flex items-center gap-4">
-        <MenuButton />
-      </div>
+      {/* MENU */}
+      <MenuButton />
 
     </nav>
   );

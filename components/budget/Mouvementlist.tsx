@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, Trash2, AlertTriangle, Filter, ArrowUpDown, Wallet } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface Mouvement {
@@ -15,7 +16,7 @@ export interface Mouvement {
   created_at: string;
 }
 
-type SortKey   = "date" | "montant" | "nom";
+type SortKey    = "date" | "montant" | "nom";
 type FilterType = "all" | "ajout" | "depense";
 
 interface Props {
@@ -25,13 +26,13 @@ interface Props {
 }
 
 // ─── Categories meta ──────────────────────────────────────────────────────────
-const CAT_META: Record<string, { icon: string; label: string; color: string; bg: string; border: string }> = {
-  general:      { icon: "⚡", label: "Général",      color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/20"  },
-  alimentation: { icon: "🍱", label: "Alimentation", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/20" },
-  transport:    { icon: "🚗", label: "Transport",    color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/20"   },
-  loisirs:      { icon: "🎮", label: "Loisirs",      color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/20" },
-  sante:        { icon: "💊", label: "Santé",        color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/20"},
-  education:    { icon: "📚", label: "Éducation",    color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/20"   },
+const CAT_META: Record<string, { icon: string; labelKey: string; color: string; bg: string; border: string }> = {
+  general:      { icon: "⚡", labelKey: "general",      color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/20"  },
+  alimentation: { icon: "🍱", labelKey: "alimentation", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/20" },
+  transport:    { icon: "🚗", labelKey: "transport",    color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/20"   },
+  loisirs:      { icon: "🎮", labelKey: "loisirs",      color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/20" },
+  sante:        { icon: "💊", labelKey: "sante",        color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/20"},
+  education:    { icon: "📚", labelKey: "education",    color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/20"   },
 };
 const getCat = (id: string) => CAT_META[id] ?? CAT_META["general"];
 
@@ -56,6 +57,8 @@ function Skeleton() {
 function ConfirmModal({ name, onConfirm, onCancel }: {
   name: string; onConfirm: () => void; onCancel: () => void;
 }) {
+  const { t } = useLanguage() as any;
+
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
@@ -77,21 +80,25 @@ function ConfirmModal({ name, onConfirm, onCancel }: {
             <AlertTriangle size={18} className="text-red-400" />
           </div>
           <div>
-            <p className="text-white font-black">Supprimer cette opération ?</p>
+            <p className="text-white font-black">
+              {t?.mouvementList?.confirmModal?.title}
+            </p>
             <p className="text-slate-500 text-sm mt-0.5 font-mono">« {name} »</p>
-            <p className="text-slate-700 text-xs mt-1">Action irréversible.</p>
+            <p className="text-slate-700 text-xs mt-1">
+              {t?.mouvementList?.confirmModal?.warning}
+            </p>
           </div>
         </div>
         <div className="flex gap-3">
           <button onClick={onCancel}
             className="flex-1 py-3 rounded-2xl bg-white/5 hover:bg-white/10
               text-slate-300 text-sm font-bold transition-all">
-            Annuler
+            {t?.mouvementList?.confirmModal?.cancel}
           </button>
           <button onClick={onConfirm}
             className="flex-1 py-3 rounded-2xl bg-red-500/15 hover:bg-red-500/25
               border border-red-500/20 text-red-400 text-sm font-black transition-all">
-            Supprimer
+            {t?.mouvementList?.confirmModal?.confirm}
           </button>
         </div>
       </motion.div>
@@ -101,6 +108,8 @@ function ConfirmModal({ name, onConfirm, onCancel }: {
 
 // ─── MouvementList ────────────────────────────────────────────────────────────
 export default function MouvementList({ mouvements, onDelete, loading }: Props) {
+  const { t } = useLanguage() as any;
+
   const [sortKey,    setSortKey]    = useState<SortKey>("date");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [filterCat,  setFilterCat]  = useState("all");
@@ -108,7 +117,9 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
   const [confirmDel, setConfirmDel] = useState<{ id: string; name: string } | null>(null);
   const [deleting,   setDeleting]   = useState<string | null>(null);
 
-  // ── Filter + sort ────────────────────────────────────────────────────────────
+  const locale = t?.meta?.locale ?? "fr-FR";
+
+  // ── Filter + sort ─────────────────────────────────────────────────────────────
   const filtered = mouvements
     .filter((m) => filterType === "all" || m.type === filterType)
     .filter((m) => filterCat  === "all" || m.categorie === filterCat)
@@ -126,7 +137,11 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
     setConfirmDel(null);
   };
 
-  const sortLabel = sortKey === "date" ? "Date" : sortKey === "montant" ? "Montant" : "Nom";
+  const sortLabel = sortKey === "date"
+    ? t?.mouvementList?.sort?.date
+    : sortKey === "montant"
+      ? t?.mouvementList?.sort?.amount
+      : t?.mouvementList?.sort?.name;
 
   return (
     <>
@@ -148,7 +163,9 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
         {/* List header */}
         <div className="flex items-center justify-between mb-3">
           <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
-            Historique · {filtered.length} opération{filtered.length > 1 ? "s" : ""}
+            {t?.mouvementList?.historyLabel
+              ?.replace("{n}", filtered.length)
+              ?.replace("{s}", filtered.length > 1 ? "s" : "")}
           </span>
 
           <div className="flex items-center gap-2">
@@ -177,7 +194,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                 }`}
             >
               <Filter size={11} />
-              Filtres
+              {t?.mouvementList?.filterBtn}
               {(filterType !== "all" || filterCat !== "all") && (
                 <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" />
               )}
@@ -197,17 +214,21 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
               <div className="p-4 rounded-2xl bg-white/[0.02] border border-white/[0.07] space-y-3">
                 {/* Type filter */}
                 <div className="flex gap-2">
-                  {(["all", "depense", "ajout"] as FilterType[]).map((t) => (
-                    <button key={t} onClick={() => setFilterType(t)}
+                  {(["all", "depense", "ajout"] as FilterType[]).map((f) => (
+                    <button key={f} onClick={() => setFilterType(f)}
                       className={`px-3 py-1.5 rounded-xl text-xs font-bold border transition-all
-                        ${filterType === t
-                          ? t === "all"     ? "bg-white/10 border-white/20 text-white"
-                          : t === "depense" ? "bg-red-500/15 border-red-500/25 text-red-400"
+                        ${filterType === f
+                          ? f === "all"     ? "bg-white/10 border-white/20 text-white"
+                          : f === "depense" ? "bg-red-500/15 border-red-500/25 text-red-400"
                           :                   "bg-emerald-500/15 border-emerald-500/25 text-emerald-400"
                           : "bg-white/[0.03] border-white/[0.07] text-slate-500 hover:text-slate-300"
                         }`}
                     >
-                      {t === "all" ? "Tous" : t === "depense" ? "Dépenses" : "Ajouts"}
+                      {f === "all"
+                        ? t?.mouvementList?.filter?.all
+                        : f === "depense"
+                          ? t?.mouvementList?.filter?.expenses
+                          : t?.mouvementList?.filter?.incomes}
                     </button>
                   ))}
                 </div>
@@ -221,7 +242,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                         : "bg-white/[0.03] border-white/[0.07] text-slate-500 hover:text-slate-300"
                       }`}
                   >
-                    Toutes
+                    {t?.mouvementList?.filter?.allCats}
                   </button>
                   {Object.entries(CAT_META).map(([id, c]) => (
                     <button key={id} onClick={() => setFilterCat(id)}
@@ -232,7 +253,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                         }`}
                     >
                       <span>{c.icon}</span>
-                      <span>{c.label}</span>
+                      <span>{t?.mouvementForm?.categories?.[c.labelKey]}</span>
                     </button>
                   ))}
                 </div>
@@ -256,11 +277,13 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
               flex items-center justify-center mb-4">
               <Wallet size={24} className="text-slate-700" />
             </div>
-            <p className="text-slate-500 font-bold">Aucune opération</p>
+            <p className="text-slate-500 font-bold">
+              {t?.mouvementList?.empty?.title}
+            </p>
             <p className="text-slate-700 text-xs mt-1">
               {filterType !== "all" || filterCat !== "all"
-                ? "Essaie de changer les filtres."
-                : "Commence par enregistrer ta première opération !"}
+                ? t?.mouvementList?.empty?.filtered
+                : t?.mouvementList?.empty?.default}
             </p>
           </motion.div>
         )}
@@ -286,7 +309,6 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                     }`}
                 >
                   <div className="flex items-center gap-3.5">
-                    {/* Type icon */}
                     <div className={`w-10 h-10 rounded-2xl flex items-center justify-center flex-shrink-0
                       border ${m.type === "depense"
                         ? "bg-red-500/10 text-red-400 border-red-500/15"
@@ -302,16 +324,15 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                     <div>
                       <div className="flex items-center gap-2">
                         <p className="text-white text-sm font-bold leading-none">{m.nom}</p>
-                        {/* Cat badge */}
                         <span className={`hidden sm:inline-flex items-center gap-1
                           px-1.5 py-0.5 rounded-md text-[9px] font-black
                           ${cat.bg} ${cat.color} border ${cat.border}`}
                         >
-                          {cat.icon} {cat.label}
+                          {cat.icon} {t?.mouvementForm?.categories?.[cat.labelKey]}
                         </span>
                       </div>
                       <p className="text-slate-600 text-[10px] font-mono mt-1 uppercase tracking-wide">
-                        {new Date(m.created_at).toLocaleDateString("fr-FR", {
+                        {new Date(m.created_at).toLocaleDateString(locale, {
                           day: "2-digit", month: "short", year: "numeric",
                           hour: "2-digit", minute: "2-digit",
                         })}

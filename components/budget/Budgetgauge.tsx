@@ -3,13 +3,14 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Sparkles, TrendingDown } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface Props {
-  montantTotal: number;  // budget fixe + ajouts
+  montantTotal: number;
   montantDepense: number;
   montantRestant: number;
-  pct: number; // % restant (0-100)
+  pct: number;
 }
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
@@ -34,29 +35,31 @@ function AnimCount({ value, suffix = "Ar" }: { value: number; suffix?: string })
 
 // ─── BudgetGauge ──────────────────────────────────────────────────────────────
 export default function BudgetGauge({ montantTotal, montantDepense, montantRestant, pct }: Props) {
+  const { t } = useLanguage() as any;
+
   const r       = 56;
   const circ    = 2 * Math.PI * r;
   const offset  = circ - Math.max(0, Math.min(100, pct)) / 100 * circ;
-  const isEmpty = pct <= 0;
+  const isEmpty   = pct <= 0;
   const isDanger  = pct < 20;
   const isWarning = pct < 50;
 
-  const strokeColor = isEmpty   ? "#a78bfa"
+  const strokeColor = isEmpty  ? "#a78bfa"
     : isDanger   ? "#f87171"
     : isWarning  ? "#fb923c"
     : "#22d3ee";
 
-  const glowColor = isEmpty   ? "rgba(167,139,250,0.6)"
+  const glowColor = isEmpty  ? "rgba(167,139,250,0.6)"
     : isDanger   ? "rgba(248,113,113,0.6)"
     : isWarning  ? "rgba(251,146,60,0.5)"
     : "rgba(34,211,238,0.5)";
 
-  const textColor = isEmpty   ? "text-violet-300"
+  const textColor = isEmpty  ? "text-violet-300"
     : isDanger   ? "text-red-300"
     : isWarning  ? "text-orange-300"
     : "text-cyan-300";
 
-  const bgColor = isEmpty   ? "bg-violet-500/5 border-violet-500/15"
+  const bgColor = isEmpty  ? "bg-violet-500/5 border-violet-500/15"
     : isDanger   ? "bg-red-500/5 border-red-500/15"
     : isWarning  ? "bg-orange-500/5 border-orange-500/15"
     : "bg-cyan-500/5 border-cyan-500/10";
@@ -71,19 +74,14 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
     >
       {/* SVG Ring */}
       <div className="relative flex items-center justify-center w-40 h-40 flex-shrink-0">
-        {/* Outer glow */}
         <div className="absolute inset-0 rounded-full opacity-20 blur-xl"
           style={{ backgroundColor: strokeColor }} />
 
         <svg className="w-40 h-40 -rotate-90 absolute" viewBox="0 0 136 136">
-          {/* Background track */}
           <circle cx="68" cy="68" r={r} fill="none"
             stroke="#1e293b" strokeWidth="10" />
-          {/* Secondary softer track */}
           <circle cx="68" cy="68" r={r} fill="none"
-            stroke={strokeColor} strokeWidth="10"
-            opacity="0.08" />
-          {/* Progress arc */}
+            stroke={strokeColor} strokeWidth="10" opacity="0.08" />
           <motion.circle
             cx="68" cy="68" r={r}
             fill="none"
@@ -96,14 +94,9 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
             transition={{ duration: 1.2, ease: "easeOut" }}
             style={{ filter: `drop-shadow(0 0 8px ${glowColor}) drop-shadow(0 0 20px ${glowColor})` }}
           />
-          {/* Dot at the end */}
           {pct > 2 && (
-            <circle
-              cx="68" cy={68 - r}
-              r="5"
-              fill={strokeColor}
-              style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }}
-            />
+            <circle cx="68" cy={68 - r} r="5" fill={strokeColor}
+              style={{ filter: `drop-shadow(0 0 6px ${glowColor})` }} />
           )}
         </svg>
 
@@ -124,7 +117,7 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
             {Math.round(pct)}%
           </span>
           <span className="text-[9px] font-black uppercase tracking-widest text-slate-600 mt-0.5">
-            restant
+            {t?.budgetGauge?.remaining}
           </span>
         </div>
       </div>
@@ -132,11 +125,11 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
       {/* Right: breakdown */}
       <div className="flex-1 w-full space-y-4">
 
-        {/* Total bar */}
+        {/* Solde restant bar */}
         <div>
           <div className="flex justify-between items-center mb-1.5">
             <span className="text-[9px] font-black uppercase tracking-widest text-slate-600">
-              Solde restant
+              {t?.budgetGauge?.balanceLeft}
             </span>
             <span className={`text-sm font-black font-mono ${textColor}`}>
               <AnimCount value={montantRestant} />
@@ -157,7 +150,7 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
         <div className="grid grid-cols-2 gap-3">
           <div className="p-3 rounded-2xl bg-white/[0.025] border border-white/[0.06]">
             <p className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-1">
-              Budget total
+              {t?.budgetGauge?.totalBudget}
             </p>
             <p className="text-sm font-black text-white font-mono">
               <AnimCount value={montantTotal} />
@@ -165,7 +158,7 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
           </div>
           <div className="p-3 rounded-2xl bg-red-500/[0.05] border border-red-500/10">
             <p className="text-[9px] font-black uppercase tracking-widest text-red-400/60 mb-1">
-              Dépensé
+              {t?.budgetGauge?.spent}
             </p>
             <p className="text-sm font-black text-red-400 font-mono">
               -<AnimCount value={montantDepense} />
@@ -182,9 +175,7 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
           >
             <Flame size={13} className="text-red-400 flex-shrink-0 animate-pulse" />
             <p className="text-[11px] font-bold text-red-300">
-              {isEmpty
-                ? "Budget épuisé ! Il est temps de faire un bilan."
-                : "Attention, il te reste moins de 20% de ton budget !"}
+              {t?.budgetGauge?.alertDanger}
             </p>
           </motion.div>
         )}
@@ -197,7 +188,7 @@ export default function BudgetGauge({ montantTotal, montantDepense, montantResta
           >
             <Flame size={13} className="text-violet-400 flex-shrink-0" />
             <p className="text-[11px] font-bold text-violet-300">
-              Budget épuisé ! Lance un nouveau cycle pour continuer.
+              {t?.budgetGauge?.alertEmpty}
             </p>
           </motion.div>
         )}

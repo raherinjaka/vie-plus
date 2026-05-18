@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, X, Check } from "lucide-react";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type MvtType = "ajout" | "depense";
@@ -20,16 +21,18 @@ interface Props {
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: "general",      label: "Général",      icon: "⚡", color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
-  { id: "alimentation", label: "Alimentation", icon: "🍱", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
-  { id: "transport",    label: "Transport",    icon: "🚗", color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
-  { id: "loisirs",      label: "Loisirs",      icon: "🎮", color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
-  { id: "sante",        label: "Santé",        icon: "💊", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
-  { id: "education",    label: "Éducation",    icon: "📚", color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
+  { id: "general",      labelKey: "general",      icon: "⚡", color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
+  { id: "alimentation", labelKey: "alimentation", icon: "🍱", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
+  { id: "transport",    labelKey: "transport",    icon: "🚗", color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
+  { id: "loisirs",      labelKey: "loisirs",      icon: "🎮", color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
+  { id: "sante",        labelKey: "sante",        icon: "💊", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
+  { id: "education",    labelKey: "education",    icon: "📚", color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
 ];
 
 // ─── MouvementForm ────────────────────────────────────────────────────────────
 export default function MouvementForm({ onAdd }: Props) {
+  const { t } = useLanguage() as any;
+
   const [open, setOpen]       = useState(false);
   const [type, setType]       = useState<MvtType>("depense");
   const [nom, setNom]         = useState("");
@@ -37,7 +40,7 @@ export default function MouvementForm({ onAdd }: Props) {
   const [catId, setCatId]     = useState("general");
   const [loading, setLoading] = useState(false);
 
-  const isValid = nom.trim().length > 0 && Number(montant) > 0;
+  const isValid   = nom.trim().length > 0 && Number(montant) > 0;
   const isDepense = type === "depense";
 
   const handleSubmit = async () => {
@@ -72,7 +75,7 @@ export default function MouvementForm({ onAdd }: Props) {
                 transition-all duration-200 active:scale-[0.98] group"
             >
               <MinusCircle size={18} className="group-hover:scale-110 transition-transform" />
-              Nouvelle dépense
+              {t?.mouvementForm?.btnExpense}
             </button>
             <button
               onClick={() => { setType("ajout"); setOpen(true); }}
@@ -82,7 +85,7 @@ export default function MouvementForm({ onAdd }: Props) {
                 transition-all duration-200 active:scale-[0.98] group"
             >
               <PlusCircle size={18} className="group-hover:scale-110 transition-transform" />
-              Ajouter de l&apos;argent
+              {t?.mouvementForm?.btnIncome}
             </button>
           </motion.div>
         ) : (
@@ -103,7 +106,6 @@ export default function MouvementForm({ onAdd }: Props) {
             <div className={`flex items-center justify-between px-6 py-4 border-b
               ${isDepense ? "border-red-500/10" : "border-emerald-500/10"}`}
             >
-              {/* Type switcher */}
               <div className="flex gap-2">
                 <button
                   onClick={() => setType("depense")}
@@ -114,7 +116,7 @@ export default function MouvementForm({ onAdd }: Props) {
                     }`}
                 >
                   <MinusCircle size={12} />
-                  Dépense
+                  {t?.mouvementForm?.typeExpense}
                 </button>
                 <button
                   onClick={() => setType("ajout")}
@@ -125,7 +127,7 @@ export default function MouvementForm({ onAdd }: Props) {
                     }`}
                 >
                   <PlusCircle size={12} />
-                  Ajout
+                  {t?.mouvementForm?.typeIncome}
                 </button>
               </div>
 
@@ -144,13 +146,15 @@ export default function MouvementForm({ onAdd }: Props) {
               {/* Name input */}
               <div>
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-2 block">
-                  Nom de l&apos;opération
+                  {t?.mouvementForm?.nameLabel}
                 </label>
                 <input
                   type="text"
                   value={nom}
                   onChange={(e) => setNom(e.target.value)}
-                  placeholder={isDepense ? "Ex: Cantine, Transport…" : "Ex: Argent de poche…"}
+                  placeholder={isDepense
+                    ? t?.mouvementForm?.namePlaceholderExpense
+                    : t?.mouvementForm?.namePlaceholderIncome}
                   autoFocus
                   className={`w-full bg-transparent border-b pb-2 outline-none
                     text-white font-bold text-base placeholder:text-slate-700
@@ -165,7 +169,7 @@ export default function MouvementForm({ onAdd }: Props) {
               {/* Amount input */}
               <div>
                 <label className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-2 block">
-                  Montant
+                  {t?.mouvementForm?.amountLabel}
                 </label>
                 <div className="flex items-center gap-3">
                   <input
@@ -184,11 +188,11 @@ export default function MouvementForm({ onAdd }: Props) {
                 </div>
               </div>
 
-              {/* Category picker — only for depenses */}
+              {/* Category picker */}
               {isDepense && (
                 <div>
                   <label className="text-[9px] font-black uppercase tracking-widest text-slate-600 mb-2 block">
-                    Catégorie
+                    {t?.mouvementForm?.categoryLabel}
                   </label>
                   <div className="flex flex-wrap gap-2">
                     {CATEGORIES.map((c) => (
@@ -203,7 +207,7 @@ export default function MouvementForm({ onAdd }: Props) {
                           }`}
                       >
                         <span>{c.icon}</span>
-                        <span>{c.label}</span>
+                        <span>{t?.mouvementForm?.categories?.[c.labelKey]}</span>
                       </button>
                     ))}
                   </div>
@@ -231,7 +235,11 @@ export default function MouvementForm({ onAdd }: Props) {
                 ) : (
                   <Check size={16} />
                 )}
-                {loading ? "Enregistrement…" : isDepense ? "Enregistrer la dépense" : "Confirmer l'ajout"}
+                {loading
+                  ? t?.mouvementForm?.saving
+                  : isDepense
+                    ? t?.mouvementForm?.submitExpense
+                    : t?.mouvementForm?.submitIncome}
               </button>
             </div>
           </motion.div>

@@ -152,33 +152,12 @@ export default function Login() {
           {/* Séparateur */}
           <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-white/30 uppercase tracking-widest">ou</span>
+            <span className="text-xs text-white/30 uppercase tracking-widest"></span>
             <div className="flex-1 h-px bg-white/10" />
           </div>
           
           {/* ── FORMULAIRE CLASSIQUE ── */}
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">
-            <div className="space-y-2">
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-cyan-500/50 transition-all"
-                required
-              />
-            </div>
-            <div className="space-y-2">
-              <input
-                type="password"
-                placeholder="Mot de passe"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 rounded-2xl p-4 text-white outline-none focus:border-cyan-500/50 transition-all"
-                required
-              />
-            </div>
-            
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">         
             <button
               type="submit"
               disabled={isLoading}
@@ -186,7 +165,7 @@ export default function Login() {
             >
               {isLoading ? <Loader2 className="animate-spin" /> : "Se connecter"}
             </button>
-          </form>
+          </form><br />
           <p className="text-sm text-white/40 text-center">
             Pas encore de profil ?{" "}
             <Link href="/register" className="text-white hover:text-cyan-400 font-semibold transition-colors underline underline-offset-4">
