@@ -8,6 +8,7 @@ import { X } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import NavDrawer from "@/components/NavDrawer";
 import MobileNav from "@/components/MobileNav";
+
 import { useLanguage } from "@/context/LanguageContext";
 import ExportPDF from "@/components/budget/ExportPDF";
 

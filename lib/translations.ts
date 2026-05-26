@@ -481,6 +481,128 @@ export const translations = {
       },
     },
 
+    // tachePage ******************************************
+    tachePage: {
+      pageTitle: "Tâches | Vie+",
+      loading:   "Vérification de la session...",
+    },
+    //board
+    board: {
+      emptyState: {
+        title:     "Aucun projet en cours",
+        subtitle:  "Créez votre premier tableau pour commencer à organiser vos tâches.",
+        createBtn: "Créer un tableau",
+        dialog: {
+          title:       "Nommer votre tableau",
+          subtitle:    "Choisissez un nom clair et mémorable.",
+          placeholder: "ex: Développement Vie+",
+          cancel:      "Annuler",
+          create:      "Créer",
+          creating:    "Création...",
+        },
+      },
+      header: {
+        renameTooltip: "Cliquer pour renommer",
+        progress:      "Progression globale",
+      },
+      shell: {
+        errorTitle: "Une erreur est survenue",
+        retry:      "Réessayer",
+      },
+    },
+
+    // card 
+    card: {
+      today: "Auj.",
+      addInput: {
+        placeholder: "Titre de la carte...",
+        submit:      "Ajouter la carte",
+        cancel:      "Annuler",
+      },
+    },
+    
+    // column ******************************************
+    column: {
+      addCard: "Ajouter une carte",
+      addColumnPlaceholder: "Nom de la liste...",
+      addColumnSubmit: "Ajouter",
+      createFirst: "Créer une liste",
+      addAnother: "Ajouter une autre liste",
+      menuRename: "Renommer",
+      menuDelete: "Supprimer la liste",
+    },
+    // taskModal ******************************************
+    taskModal: {
+      // AddBlockMenu
+      addBlockBtn: "Ajouter",
+      addBlockTitle: "Ajouter à la carte",
+      blockLabels: "Étiquettes",
+      blockLabelsDesc: "Classer par couleur",
+      blockChecklist: "Checklist",
+      blockChecklistDesc: "Sous-tâches à cocher",
+      blockDates: "Dates",
+      blockDatesDesc: "Date d'échéance",
+      // DescriptionBlock
+      descriptionTitle: "Description",
+      descriptionPlaceholder: "Ajouter une description plus détaillée...",
+      unsaved: "NON ENREGISTRÉ",
+      editBtn: "Modifier",
+      saveBtn: "Enregistrer",
+      cancelBtn: "Annuler",
+      // TaskModal
+      notFound: "Carte introuvable.",
+      closeBtn: "Fermer",
+      deleteCard: "Supprimer la carte",
+    },
+
+    // checklistBlock ******************************************
+    checklistBlock: {
+      defaultTitle: "Checklist",
+      newListPlaceholder: "Titre de la checklist...",
+      create: "Créer",
+      cancel: "Annuler",
+      addAnotherList: "+ Ajouter une autre checklist",
+      showAll: "Tout afficher",
+      hideChecked: "Masquer cochés",
+      deleteList: "Supprimer",
+      newItemPlaceholder: "Nouvel élément...",
+      addItem: "Ajouter",
+      addItemBtn: "+ Ajouter un élément",
+    },
+
+    // datesBlock ******************************************
+    datesBlock: {
+      title: "Date d'échéance",
+      hide: "Masquer",
+      clearTitle: "Supprimer la date",
+      saving: "Enregistrement...",
+      save: "Enregistrer la date",
+      status: {
+        overdue: "En retard",
+        today: "Aujourd'hui",
+        soon: "Bientôt",
+        ok: "Planifié",
+      },
+    },
+
+    // labelsBlock ******************************************
+    labelsBlock: {
+      title: "Étiquettes",
+      hide: "Masquer",
+      edit: "Modifier",
+      searchPlaceholder: "Rechercher une étiquette...",
+      loading: "Chargement...",
+      noResult: "Aucun résultat",
+      noLabels: "Aucune étiquette créée",
+      deleteLabel: "Supprimer ce label",
+      preview: "Aperçu de l'étiquette",
+      namePlaceholder: "Nom de l'étiquette",
+      creating: "Création...",
+      createAndAdd: "Créer et ajouter",
+      cancel: "Annuler",
+      createNew: "+ Créer une nouvelle étiquette",
+    },
+
     meta: {
       locale: "fr-FR",
     }
@@ -516,7 +638,7 @@ export const translations = {
       },
     },
 
-  //*************DashBoard An*********************************** */  
+    //*************DashBoard An*********************************** */  
     dashboard: {
       loading: "Analyzing data...",
       welcome: "Welcome back,",
@@ -962,10 +1084,133 @@ export const translations = {
         desc:         "Modern and reliable tools to ensure a smooth and secure experience.",
       },
     },
-    
+    // tachePage ******************************************
+    tachePage: {
+      pageTitle: "Tasks | Vie+",
+      loading:   "Checking session...",
+    },
+
+    // board
+    board: {
+      emptyState: {
+        title:     "No active project",
+        subtitle:  "Create your first board to start organizing your tasks.",
+        createBtn: "Create a board",
+        dialog: {
+          title:       "Name your board",
+          subtitle:    "Choose a clear and memorable name.",
+          placeholder: "e.g. Vie+ Development",
+          cancel:      "Cancel",
+          create:      "Create",
+          creating:    "Creating...",
+        },
+      },
+      header: {
+        renameTooltip: "Click to rename",
+        progress:      "Overall progress",
+      },
+      shell: {
+        errorTitle: "An error occurred",
+        retry:      "Retry",
+      },
+    },
+
+    // card
+    card: {
+      today: "Today",
+      addInput: {
+      placeholder:"Card title...",
+      submit:"Add card",
+      cancel:"Cancel",
+      },
+    },
+
+    // column
+    column: {
+      addCard: "Add a card",
+      addColumnPlaceholder: "List name...",
+      addColumnSubmit: "Add",
+      createFirst: "Create a list",
+      addAnother: "Add another list",
+      menuRename: "Rename",
+      menuDelete: "Delete list",
+    },
+
+    // taskModal ******************************************
+    taskModal: {
+      // AddBlockMenu
+      addBlockBtn: "Add",
+      addBlockTitle: "Add to card",
+      blockLabels: "Labels",
+      blockLabelsDesc: "Organize by color",
+      blockChecklist: "Checklist",
+      blockChecklistDesc: "Subtasks to check off",
+      blockDates: "Dates",
+      blockDatesDesc: "Due date",
+      // DescriptionBlock
+      descriptionTitle: "Description",
+      descriptionPlaceholder: "Add a more detailed description...",
+      unsaved: "UNSAVED",
+      editBtn: "Edit",
+      saveBtn: "Save",
+      cancelBtn: "Cancel",
+      // TaskModal
+      notFound: "Card not found.",
+      closeBtn: "Close",
+      deleteCard: "Delete card",
+    },
+
+    // checklistBlock ******************************************
+    checklistBlock: {
+      defaultTitle: "Checklist",
+      newListPlaceholder: "Checklist title...",
+      create: "Create",
+      cancel: "Cancel",
+      addAnotherList: "+ Add another checklist",
+      showAll: "Show all",
+      hideChecked: "Hide checked",
+      deleteList: "Delete",
+      newItemPlaceholder: "New item...",
+      addItem: "Add",
+      addItemBtn: "+ Add an item",
+    },
+
+    // datesBlock ******************************************
+    datesBlock: {
+      title: "Due date",
+      hide: "Hide",
+      clearTitle: "Remove date",
+      saving: "Saving...",
+      save: "Save date",
+      status: {
+        overdue: "Overdue",
+        today: "Today",
+        soon: "Soon",
+        ok: "Scheduled",
+      },
+    },
+
+    // labelsBlock ******************************************
+    labelsBlock: {
+      title: "Labels",
+      hide: "Hide",
+      edit: "Edit",
+      searchPlaceholder: "Search a label...",
+      loading: "Loading...",
+      noResult: "No results",
+      noLabels: "No labels created",
+      deleteLabel: "Delete this label",
+      preview: "Label preview",
+      namePlaceholder: "Label name",
+      creating: "Creating...",
+      createAndAdd: "Create and add",
+      cancel: "Cancel",
+      createNew: "+ Create a new label",
+    },
     meta: {
       locale: "en-US",
     }
+
   }
 };
 

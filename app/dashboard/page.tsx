@@ -180,7 +180,7 @@ export default function DashboardPage() {
       </div>
 
       {/* ── MAIN CONTENT ── */}
-      <main className="relative z-10 flex-1 w-full px-4 sm:px-6 lg:px-12 pt-[96px] lg:ml-72 pb-28 lg:pb-16">
+      <main className="relative z-10 flex-1 w-full px-4 sm:px-6 lg:px-12 pt-24 lg:ml-72 pb-28 lg:pb-16 h-full overflow-y-auto">
         <div className="max-w-7xl mx-auto space-y-5">
 
           {/* ── HEADER ── */}

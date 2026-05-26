@@ -1,8 +1,9 @@
-"use client"; // Obligatoire car on utilise le mode interactif
-
-import * as React from "react";
-import { ThemeProvider as NextThemesProvider } from "next-themes";
-
-export function ThemeProvider({ children, ...props }: any) {
-  return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
+"use client";
+import { ThemeProvider as NextThemes } from "next-themes";
+export default function ThemeProvider({ children }: { children: React.ReactNode }) {
+  return (
+    <NextThemes attribute="class" defaultTheme="dark" enableSystem={false}>
+      {children}
+    </NextThemes>
+  );
 }

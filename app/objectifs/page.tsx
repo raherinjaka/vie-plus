@@ -169,7 +169,7 @@ export default function ObjectifsPage() {
   if (loading) return (
     <div className="min-h-screen bg-slate-950 text-slate-100 overflow-x-hidden custom-scroll">
       <BgLayer />
-      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+      <div className="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-12">
         {/* Fake header */}
         <div className="mb-10 space-y-4 animate-pulse">
           <div className="h-12 w-56 rounded-2xl bg-slate-800" />
@@ -342,6 +342,7 @@ export default function ObjectifsPage() {
         t={t}
       />
       
+      <MobileNav />
       <style>{`
         @keyframes shimmer {
           0%   { background-position: 200% center; }

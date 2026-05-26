@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, RefObject } from "react";
 import { usePathname } from "next/navigation";
+import { useTheme } from "next-themes";
 import {
   LayoutDashboard, Wallet, ClipboardList, Target, Info,
   LogOut, Settings, Globe, ChevronRight, Sun, Moon,
@@ -230,7 +231,7 @@ function SettingsCascade({
 // ─── Main Sidebar ─────────────────────────────────────────────────────────────
 export default function Sidebar() {
   const { lang, setLang, t } = useLanguage();
-  const [theme, setTheme] = useState<string>("dark");
+  const { theme, setTheme } = useTheme();
   const [settingsOpen, setSettingsOpen] = useState(false);
   const settingsBtnRef = useRef<HTMLButtonElement>(null);
   const pathname   = usePathname();
@@ -263,11 +264,11 @@ export default function Sidebar() {
             onClick={() => setSettingsOpen(false)}
           />
           <SettingsCascade
+            theme={theme || "light"} // Ajout d'une valeur par défaut
             open={settingsOpen}
             onClose={() => setSettingsOpen(false)}
             lang={lang}
             setLang={setLang}
-            theme={theme}
             setTheme={setTheme}
             t={t}
             anchorRef={settingsBtnRef}
