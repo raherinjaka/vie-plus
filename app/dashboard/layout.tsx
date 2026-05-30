@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Navbar from "@/components/Navbar";
 
 export const metadata: Metadata = {
   title: "Vie+ | Dashboard",
@@ -22,7 +21,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <div className="absolute left-1/2 top-0 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[400px] bg-red-600/10 blur-[120px] rounded-full" />
       </div>
 
-      <Navbar />
+      
 
       {/* ✅ Pas de max-w, pas de px, pas de mx-auto — chaque page gère son propre layout */}
       <div className="relative z-10 w-full">

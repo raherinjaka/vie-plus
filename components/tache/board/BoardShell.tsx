@@ -18,10 +18,7 @@ export default function BoardShell() {
 
   if (error) {
     return (
-      <div className="flex flex-col h-screen overflow-hidden"
-          style={{
-            background: "radial-gradient(ellipse 80% 50% at 50% -10%, rgba(124,58,237,0.08) 0%, #0f0f13 60%)",
-          }}>
+      <div className="flex flex-col h-screen overflow-hidden">
         <div className="text-center space-y-3">
           <p className="text-red-400 font-medium">
             {t?.board?.shell?.errorTitle}
@@ -42,7 +39,7 @@ export default function BoardShell() {
   if (!hasBoard || !board) return <BoardEmptyState />;
 
   return (
-    <div className="flex flex-col h-screen bg-[#0f0f13] overflow-hidden">
+    <div className="flex flex-col h-screen bg-sky-600 dark:bg-slate-900 overflow-hidden transition-colors duration-300">
       <BoardHeader board={board} />
       <main className="flex-1 overflow-hidden">
         <ColumnList columns={board.columns} boardId={board.id} />

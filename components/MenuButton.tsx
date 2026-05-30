@@ -26,8 +26,8 @@ function SettingsCascade({
 }: {
   open: boolean;
   onClose: () => void;
-  lang: "fr" | "en";
-  setLang: (l: "fr" | "en") => void;
+  lang: "fr" | "en" | "de" | "es";
+  setLang: (l: "fr" | "en" | "de" | "es") => void;
   theme: string;
   setTheme: (v: string) => void;
   t: any;
@@ -121,6 +121,8 @@ function SettingsCascade({
                     {([
                       { key: "fr" as const, flag: "🇫🇷", label: "Français" },
                       { key: "en" as const, flag: "🇺🇸", label: "English"  },
+                      { key: "de" as const, flag: "🇩🇪", label: "Deutsch"  },
+                      { key: "es" as const, flag: "🇪🇸", label: "Español" },
                     ]).map(({ key, flag, label }) => (
                       <button key={key} onClick={() => { setLang(key); onClose(); }}
                         className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
@@ -147,8 +149,8 @@ function MobileSettingsPage({
 }: {
   open: boolean;
   onClose: () => void;
-  lang: "fr" | "en";
-  setLang: (l: "fr" | "en") => void;
+  lang: "fr" | "en" | "de" | "es";
+  setLang: (l: "fr" | "en" | "de" | "es") => void;
   theme: string;
   setTheme: (v: string) => void;
   t: any;
@@ -224,6 +226,8 @@ function MobileSettingsPage({
                   {([
                     { key: "fr" as const, flag: "🇫🇷", label: "Français" },
                     { key: "en" as const, flag: "🇺🇸", label: "English"  },
+                    { key: "de" as const, flag: "🇩🇪", label: "Deutsch"  },
+                    { key: "es" as const, flag: "🇪🇸", label: "Español"  },
                   ]).map(({ key, flag, label }) => (
                     <button key={key} onClick={() => { setLang(key); navigate("root"); }}
                       className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[15px] font-medium transition-all
@@ -250,8 +254,8 @@ function MobileFullScreen({
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
-  lang: "fr" | "en";
-  setLang: (l: "fr" | "en") => void;
+  lang: "fr" | "en" | "de" | "es";
+  setLang: (l: "fr" | "en" | "de" | "es") => void;
   theme: string;
   setTheme: (v: string) => void;
 }) {
@@ -341,8 +345,8 @@ function DesktopDropdown({
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
-  lang: "fr" | "en";
-  setLang: (l: "fr" | "en") => void;
+  lang: "fr" | "en" | "de" | "es";
+  setLang: (l: "fr" | "en" | "de" | "es") => void;
   theme: string;
   setTheme: (v: string) => void;
 }) {

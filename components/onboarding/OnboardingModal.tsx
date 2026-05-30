@@ -1,27 +1,28 @@
 "use client";
-
+// /onboarding/OnboardingModal.tsx
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import {
   Wallet, Target, CheckSquare, FileText,
-  ChevronRight, ChevronLeft, X, Sparkles,
+  ChevronRight, ChevronLeft, X, Sparkles, Globe,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Step {
-  id:          number;
-  icon:        React.ElementType;
-  titleKey:    string;
-  descKey:     string;
-  color:       string;
-  bg:          string;
-  border:      string;
-  glow:        string;
-  imagePath:   string; // ← remplace par ton screenshot plus tard
-  imageAlt:    string;
-  hasImage:    boolean; // ← passe à true quand tu as le screenshot
+  id:        number;
+  icon:      React.ElementType;
+  titleKey:  string;
+  descKey:   string;
+  color:     string;
+  bg:        string;
+  border:    string;
+  glow:      string;
+  imagePath: string;
+  imageAlt:  string;
+  hasImage:  boolean;
+  isLang?:   boolean; // ← true uniquement pour l'étape langue (cachée du compteur)
 }
 
 interface Props {
@@ -29,12 +30,23 @@ interface Props {
 }
 
 // ─── Steps config ─────────────────────────────────────────────────────────────
-// 🖼️ Pour ajouter un screenshot :
-//    1. Mets ton image dans public/onboarding/step-X.png
-//    2. Passe hasImage: true pour cette étape
-//    3. L'image s'affichera automatiquement dans le cadre téléphone
-
 const STEPS: Step[] = [
+  // ── Étape langue (pas numérotée, invisible dans le compteur) ──
+  {
+    id:        0,
+    icon:      Globe,
+    titleKey:  "",
+    descKey:   "",
+    color:     "text-cyan-300",
+    bg:        "bg-cyan-500/10",
+    border:    "border-cyan-500/25",
+    glow:      "rgba(34,211,238,0.2)",
+    imagePath: "",
+    imageAlt:  "",
+    hasImage:  false,
+    isLang:    true,
+  },
+  // ── Étapes normales 1-4 (inchangées) ──
   {
     id:        1,
     icon:      Wallet,
@@ -46,7 +58,7 @@ const STEPS: Step[] = [
     glow:      "rgba(34,211,238,0.2)",
     imagePath: "/onboarding/step-1.png",
     imageAlt:  "Page budget",
-    hasImage:  false, // ← passe à true quand tu as le screenshot
+    hasImage:  false,
   },
   {
     id:        2,
@@ -89,28 +101,181 @@ const STEPS: Step[] = [
   },
 ];
 
+// Étapes normales uniquement (pour le compteur et les progress dots)
+const NORMAL_STEPS = STEPS.filter((s) => !s.isLang);
+
+// ─── Language Picker ──────────────────────────────────────────────────────────
+function FlagFR({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="12" fill="#1a1f2e"/>
+      <rect x="3" y="6" width="6" height="12" rx="1" fill="#002395"/>
+      <rect x="9" y="6" width="6" height="12" fill="#EDEDED"/>
+      <rect x="15" y="6" width="6" height="12" rx="1" fill="#ED2939"/>
+    </svg>
+  );
+}
+
+function FlagUS({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="12" fill="#B22234"/>
+      <rect y="6.5"  width="24" height="1.7" fill="#EDEDED"/>
+      <rect y="9.9"  width="24" height="1.7" fill="#EDEDED"/>
+      <rect y="13.3" width="24" height="1.7" fill="#EDEDED"/>
+      <rect y="16.7" width="24" height="1.7" fill="#EDEDED"/>
+      <rect x="0" y="4" width="11" height="10" rx="1" fill="#3C3B6E"/>
+      {[0,1,2,3,4].map((row) =>
+        [0,1,2].map((col) => (col === 2 && row % 2 === 1) ? null : (
+          <circle
+            key={`${row}-${col}`}
+            cx={1.8 + col * 3.5 + (row % 2 === 1 ? 1.75 : 0)}
+            cy={5.5 + row * 1.8}
+            r="0.7"
+            fill="#EDEDED"
+          />
+        ))
+      )}
+    </svg>
+  );
+}
+
+function FlagDE({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="12" fill="#1a1f2e"/>
+      <rect x="0" y="4"  width="24" height="5.5" rx="1" fill="#000000"/>
+      <rect x="0" y="9.5" width="24" height="5"   fill="#DD0000"/>
+      <rect x="0" y="14.5" width="24" height="5.5" rx="1" fill="#FFCE00"/>
+    </svg>
+  );
+}
+
+function FlagES({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="12" fill="#AA151B"/>
+      <rect y="7" width="24" height="10" fill="#F1BF00"/>
+      <rect y="7" width="24" height="2.5" fill="#AA151B"/>
+      <rect y="14.5" width="24" height="2.5" fill="#AA151B"/>
+    </svg>
+  );
+}
+
+function LanguagePicker({
+  lang,
+  setLang,
+}: {
+  lang: string;
+  setLang: (l: "fr" | "en" | "de" | "es") => void; 
+}) {
+  const LANGS = [
+    { key: "fr" as const, Flag: FlagFR, label: "Français", sub: "Continuer en français", code: "FR" },
+    { key: "en" as const, Flag: FlagUS, label: "English",  sub: "Continue in English",   code: "US" },
+    { key: "de" as const, Flag: FlagDE, label: "Deutsch",  sub: "Auf Deutsch fortfahren", code: "DE" },
+    { key: "es" as const, Flag: FlagES, label: "Español",  sub: "Continuar en español",     code: "ES" },
+  ];
+
+  return (
+    <div className="flex flex-col gap-3 w-full mt-2">
+      {LANGS.map(({ key, Flag, label, sub, code }) => {
+        const isSelected = lang === key;
+        return (
+          <motion.button
+            key={key}
+            onClick={() => setLang(key)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              relative w-full flex items-center gap-4 px-5 py-4 rounded-2xl
+              border-2 transition-all duration-200 text-left overflow-hidden
+              ${isSelected
+                ? "border-cyan-500/70 bg-cyan-500/10 shadow-[0_0_20px_rgba(34,211,238,0.15)]"
+                : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15] hover:bg-white/[0.05]"
+              }
+            `}
+          >
+            {isSelected && (
+              <div
+                className="pointer-events-none absolute inset-0 rounded-2xl"
+                style={{
+                  background: "radial-gradient(ellipse at left center, rgba(34,211,238,0.08), transparent 70%)",
+                }}
+              />
+            )}
+
+            {/* Drapeau SVG */}
+            <div className={`
+              flex-shrink-0 w-11 h-11 rounded-xl flex items-center justify-center
+              border transition-all duration-200
+              ${isSelected
+                ? "border-cyan-500/30 bg-cyan-500/10"
+                : "border-white/[0.08] bg-white/[0.04]"
+              }
+            `}>
+              <Flag size={26} />
+            </div>
+
+            {/* Code + texte */}
+            <div className="flex-1 min-w-0">
+              <div className="flex items-center gap-2">
+                <span className={`text-[10px] font-black tracking-widest transition-colors
+                  ${isSelected ? "text-cyan-400/70" : "text-slate-600"}`}>
+                  {code}
+                </span>
+                <p className={`font-black text-base leading-tight transition-colors
+                  ${isSelected ? "text-cyan-300" : "text-slate-200"}`}>
+                  {label}
+                </p>
+              </div>
+              <p className={`text-xs mt-0.5 transition-colors
+                ${isSelected ? "text-cyan-400/50" : "text-slate-600"}`}>
+                {sub}
+              </p>
+            </div>
+
+            {/* Check */}
+            <div className={`
+              flex-shrink-0 w-5 h-5 rounded-full border-2 flex items-center justify-center
+              transition-all duration-200
+              ${isSelected ? "border-cyan-400 bg-cyan-400" : "border-white/20 bg-transparent"}
+            `}>
+              {isSelected && (
+                <motion.svg
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: "spring", stiffness: 400, damping: 20 }}
+                  viewBox="0 0 10 8" fill="none" className="w-2.5 h-2.5"
+                >
+                  <path d="M1 4l2.5 2.5L9 1" stroke="#0f172a" strokeWidth="1.8"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                </motion.svg>
+              )}
+            </div>
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Phone Frame ──────────────────────────────────────────────────────────────
-// Le cadre téléphone qui affiche soit le screenshot, soit un placeholder
 function PhoneFrame({ step }: { step: Step }) {
   const Icon = step.icon;
 
   return (
     <div className="relative flex-shrink-0 w-[140px] sm:w-[160px]">
-      {/* Cadre téléphone SVG */}
       <div
-        className="relative rounded-[28px] border-[3px] overflow-hidden
-          bg-slate-900 shadow-2xl"
+        className="relative rounded-[28px] border-[3px] overflow-hidden bg-slate-900 shadow-2xl"
         style={{
           borderColor: step.glow.replace("0.2", "0.5"),
           boxShadow: `0 0 30px ${step.glow}, 0 20px 40px rgba(0,0,0,0.5)`,
           aspectRatio: "9/19",
         }}
       >
-        {/* Encoche haut */}
         <div className="absolute top-2 left-1/2 -translate-x-1/2 z-10
           w-12 h-[5px] bg-slate-800 rounded-full" />
 
-        {/* Screenshot ou placeholder */}
         {step.hasImage ? (
           <Image
             src={step.imagePath}
@@ -120,51 +285,34 @@ function PhoneFrame({ step }: { step: Step }) {
             sizes="160px"
           />
         ) : (
-          /* Placeholder stylé en attendant le vrai screenshot */
           <div className={`absolute inset-0 flex flex-col items-center justify-center
             gap-3 ${step.bg} p-4`}>
-
-            {/* Barre de statut simulée */}
             <div className="absolute top-6 left-0 right-0 px-3 flex justify-between">
               <div className="h-1.5 w-8 rounded-full bg-white/10" />
               <div className="h-1.5 w-6 rounded-full bg-white/10" />
             </div>
-
-            {/* Icône centrale */}
             <div className={`w-12 h-12 rounded-2xl ${step.bg} border ${step.border}
               flex items-center justify-center`}
               style={{ boxShadow: `0 0 20px ${step.glow}` }}
             >
               <Icon size={22} className={step.color} />
             </div>
-
-            {/* Lignes simulant du contenu */}
             <div className="w-full space-y-1.5 px-1">
               {[80, 60, 90, 50, 70].map((w, i) => (
-                <div key={i}
-                  className="h-1.5 rounded-full bg-white/[0.08]"
-                  style={{ width: `${w}%` }}
-                />
+                <div key={i} className="h-1.5 rounded-full bg-white/[0.08]"
+                  style={{ width: `${w}%` }} />
               ))}
             </div>
-
-            {/* Badge "Screenshot à venir" */}
-            <div className={`mt-1 px-2 py-1 rounded-lg border ${step.border}
-              ${step.bg} text-center`}>
-              <p className={`text-[8px] font-bold ${step.color} opacity-60`}>
-                Screenshot
-              </p>
-              <p className={`text-[7px] ${step.color} opacity-40`}>
-                à venir
-              </p>
+            <div className={`mt-1 px-2 py-1 rounded-lg border ${step.border} ${step.bg} text-center`}>
+              <p className={`text-[8px] font-bold ${step.color} opacity-60`}>Screenshot</p>
+              <p className={`text-[7px] ${step.color} opacity-40`}>à venir</p>
             </div>
-
-            {/* Bottom nav simulée */}
-            <div className="absolute bottom-3 left-0 right-0 px-3
-              flex justify-around">
+            <div className="absolute bottom-3 left-0 right-0 px-3 flex justify-around">
               {[...Array(4)].map((_, i) => (
                 <div key={i}
-                  className={`h-1 rounded-full ${i === 0 ? step.color.replace("text-", "bg-") + " opacity-60" : "bg-white/10"}`}
+                  className={`h-1 rounded-full ${i === 0
+                    ? step.color.replace("text-", "bg-") + " opacity-60"
+                    : "bg-white/10"}`}
                   style={{ width: i === 0 ? "20px" : "12px" }}
                 />
               ))}
@@ -172,8 +320,6 @@ function PhoneFrame({ step }: { step: Step }) {
           </div>
         )}
       </div>
-
-      {/* Reflet sous le téléphone */}
       <div className="absolute -bottom-4 left-1/2 -translate-x-1/2
         w-3/4 h-4 rounded-full blur-md opacity-30"
         style={{ backgroundColor: step.glow.replace("0.2", "1") }}
@@ -182,23 +328,21 @@ function PhoneFrame({ step }: { step: Step }) {
   );
 }
 
-// ─── Progress dots ────────────────────────────────────────────────────────────
-function ProgressDots({ current, total, steps }: {
-  current: number; total: number; steps: Step[];
-}) {
+// ─── Progress dots (uniquement les étapes normales) ───────────────────────────
+function ProgressDots({ currentNormalIndex }: { currentNormalIndex: number }) {
   return (
     <div className="flex items-center gap-2">
-      {steps.map((step, i) => (
+      {NORMAL_STEPS.map((step, i) => (
         <motion.div
           key={i}
           animate={{
-            width:   i === current ? 20 : 6,
-            opacity: i <= current ? 1 : 0.3,
+            width:   i === currentNormalIndex ? 20 : 6,
+            opacity: i <= currentNormalIndex ? 1 : 0.3,
           }}
           transition={{ duration: 0.3 }}
           className="h-1.5 rounded-full"
           style={{
-            backgroundColor: i <= current
+            backgroundColor: i <= currentNormalIndex
               ? step.color.replace("text-", "#").replace("-300", "")
               : "#334155",
           }}
@@ -210,14 +354,19 @@ function ProgressDots({ current, total, steps }: {
 
 // ─── OnboardingModal ──────────────────────────────────────────────────────────
 export default function OnboardingModal({ onComplete }: Props) {
-  const { t } = useLanguage() as any;
+  const { t, lang, setLang } = useLanguage() as any;
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
 
-  const step      = STEPS[current];
-  const Icon      = step.icon;
-  const isFirst   = current === 0;
-  const isLast    = current === STEPS.length - 1;
+  const step    = STEPS[current];
+  const isLang  = !!step.isLang;
+  const isFirst = current === 0; // étape langue
+  const isLast  = current === STEPS.length - 1;
+
+  // Index dans les étapes normales (pour le compteur affiché)
+  const normalIndex     = isLang ? -1 : current - 1;          // -1 = étape langue
+  const normalTotal     = NORMAL_STEPS.length;                 // 4
+  const displayedStep   = isLang ? null : normalIndex + 1;     // 1, 2, 3, 4
 
   const goNext = () => {
     if (isLast) { onComplete(); return; }
@@ -233,21 +382,23 @@ export default function OnboardingModal({ onComplete }: Props) {
 
   const skip = () => onComplete();
 
-  // Clés de traduction avec fallback
-  const title = t?.onboarding?.steps?.[current]?.title
-    ?? ["Mon Budget", "Mes Objectifs", "Mes Tâches", "Export PDF"][current];
-  const desc = t?.onboarding?.steps?.[current]?.desc
+  // Titres/descriptions pour les étapes normales
+  const title = t?.onboarding?.steps?.[normalIndex]?.title
+    ?? ["Mon Budget", "Mes Objectifs", "Mes Tâches", "Export PDF"][normalIndex];
+  const desc = t?.onboarding?.steps?.[normalIndex]?.desc
     ?? [
       "Suis tes dépenses, configure ton budget et visualise ton évolution jour après jour.",
       "Crée tes objectifs personnels, suis ta progression et célèbre tes réussites.",
       "Organise tes tâches quotidiennes et reste productif chaque jour.",
       "Génère un relevé PDF complet de tes dépenses à partager avec tes parents.",
-    ][current];
+    ][normalIndex];
 
   return (
-    <div className="fixed inset-0 z-[9000] flex items-center justify-center px-4
-      bg-slate-950/80 backdrop-blur-md">
-
+    <div
+      className="fixed inset-0 z-[99999] flex items-center justify-center px-4
+        bg-slate-950/80 backdrop-blur-md"
+      onMouseDown={(e) => e.stopPropagation()}
+    >
       {/* Ambient glow */}
       <div className="pointer-events-none absolute inset-0 z-0">
         <motion.div
@@ -270,30 +421,38 @@ export default function OnboardingModal({ onComplete }: Props) {
         transition={{ type: "spring", stiffness: 260, damping: 26 }}
         className="relative w-full max-w-lg z-10"
       >
-        <div className={`relative rounded-3xl border ${step.border}
-          bg-slate-950/98 backdrop-blur-3xl shadow-2xl overflow-hidden`}
+        <div
+          className={`relative rounded-3xl border ${step.border}
+            bg-slate-950/98 backdrop-blur-3xl shadow-2xl overflow-hidden`}
           style={{ boxShadow: `0 0 60px ${step.glow}, 0 20px 60px rgba(0,0,0,0.6)` }}
         >
-          {/* Ligne colorée en haut */}
+          {/* Barre de progression */}
           <motion.div
             key={`bar-${current}`}
             className="absolute top-0 left-0 h-[2px] rounded-full"
-            style={{ backgroundColor: step.color.includes("cyan") ? "#22d3ee"
-              : step.color.includes("violet") ? "#a78bfa"
-              : step.color.includes("emerald") ? "#34d399"
-              : "#fb923c"
+            style={{
+              backgroundColor:
+                step.color.includes("cyan")    ? "#22d3ee" :
+                step.color.includes("violet")  ? "#a78bfa" :
+                step.color.includes("emerald") ? "#34d399" : "#fb923c",
             }}
             initial={{ width: "0%" }}
-            animate={{ width: `${((current + 1) / STEPS.length) * 100}%` }}
+            animate={{
+              width: isLang
+                ? "8%"  // petite barre sur l'étape langue
+                : `${((normalIndex + 1) / normalTotal) * 100}%`,
+            }}
             transition={{ duration: 0.5, ease: "easeOut" }}
           />
 
-          {/* Bouton skip (étape 1 uniquement) */}
-          {isFirst && (
-            <button onClick={skip}
+          {/* Bouton X (étape langue uniquement) */}
+          {isLang && (
+            <button
+              onClick={skip}
               className="absolute top-4 right-4 w-8 h-8 flex items-center justify-center
                 rounded-xl text-slate-600 hover:text-slate-300 hover:bg-white/5
-                transition-all z-10">
+                transition-all z-10"
+            >
               <X size={16} />
             </button>
           )}
@@ -301,78 +460,124 @@ export default function OnboardingModal({ onComplete }: Props) {
           {/* Contenu */}
           <div className="p-6 sm:p-8">
 
-            {/* Step indicator */}
-            <div className="flex items-center gap-2 mb-5">
-              <div className={`w-7 h-7 rounded-xl ${step.bg} border ${step.border}
-                flex items-center justify-center flex-shrink-0`}>
-                <Icon size={14} className={step.color} />
+            {/* ── Header : icône + compteur (masqué sur étape langue) ── */}
+            {!isLang && (
+              <div className="flex items-center gap-2 mb-5">
+                <div className={`w-7 h-7 rounded-xl ${step.bg} border ${step.border}
+                  flex items-center justify-center flex-shrink-0`}>
+                  <step.icon size={14} className={step.color} />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                  {t?.onboarding?.stepLabel ?? "Étape"} {displayedStep} / {normalTotal}
+                </span>
               </div>
-              <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
-                {t?.onboarding?.stepLabel ?? "Étape"} {current + 1} / {STEPS.length}
-              </span>
-            </div>
+            )}
 
-            {/* Layout : image + texte */}
-            <div className="flex items-center gap-6 sm:gap-8">
-
-              {/* Phone frame */}
+            {/* ══ ÉTAPE LANGUE ══ */}
+            {isLang && (
               <AnimatePresence mode="wait">
                 <motion.div
-                  key={`phone-${current}`}
-                  initial={{ opacity: 0, x: direction * 30, scale: 0.95 }}
-                  animate={{ opacity: 1, x: 0, scale: 1 }}
-                  exit={{ opacity: 0, x: -direction * 30, scale: 0.95 }}
-                  transition={{ duration: 0.3 }}
+                  key="lang-step"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-5"
                 >
-                  <PhoneFrame step={step} />
-                </motion.div>
-              </AnimatePresence>
+                  {/* Titre */}
+                  <div className="space-y-1.5 pr-8">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className={`w-7 h-7 rounded-xl ${step.bg} border ${step.border}
+                        flex items-center justify-center`}>
+                        <Globe size={14} className={step.color} />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                        {lang === "fr" ? "Bienvenue" : "Welcome"}
+                      </span>
+                    </div>
 
-              {/* Texte */}
-              <div className="flex-1 min-w-0">
-                <AnimatePresence mode="wait">
-                  <motion.div
-                    key={`text-${current}`}
-                    initial={{ opacity: 0, y: 12 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    exit={{ opacity: 0, y: -12 }}
-                    transition={{ duration: 0.25, delay: 0.05 }}
-                    className="space-y-3"
-                  >
-                    {/* Numéro stylé */}
-                    <span className={`text-5xl font-black font-mono ${step.color} opacity-20`}>
-                      0{current + 1}
-                    </span>
-
-                    {/* Titre */}
-                    <h2 className="text-xl font-black text-white leading-tight -mt-2">
-                      {title}
+                    <h2 className="text-xl font-black text-white leading-tight">
+                    {lang === "fr" ? "Choisis ta langue"
+                    : lang === "de" ? "Sprache wählen"
+                    : lang === "es" ? "Elige tu idioma"
+                    : "Choose your language"}
                     </h2>
 
-                    {/* Description */}
                     <p className="text-slate-400 text-sm leading-relaxed">
-                      {desc}
+                      {lang === "fr" ? "Sélectionne la langue dans laquelle tu veux utiliser l'application."
+                      : lang === "de" ? "Wähle die Sprache, in der du die App nutzen möchtest."
+                      : lang === "es" ? "Selecciona el idioma en el que quieres usar la aplicación."
+                      : "Select the language you want to use in the app."}
                     </p>
+                  </div>
+
+                  {/* Boutons langue */}
+                  <LanguagePicker lang={lang} setLang={setLang} />
+                </motion.div>
+              </AnimatePresence>
+            )}
+
+            {/* ══ ÉTAPES NORMALES 1-4 (code original intact) ══ */}
+            {!isLang && (
+              <div className="flex items-center gap-6 sm:gap-8">
+                <AnimatePresence mode="wait">
+                  <motion.div
+                    key={`phone-${current}`}
+                    initial={{ opacity: 0, x: direction * 30, scale: 0.95 }}
+                    animate={{ opacity: 1, x: 0, scale: 1 }}
+                    exit={{ opacity: 0, x: -direction * 30, scale: 0.95 }}
+                    transition={{ duration: 0.3 }}
+                  >
+                    <PhoneFrame step={step} />
                   </motion.div>
                 </AnimatePresence>
+
+                <div className="flex-1 min-w-0">
+                  <AnimatePresence mode="wait">
+                    <motion.div
+                      key={`text-${current}`}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -12 }}
+                      transition={{ duration: 0.25, delay: 0.05 }}
+                      className="space-y-3"
+                    >
+                      <span className={`text-5xl font-black font-mono ${step.color} opacity-20`}>
+                        0{displayedStep}
+                      </span>
+                      <h2 className="text-xl font-black text-white leading-tight -mt-2">
+                        {title}
+                      </h2>
+                      <p className="text-slate-400 text-sm leading-relaxed">
+                        {desc}
+                      </p>
+                    </motion.div>
+                  </AnimatePresence>
+                </div>
               </div>
-            </div>
+            )}
 
             {/* Footer : dots + boutons */}
             <div className="flex items-center justify-between mt-6 pt-5
               border-t border-white/[0.06]">
 
-              {/* Progress dots */}
-              <ProgressDots current={current} total={STEPS.length} steps={STEPS} />
+              {/* Progress dots (cachés sur étape langue) */}
+              {!isLang
+                ? <ProgressDots currentNormalIndex={normalIndex} />
+                : <div />
+              }
 
               {/* Boutons navigation */}
               <div className="flex items-center gap-2">
-                {!isFirst && (
-                  <button onClick={goPrev}
+                {/* Retour : visible sur étapes normales sauf étape 1 */}
+                {!isLang && normalIndex > 0 && (
+                  <button
+                    onClick={goPrev}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-2xl
                       bg-white/[0.04] border border-white/[0.08] text-slate-400
                       hover:text-slate-200 hover:border-white/15 font-bold text-sm
-                      transition-all active:scale-95">
+                      transition-all active:scale-95"
+                  >
                     <ChevronLeft size={15} />
                     {t?.onboarding?.back ?? "Retour"}
                   </button>
@@ -396,7 +601,13 @@ export default function OnboardingModal({ onComplete }: Props) {
                     </>
                   ) : (
                     <>
-                      {t?.onboarding?.next ?? "Suivant"}
+                      {isLang
+                        ? (lang === "fr" ? "Continuer"
+                        : lang === "de" ? "Weiter"
+                        : lang === "es" ? "Continuar"
+                        : "Continue")
+                        : (t?.onboarding?.next ?? "Suivant")
+                      }
                       <ChevronRight size={14} />
                     </>
                   )}
@@ -406,10 +617,12 @@ export default function OnboardingModal({ onComplete }: Props) {
           </div>
         </div>
 
-        {/* Hint skip sous la card */}
-        {isFirst && (
+        {/* Hint skip sous la card (étape langue uniquement) */}
+        {isLang && (
           <motion.p
-            initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1 }}
             className="text-center mt-3 text-[11px] text-slate-700 cursor-pointer
               hover:text-slate-500 transition-colors"
             onClick={skip}

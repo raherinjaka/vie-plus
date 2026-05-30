@@ -482,6 +482,10 @@ export const translations = {
     },
 
     // tachePage ******************************************
+    category: "Organisation",
+    titleMain: "Mes ",
+    titleHighlight: "Tâches",
+
     tachePage: {
       pageTitle: "Tâches | Vie+",
       loading:   "Vérification de la session...",
@@ -1085,6 +1089,10 @@ export const translations = {
       },
     },
     // tachePage ******************************************
+    category: "Organization",
+    titleMain: "My ",
+    titleHighlight: "Tasks",
+    
     tachePage: {
       pageTitle: "Tasks | Vie+",
       loading:   "Checking session...",
@@ -1210,8 +1218,1167 @@ export const translations = {
     meta: {
       locale: "en-US",
     }
+  },
 
-  }
+  // Allemand**************************************************************************
+  de: {
+    nav: {
+      dashboard: "Übersicht",
+      money: "Meine Finanzen",
+      tasks: "Aufgaben",
+      goals: "Ziele & Sparen",
+      about: "Informationen",
+      settings: "Einstellungen",
+      logging_out: "Abmelden...",
+      connected: "Sitzung aktiv",
+      menu:        "Menü",
+      open:        "Navigation öffnen",
+      connectedAs: "Angemeldet als",
+      defaultUser: "Benutzer",
+      pagesLabel:  "Seiten",
+      active:      "Aktiv",
+      logout:      "Abmelden",
+      loggingOut:  "Abmelden…",
+      status:      "System läuft gut",
+      items: {
+        dashboard: "Dashboard",
+        budget:    "Mein Geld",
+        tasks:     "Meine Aufgaben",
+        goals:     "Ziele",
+        about:     "Über uns",
+      },
+    },
+  
+    dashboard: {
+      loading: "Daten werden geladen...",
+      welcome: "Schön, dich zu sehen,",
+      categories: {
+        general:   "Allgemein",
+        food:      "Essen",
+        transport: "Transport",
+        leisure:   "Freizeit",
+        health:    "Gesundheit",
+        education: "Bildung",
+      },
+      greetings: {
+        night:     "Gute Nacht",
+        morning:   "Guten Morgen",
+        afternoon: "Guten Nachmittag",
+        evening:   "Guten Abend",
+      },
+      mood: {
+        empty:    "Budget aufgebraucht",
+        critical: "Achtung!",
+        warning:  "Behalte deine Ausgaben im Blick",
+        good:     "Alles gut!",
+      },
+      balance: "Verfügbares Guthaben",
+    },
+  
+    activity: {
+      title: "Letzte Bewegungen",
+      live: "Live",
+      empty_title: "Noch keine Einträge",
+      empty_sub: "Deine Finanzbewegungen erscheinen hier",
+      view_all: "Alle Einträge ansehen",
+      time: {
+        now: "Gerade eben",
+        mins: "Vor {n} Min.",
+        hours: "Vor {n} Std.",
+        yesterday: "Gestern",
+        days: "Vor {n} Tagen",
+      },
+    },
+  
+    budget: {
+      title: "Budget-Übersicht",
+      view_all: "Details",
+      remaining: "Verfügbar",
+      total: "Gesamt",
+      spent: "Ausgegeben",
+      cycle_until: "Aktiver Zeitraum bis {date}",
+      top_categories: "Ausgabenbereiche",
+      locked: "Budget gesperrt",
+      unconfigured: {
+        title: "Noch nicht eingerichtet",
+        sub: "Lege dein Budget fest, um loszulegen",
+        button: "Einrichten",
+      },
+    },
+  
+    objectives: {
+      title:             "Ziele",
+      seeAll:            "Alle ansehen",
+      globalScore:       "Gesamtpunktzahl",
+      empty:             "Noch keine Ziele",
+      add:               "Ziel hinzufügen",
+      completedSingular: "1 Ziel erreicht",
+      completedPlural:   "{n} Ziele erreicht",
+    },
+  
+    stats: {
+      notConfigured: "Nicht eingerichtet",
+      balance: {
+        label: "Verbleibendes Guthaben",
+        sub:   "Aktuelles Budget",
+      },
+      expenses: {
+        label: "Insgesamt ausgegeben",
+        sub:   "Dieser Zeitraum",
+      },
+      objectives: {
+        label: "Ziele-Punktzahl",
+        sub:   "Gesamtfortschritt",
+      },
+      tasks: {
+        label:    "Erledigte Aufgaben",
+        subPct:   "{pct}% der Gesamtzahl",
+        subEmpty: "Wird geladen",
+      },
+    },
+  
+    settings: {
+      title:    "Einstellungen",
+      theme:    "Design",
+      language: "Sprache",
+      back:     "Zurück",
+      dark:     "Dunkel",
+      light:    "Hell",
+    },
+  
+    toast: {
+      error:   "Fehler",
+      success: "Erfolg",
+    },
+  
+    depensePage: {
+      title:      "Mein Budget",
+      subtitle:   "Budget-Tracker",
+      emptyState: "Richte dein Budget ein, um loszulegen…",
+      errors: {
+        loadFail:   "Fehler beim Laden.",
+        saveFail:   "Fehler: {msg}",
+        deleteFail: "Löschen nicht möglich.",
+      },
+      success: {
+        cycleStarted: "Zeitraum erfolgreich gestartet!",
+        cycleReset:   "Zeitraum zurückgesetzt. Bereit für einen Neustart!",
+        expenseAdded: "Ausgabe gespeichert ✓",
+        incomeAdded:  "Einnahme gespeichert ✓",
+        deleted:      "Eintrag gelöscht.",
+      },
+    },
+  
+    budgetHeader: {
+      locked:    "Budget gesperrt",
+      cycleOver: "Zeitraum beendet!",
+      endsOn:    "Endet am {date}",
+      newCycle:  "Neuer Zeitraum",
+      urgency:   "Letzte Stunden!",
+      timeLeft:  "Verbleibende Zeit",
+      pctLeft:   "{pct}% der Zeit übrig",
+      periode: {
+        days:   "{n} Tag",
+        weeks:  "{n} Woche",
+        months: "{n} Monat",
+      },
+      countdown: {
+        days:  "Tage",
+        hours: "Stunden",
+        mins:  "Min.",
+        secs:  "Sek.",
+      },
+      resetModal: {
+        title:       "Zeitraum zurücksetzen?",
+        description: "Alle Einträge werden gelöscht und du kannst neu starten.",
+        warning:     "Diese Aktion kann nicht rückgängig gemacht werden.",
+        cancel:      "Abbrechen",
+        confirm:     "Zurücksetzen",
+      },
+    },
+  
+    budgetGauge: {
+      remaining:   "Übrig",
+      balanceLeft: "Verbleibendes Guthaben",
+      totalBudget: "Gesamtbudget",
+      spent:       "Ausgegeben",
+      alertDanger: "Achtung, weniger als 20% deines Budgets ist noch übrig!",
+      alertEmpty:  "Budget aufgebraucht! Starte einen neuen Zeitraum.",
+    },
+  
+    budgetSetup: {
+      brand:    "Vie+ Budget",
+      newCycle: "Neuer Zeitraum",
+      back:     "Zurück",
+      next:     "Weiter",
+      launch:   "Zeitraum starten",
+      step1: {
+        title:    "Wie hoch ist dein Budget?",
+        subtitle: "Dieser Betrag wird für den gesamten Zeitraum festgelegt.",
+        preview:  "Budget von {amount} Ar — wird nach Bestätigung gesperrt",
+      },
+      step2: {
+        title:         "Wie lange soll es gelten?",
+        subtitle:      "Wähle den Zeitraum und die Dauer.",
+        durationLabel: "Anzahl von {periode}",
+      },
+      periodes: {
+        jours:    "Tage",
+        semaines: "Wochen",
+        mois:     "Monate",
+      },
+      summary: {
+        title:        "Zusammenfassung",
+        lockedBudget: "Gesperrtes Budget",
+        duration:     "Dauer",
+        endDate:      "Ende des Zeitraums",
+      },
+    },
+  
+    budgetStats: {
+      toggleBtn: "Statistiken",
+      cards: {
+        fixed:   "Festes Budget",
+        added:   "Hinzugefügt",
+        spent:   "Ausgegeben",
+        balance: "Guthaben",
+      },
+      panel: {
+        title:       "Aufteilung nach Kategorie",
+        pctLabel:    "{pct}% der Ausgaben",
+        topCategory: "ist deine größte Ausgabe mit {amount} Ar",
+      },
+    },
+  
+    mouvementForm: {
+      btnExpense:             "Neue Ausgabe",
+      btnIncome:              "Geld hinzufügen",
+      typeExpense:            "Ausgabe",
+      typeIncome:             "Einnahme",
+      nameLabel:              "Name der Buchung",
+      namePlaceholderExpense: "z.B. Essen, Bus…",
+      namePlaceholderIncome:  "z.B. Taschengeld…",
+      amountLabel:            "Betrag",
+      categoryLabel:          "Kategorie",
+      saving:                 "Wird gespeichert…",
+      submitExpense:          "Ausgabe speichern",
+      submitIncome:           "Einnahme bestätigen",
+      categories: {
+        general:      "Allgemein",
+        alimentation: "Essen",
+        transport:    "Transport",
+        loisirs:      "Freizeit",
+        sante:        "Gesundheit",
+        education:    "Bildung",
+      },
+    },
+  
+    mouvementList: {
+      historyLabel: "Verlauf · {n} Eintrag{s}",
+      filterBtn:    "Filter",
+      sort: {
+        date:   "Datum",
+        amount: "Betrag",
+        name:   "Name",
+      },
+      filter: {
+        all:      "Alle",
+        expenses: "Ausgaben",
+        incomes:  "Einnahmen",
+        allCats:  "Alle",
+      },
+      empty: {
+        title:    "Keine Einträge",
+        filtered: "Versuche, die Filter zu ändern.",
+        default:  "Fange an, deinen ersten Eintrag zu erfassen!",
+      },
+      confirmModal: {
+        title:   "Diesen Eintrag löschen?",
+        warning: "Das kann nicht rückgängig gemacht werden.",
+        cancel:  "Abbrechen",
+        confirm: "Löschen",
+      },
+      showHistory: "Verlauf anzeigen",
+      hideHistory: "Verlauf ausblenden",
+    },
+  
+    dashboardChart: {
+      title:        "Budget-Verlauf",
+      dataLabel:    "{n} Tag{s} Daten",
+      curveBtn:     "Kurve",
+      barsBtn:      "Balken",
+      avgPerDay:    "Durchschn. / Tag",
+      peakExpense:  "Höchste Ausgabe",
+      trend:        "Trend",
+      danger:       "Achtung",
+      stable:       "Stabil",
+      emptyTitle:   "Keine Daten vorhanden",
+      emptySub:     "Fange an, Einträge zu erfassen",
+      legendSolde:  "Verbleibendes Guthaben",
+      legendDep:    "Kumulierte Ausgaben",
+      legendBudget: "Budget",
+      budgetTotal:  "Gesamtbudget",
+      depJour:      "Tagesausgaben",
+      ajoutJour:    "Tageseinnahmen",
+    },
+  
+    objectifsPage: {
+      title:       "Meine Ziele",
+      emptyActive: "Noch keine Ziele. Leg los! 🚀",
+      stats: {
+        active: "Laufend",
+        score:  "Mein Fortschritt",
+        done:   "Erreicht",
+      },
+      categories: {
+        projet: "Projekt",
+        sante:  "Gesundheit",
+        argent: "Geld",
+        etudes: "Schule",
+      },
+      deadline: {
+        overdue:  "Überfällig",
+        today:    "Heute fällig!",
+        daysLeft: "Noch {n} Tag{s}",
+      },
+      card: {
+        details:          "Mehr sehen",
+        close:            "Schließen",
+        deadlineLabel:    "Fällig bis:",
+        noDeadline:       "Kein Enddatum",
+        createdAt:        "Hinzugefügt am:",
+        delete:           "Ziel löschen",
+        deleteConfirmMsg: "Wird automatisch gelöscht…",
+        undo:             "Rückgängig",
+      },
+      trophyWall: {
+        title:     "Erreichte Ziele",
+        completed: "100% — Glückwunsch!",
+      },
+      modal: {
+        title:         "Neues Ziel",
+        placeholder:   "Gib deinem Ziel einen Namen…",
+        deadlineLabel: "Enddatum (optional)",
+        cancel:        "Abbrechen",
+        create:        "Erstellen",
+        creating:      "Wird erstellt…",
+        sessionError:  "Sitzung abgelaufen, bitte erneut anmelden.",
+        createError:   "Ein Fehler ist aufgetreten: {msg}",
+        subtitle:      "Lege dein nächstes Ziel fest.",
+        titleLabel:    "Titel",
+        categoryLabel: "Kategorie",
+      },
+      sort: {
+        date:        "Erstellungsdatum",
+        deadline:    "Enddatum",
+        progression: "Fortschritt",
+      },
+      emptyActiveSub: "Lege dein erstes Ziel fest und fang an.",
+      emptyAction:    "+ Erstes Ziel erstellen",
+      emptyFilter:    "Keine Ziele in dieser Kategorie.",
+      emptyFilterSub: "Versuche einen anderen Filter oder erstelle ein neues Ziel.",
+      filters: {
+        all: "Alle",
+      },
+    },
+  
+    exportPDF: {
+      title:        "BUDGET-BERICHT",
+      generatedAt:  "Erstellt am",
+      user:         "Benutzer",
+      cycleInfo:    "INFORMATIONEN ZUM ZEITRAUM",
+      cycleStart:   "Start des Zeitraums",
+      cycleEnd:     "Ende des Zeitraums",
+      period:       "Zeitraum",
+      status:       "Status",
+      expired:      "Beendet",
+      remaining:    "Tag(e) übrig",
+      summary:      "FINANZÜBERSICHT",
+      budgetFixed:  "Festes Budget",
+      added:        "Hinzugefügt",
+      spent:        "Ausgegeben",
+      balance:      "Verbleibendes Guthaben",
+      history:      "BUCHUNGSVERLAUF",
+      operations:   "Buchung(en)",
+      colDate:      "Datum & Uhrzeit",
+      colName:      "Buchung",
+      colCat:       "Kategorie",
+      colType:      "Typ",
+      colAmount:    "Betrag",
+      typeExpense:  "Ausgabe",
+      typeIncome:   "Einnahme",
+      footer:       "VIE+ — Automatisch erstelltes Dokument",
+      badgeDone:    "ZEITRAUM BEENDET",
+      badgeOngoing: "LAUFEND",
+      pctRemaining: "des Budgets übrig",
+      btnExport:    "Bericht exportieren",
+      btnDownload:  "Bericht herunterladen",
+      btnLoading:   "Wird erstellt...",
+      btnDone:      "Heruntergeladen",
+      badgeFinal:   "Final",
+    },
+  
+    onboarding: {
+      stepLabel: "Schritt",
+      back:      "Zurück",
+      next:      "Weiter",
+      start:     "Los geht's!",
+      skipHint:  "Einführung überspringen",
+      steps: [
+        {
+          title: "Mein Budget",
+          desc:  "Verfolge deine Ausgaben, richte dein Budget ein und sieh deinen Fortschritt täglich.",
+        },
+        {
+          title: "Meine Ziele",
+          desc:  "Erstelle persönliche Ziele, verfolge deinen Fortschritt und feiere deine Erfolge.",
+        },
+        {
+          title: "Meine Aufgaben",
+          desc:  "Organisiere deine täglichen Aufgaben und bleib jeden Tag produktiv.",
+        },
+        {
+          title: "PDF-Export",
+          desc:  "Erstelle einen vollständigen PDF-Bericht deiner Ausgaben zum Teilen.",
+        },
+      ],
+    },
+  
+    aboutPage: {
+      credits: {
+        title:   "Mit Leidenschaft gemacht",
+        desc:    "VIE+ ist ein Schulprojekt, das jungen Menschen helfen soll, ihren Alltag besser zu organisieren.",
+        email:   "contact@vieplus.app",
+        github:  "GitHub",
+        version: "VIE+ · v1.0.0 · 2025",
+      },
+      features: {
+        sectionLabel: "Funktionen",
+        title:        "Was VIE+ kann",
+        items: [
+          { title: "Budget",      description: "Verfolge deine Einnahmen und Ausgaben mit einer visuellen Anzeige."     },
+          { title: "Ziele",       description: "Lege persönliche Ziele fest und sieh deinen Fortschritt in Echtzeit."   },
+          { title: "Aufgaben",    description: "Organisiere deine To-do-Liste und verpasse nichts Wichtiges."           },
+          { title: "PDF-Export",  description: "Erstelle einen vollständigen Finanzbericht zum Teilen."                 },
+        ],
+      },
+      howItWorks: {
+        sectionLabel: "In 3 Schritten",
+        title:        "Wie funktioniert es?",
+        steps: [
+          { title: "Konto erstellen",    description: "Melde dich in wenigen Sekunden mit deiner E-Mail an. Kostenlos." },
+          { title: "Budget einrichten",  description: "Gib dein Budget ein und fange an, deine Ausgaben zu erfassen."   },
+          { title: "Fortschritt sehen",  description: "Deine Statistiken werden in Echtzeit aktualisiert."              },
+        ],
+      },
+      techStack: {
+        sectionLabel: "Technologie",
+        title:        "Sorgfältig gebaut",
+        desc:         "Moderne und zuverlässige Tools für eine reibungslose Erfahrung.",
+      },
+    },
+  
+    category:       "Organisation",
+    titleMain:      "Meine ",
+    titleHighlight: "Aufgaben",
+  
+    tachePage: {
+      pageTitle: "Aufgaben | Vie+",
+      loading:   "Sitzung wird überprüft...",
+    },
+  
+    board: {
+      emptyState: {
+        title:     "Kein aktives Projekt",
+        subtitle:  "Erstelle dein erstes Board, um deine Aufgaben zu organisieren.",
+        createBtn: "Board erstellen",
+        dialog: {
+          title:       "Board benennen",
+          subtitle:    "Wähle einen klaren und einprägsamen Namen.",
+          placeholder: "z.B. Vie+ Entwicklung",
+          cancel:      "Abbrechen",
+          create:      "Erstellen",
+          creating:    "Wird erstellt...",
+        },
+      },
+      header: {
+        renameTooltip: "Zum Umbenennen klicken",
+        progress:      "Gesamtfortschritt",
+      },
+      shell: {
+        errorTitle: "Ein Fehler ist aufgetreten",
+        retry:      "Erneut versuchen",
+      },
+    },
+  
+    card: {
+      today: "Heute",
+      addInput: {
+        placeholder: "Titel der Karte...",
+        submit:      "Karte hinzufügen",
+        cancel:      "Abbrechen",
+      },
+    },
+  
+    column: {
+      addCard:              "Karte hinzufügen",
+      addColumnPlaceholder: "Listenname...",
+      addColumnSubmit:      "Hinzufügen",
+      createFirst:          "Liste erstellen",
+      addAnother:           "Weitere Liste hinzufügen",
+      menuRename:           "Umbenennen",
+      menuDelete:           "Liste löschen",
+    },
+  
+    taskModal: {
+      addBlockBtn:            "Hinzufügen",
+      addBlockTitle:          "Zur Karte hinzufügen",
+      blockLabels:            "Etiketten",
+      blockLabelsDesc:        "Nach Farbe sortieren",
+      blockChecklist:         "Checkliste",
+      blockChecklistDesc:     "Unteraufgaben abhaken",
+      blockDates:             "Datum",
+      blockDatesDesc:         "Fälligkeitsdatum",
+      descriptionTitle:       "Beschreibung",
+      descriptionPlaceholder: "Füge eine ausführlichere Beschreibung hinzu...",
+      unsaved:                "NICHT GESPEICHERT",
+      editBtn:                "Bearbeiten",
+      saveBtn:                "Speichern",
+      cancelBtn:              "Abbrechen",
+      notFound:               "Karte nicht gefunden.",
+      closeBtn:               "Schließen",
+      deleteCard:             "Karte löschen",
+    },
+  
+    checklistBlock: {
+      defaultTitle:       "Checkliste",
+      newListPlaceholder: "Titel der Checkliste...",
+      create:             "Erstellen",
+      cancel:             "Abbrechen",
+      addAnotherList:     "+ Weitere Checkliste hinzufügen",
+      showAll:            "Alle anzeigen",
+      hideChecked:        "Erledigte ausblenden",
+      deleteList:         "Löschen",
+      newItemPlaceholder: "Neuer Eintrag...",
+      addItem:            "Hinzufügen",
+      addItemBtn:         "+ Eintrag hinzufügen",
+    },
+  
+    datesBlock: {
+      title:      "Fälligkeitsdatum",
+      hide:       "Ausblenden",
+      clearTitle: "Datum entfernen",
+      saving:     "Wird gespeichert...",
+      save:       "Datum speichern",
+      status: {
+        overdue: "Überfällig",
+        today:   "Heute",
+        soon:    "Bald",
+        ok:      "Geplant",
+      },
+    },
+  
+    labelsBlock: {
+      title:             "Etiketten",
+      hide:              "Ausblenden",
+      edit:              "Bearbeiten",
+      searchPlaceholder: "Etikett suchen...",
+      loading:           "Wird geladen...",
+      noResult:          "Kein Ergebnis",
+      noLabels:          "Noch keine Etiketten erstellt",
+      deleteLabel:       "Dieses Etikett löschen",
+      preview:           "Etikett-Vorschau",
+      namePlaceholder:   "Name des Etiketts",
+      creating:          "Wird erstellt...",
+      createAndAdd:      "Erstellen und hinzufügen",
+      cancel:            "Abbrechen",
+      createNew:         "+ Neues Etikett erstellen",
+    },
+  
+    meta: {
+      locale: "de-DE",
+    },
+  },
+
+  // Espagnol*******************************************************************************
+  es: {
+    nav: {
+      dashboard: "Resumen",
+      money: "Mis Finanzas",
+      tasks: "Tareas",
+      goals: "Objetivos & Ahorro",
+      about: "Información",
+      settings: "Ajustes",
+      logging_out: "Cerrando sesión...",
+      connected: "Sesión activa",
+      menu:        "Menú",
+      open:        "Abrir navegación",
+      connectedAs: "Conectado como",
+      defaultUser: "Usuario",
+      pagesLabel:  "Páginas",
+      active:      "Activo",
+      logout:      "Cerrar sesión",
+      loggingOut:  "Cerrando sesión…",
+      status:      "Sistema funcionando bien",
+      items: {
+        dashboard: "Panel principal",
+        budget:    "Mi dinero",
+        tasks:     "Mis tareas",
+        goals:     "Objetivos",
+        about:     "Acerca de",
+      },
+    },
+  
+    dashboard: {
+      loading: "Cargando datos...",
+      welcome: "Bienvenido de nuevo,",
+      categories: {
+        general:   "General",
+        food:      "Comida",
+        transport: "Transporte",
+        leisure:   "Ocio",
+        health:    "Salud",
+        education: "Educación",
+      },
+      greetings: {
+        night:     "Buenas noches",
+        morning:   "Buenos días",
+        afternoon: "Buenas tardes",
+        evening:   "Buenas tardes",
+      },
+      mood: {
+        empty:    "Presupuesto agotado",
+        critical: "¡Atención!",
+        warning:  "Controla tus gastos",
+        good:     "¡Todo bien!",
+      },
+      balance: "Saldo disponible",
+    },
+  
+    activity: {
+      title: "Últimos movimientos",
+      live: "En vivo",
+      empty_title: "Sin actividad",
+      empty_sub: "Tus movimientos financieros aparecerán aquí",
+      view_all: "Ver todo el historial",
+      time: {
+        now: "Ahora mismo",
+        mins: "Hace {n} min",
+        hours: "Hace {n}h",
+        yesterday: "Ayer",
+        days: "Hace {n} días",
+      },
+    },
+  
+    budget: {
+      title: "Análisis del presupuesto",
+      view_all: "Detalles",
+      remaining: "Disponible",
+      total: "Total",
+      spent: "Gastado",
+      cycle_until: "Ciclo activo hasta {date}",
+      top_categories: "Categorías de gasto",
+      locked: "Presupuesto bloqueado",
+      unconfigured: {
+        title: "Sin configurar",
+        sub: "Define tu presupuesto para empezar",
+        button: "Configurar",
+      },
+    },
+  
+    objectives: {
+      title:             "Objetivos",
+      seeAll:            "Ver todo",
+      globalScore:       "Puntuación global",
+      empty:             "Sin objetivos",
+      add:               "Añadir objetivo",
+      completedSingular: "1 objetivo logrado",
+      completedPlural:   "{n} objetivos logrados",
+    },
+  
+    stats: {
+      notConfigured: "No configurado",
+      balance: {
+        label: "Saldo restante",
+        sub:   "Presupuesto actual",
+      },
+      expenses: {
+        label: "Total gastado",
+        sub:   "Este ciclo",
+      },
+      objectives: {
+        label: "Puntuación objetivos",
+        sub:   "Progreso global",
+      },
+      tasks: {
+        label:    "Tareas completadas",
+        subPct:   "{pct}% del total",
+        subEmpty: "Cargando",
+      },
+    },
+  
+    settings: {
+      title:    "Ajustes",
+      theme:    "Tema",
+      language: "Idioma",
+      back:     "Volver",
+      dark:     "Oscuro",
+      light:    "Claro",
+    },
+  
+    toast: {
+      error:   "Error",
+      success: "Éxito",
+    },
+  
+    depensePage: {
+      title:      "Mi presupuesto",
+      subtitle:   "Control de gastos",
+      emptyState: "Configura tu presupuesto para empezar…",
+      errors: {
+        loadFail:   "Error al cargar.",
+        saveFail:   "Error: {msg}",
+        deleteFail: "No se pudo eliminar.",
+      },
+      success: {
+        cycleStarted: "¡Ciclo iniciado con éxito!",
+        cycleReset:   "¡Ciclo reiniciado. Listo para empezar de nuevo!",
+        expenseAdded: "Gasto guardado ✓",
+        incomeAdded:  "Ingreso guardado ✓",
+        deleted:      "Entrada eliminada.",
+      },
+    },
+  
+    budgetHeader: {
+      locked:    "Presupuesto bloqueado",
+      cycleOver: "¡Ciclo terminado!",
+      endsOn:    "Termina el {date}",
+      newCycle:  "Nuevo ciclo",
+      urgency:   "¡Últimas horas!",
+      timeLeft:  "Tiempo restante",
+      pctLeft:   "{pct}% del tiempo restante",
+      periode: {
+        days:   "{n} día",
+        weeks:  "{n} semana",
+        months: "{n} mes",
+      },
+      countdown: {
+        days:  "Días",
+        hours: "Horas",
+        mins:  "Min",
+        secs:  "Seg",
+      },
+      resetModal: {
+        title:       "¿Reiniciar el ciclo?",
+        description: "Todas las entradas se eliminarán y podrás empezar de nuevo.",
+        warning:     "Esta acción no se puede deshacer.",
+        cancel:      "Cancelar",
+        confirm:     "Reiniciar",
+      },
+    },
+  
+    budgetGauge: {
+      remaining:   "Restante",
+      balanceLeft: "Saldo restante",
+      totalBudget: "Presupuesto total",
+      spent:       "Gastado",
+      alertDanger: "¡Atención, te queda menos del 20% de tu presupuesto!",
+      alertEmpty:  "¡Presupuesto agotado! Inicia un nuevo ciclo para continuar.",
+    },
+  
+    budgetSetup: {
+      brand:    "Vie+ Presupuesto",
+      newCycle: "Nuevo ciclo",
+      back:     "Volver",
+      next:     "Siguiente",
+      launch:   "Iniciar ciclo",
+      step1: {
+        title:    "¿Cuál es tu presupuesto?",
+        subtitle: "Este importe quedará bloqueado durante todo el ciclo.",
+        preview:  "Presupuesto de {amount} Ar — bloqueado tras confirmación",
+      },
+      step2: {
+        title:         "¿Por cuánto tiempo?",
+        subtitle:      "Elige el período y la duración del ciclo.",
+        durationLabel: "Número de {periode}",
+      },
+      periodes: {
+        jours:    "Días",
+        semaines: "Semanas",
+        mois:     "Meses",
+      },
+      summary: {
+        title:        "Resumen del ciclo",
+        lockedBudget: "Presupuesto bloqueado",
+        duration:     "Duración",
+        endDate:      "Fin del ciclo",
+      },
+    },
+  
+    budgetStats: {
+      toggleBtn: "Estadísticas",
+      cards: {
+        fixed:   "Presupuesto fijo",
+        added:   "Añadido",
+        spent:   "Gastado",
+        balance: "Saldo",
+      },
+      panel: {
+        title:       "Desglose por categoría",
+        pctLabel:    "{pct}% del gasto",
+        topCategory: "es tu mayor gasto con {amount} Ar",
+      },
+    },
+  
+    mouvementForm: {
+      btnExpense:             "Nuevo gasto",
+      btnIncome:              "Añadir dinero",
+      typeExpense:            "Gasto",
+      typeIncome:             "Ingreso",
+      nameLabel:              "Nombre de la operación",
+      namePlaceholderExpense: "Ej: Comida, Transporte…",
+      namePlaceholderIncome:  "Ej: Dinero de bolsillo…",
+      amountLabel:            "Importe",
+      categoryLabel:          "Categoría",
+      saving:                 "Guardando…",
+      submitExpense:          "Guardar gasto",
+      submitIncome:           "Confirmar ingreso",
+      categories: {
+        general:      "General",
+        alimentation: "Comida",
+        transport:    "Transporte",
+        loisirs:      "Ocio",
+        sante:        "Salud",
+        education:    "Educación",
+      },
+    },
+  
+    mouvementList: {
+      historyLabel: "Historial · {n} entrada{s}",
+      filterBtn:    "Filtros",
+      sort: {
+        date:   "Fecha",
+        amount: "Importe",
+        name:   "Nombre",
+      },
+      filter: {
+        all:      "Todos",
+        expenses: "Gastos",
+        incomes:  "Ingresos",
+        allCats:  "Todas",
+      },
+      empty: {
+        title:    "Sin entradas",
+        filtered: "Prueba a cambiar los filtros.",
+        default:  "¡Empieza registrando tu primera entrada!",
+      },
+      confirmModal: {
+        title:   "¿Eliminar esta entrada?",
+        warning: "Esta acción no se puede deshacer.",
+        cancel:  "Cancelar",
+        confirm: "Eliminar",
+      },
+      showHistory: "Ver historial",
+      hideHistory: "Ocultar historial",
+    },
+  
+    dashboardChart: {
+      title:        "Evolución del presupuesto",
+      dataLabel:    "{n} día{s} de datos",
+      curveBtn:     "Curva",
+      barsBtn:      "Barras",
+      avgPerDay:    "Media / día",
+      peakExpense:  "Gasto máximo",
+      trend:        "Tendencia",
+      danger:       "Atención",
+      stable:       "Estable",
+      emptyTitle:   "Sin datos que mostrar",
+      emptySub:     "Empieza a registrar tus movimientos",
+      legendSolde:  "Saldo restante",
+      legendDep:    "Gastos acumulados",
+      legendBudget: "Presupuesto",
+      budgetTotal:  "Presupuesto total",
+      depJour:      "Gastos del día",
+      ajoutJour:    "Ingresos del día",
+    },
+  
+    objectifsPage: {
+      title:       "Mis objetivos",
+      emptyActive: "Sin objetivos activos. ¡Anímate! 🚀",
+      stats: {
+        active: "En curso",
+        score:  "Mi progreso",
+        done:   "Logrados",
+      },
+      categories: {
+        projet: "Proyecto",
+        sante:  "Salud",
+        argent: "Dinero",
+        etudes: "Estudios",
+      },
+      deadline: {
+        overdue:  "Vencido",
+        today:    "¡Hoy es el día!",
+        daysLeft: "{n} día{s} restante{s}",
+      },
+      card: {
+        details:          "Ver más",
+        close:            "Cerrar",
+        deadlineLabel:    "Antes del:",
+        noDeadline:       "Sin fecha límite",
+        createdAt:        "Añadido el:",
+        delete:           "Eliminar objetivo",
+        deleteConfirmMsg: "Eliminando automáticamente…",
+        undo:             "Deshacer",
+      },
+      trophyWall: {
+        title:     "Objetivos logrados",
+        completed: "100% — ¡Felicidades!",
+      },
+      modal: {
+        title:         "Nuevo objetivo",
+        placeholder:   "Dale un nombre a tu objetivo…",
+        deadlineLabel: "Fecha límite (opcional)",
+        cancel:        "Cancelar",
+        create:        "Crear",
+        creating:      "Creando…",
+        sessionError:  "Sesión expirada, vuelve a iniciar sesión.",
+        createError:   "Ocurrió un error: {msg}",
+        subtitle:      "Define tu próxima meta.",
+        titleLabel:    "Título",
+        categoryLabel: "Categoría",
+      },
+      sort: {
+        date:        "Fecha de creación",
+        deadline:    "Fecha límite",
+        progression: "Progreso",
+      },
+      emptyActiveSub: "Define tu primera meta y empieza a avanzar.",
+      emptyAction:    "+ Crear mi primer objetivo",
+      emptyFilter:    "Sin objetivos en esta categoría.",
+      emptyFilterSub: "Prueba otro filtro o crea uno nuevo.",
+      filters: {
+        all: "Todos",
+      },
+    },
+  
+    exportPDF: {
+      title:        "EXTRACTO DE PRESUPUESTO",
+      generatedAt:  "Generado el",
+      user:         "Usuario",
+      cycleInfo:    "INFORMACIÓN DEL CICLO",
+      cycleStart:   "Inicio del ciclo",
+      cycleEnd:     "Fin del ciclo",
+      period:       "Período",
+      status:       "Estado",
+      expired:      "Terminado",
+      remaining:    "día(s) restante(s)",
+      summary:      "RESUMEN FINANCIERO",
+      budgetFixed:  "Presupuesto fijo",
+      added:        "Añadido",
+      spent:        "Gastado",
+      balance:      "Saldo restante",
+      history:      "HISTORIAL DE OPERACIONES",
+      operations:   "operación(es)",
+      colDate:      "Fecha y hora",
+      colName:      "Operación",
+      colCat:       "Categoría",
+      colType:      "Tipo",
+      colAmount:    "Importe",
+      typeExpense:  "Gasto",
+      typeIncome:   "Ingreso",
+      footer:       "VIE+ — Documento generado automáticamente",
+      badgeDone:    "CICLO TERMINADO",
+      badgeOngoing: "EN CURSO",
+      pctRemaining: "del presupuesto restante",
+      btnExport:    "Exportar extracto",
+      btnDownload:  "Descargar extracto",
+      btnLoading:   "Generando...",
+      btnDone:      "Descargado",
+      badgeFinal:   "Final",
+    },
+  
+    onboarding: {
+      stepLabel: "Paso",
+      back:      "Volver",
+      next:      "Siguiente",
+      start:     "¡Vamos!",
+      skipHint:  "Saltar introducción",
+      steps: [
+        {
+          title: "Mi Presupuesto",
+          desc:  "Controla tus gastos, configura tu presupuesto y visualiza tu progreso día a día.",
+        },
+        {
+          title: "Mis Objetivos",
+          desc:  "Crea objetivos personales, sigue tu progreso y celebra tus logros.",
+        },
+        {
+          title: "Mis Tareas",
+          desc:  "Organiza tus tareas diarias y mantente productivo cada día.",
+        },
+        {
+          title: "Exportar PDF",
+          desc:  "Genera un extracto PDF completo de tus gastos para compartir.",
+        },
+      ],
+    },
+  
+    aboutPage: {
+      credits: {
+        title:   "Hecho con pasión",
+        desc:    "VIE+ es un proyecto escolar creado con cuidado para ayudar a los jóvenes a gestionar mejor su día a día.",
+        email:   "contact@vieplus.app",
+        github:  "GitHub",
+        version: "VIE+ · v1.0.0 · 2025",
+      },
+      features: {
+        sectionLabel: "Funciones",
+        title:        "Qué hace VIE+",
+        items: [
+          { title: "Presupuesto", description: "Controla tus ingresos y gastos con un indicador visual." },
+          { title: "Objetivos",   description: "Define metas personales y visualiza tu progreso en tiempo real." },
+          { title: "Tareas",      description: "Organiza tu lista de tareas y no te pierdas nada importante." },
+          { title: "PDF",         description: "Genera un informe financiero completo para compartir." },
+        ],
+      },
+      howItWorks: {
+        sectionLabel: "En 3 pasos",
+        title:        "¿Cómo funciona?",
+        steps: [
+          { title: "Crea tu cuenta",        description: "Regístrate en segundos con tu correo. Es gratis." },
+          { title: "Configura tu presupuesto", description: "Introduce tu presupuesto y empieza a registrar tus movimientos." },
+          { title: "Sigue tu progreso",     description: "Tus estadísticas se actualizan en tiempo real." },
+        ],
+      },
+      techStack: {
+        sectionLabel: "Tecnología",
+        title:        "Construido con cuidado",
+        desc:         "Herramientas modernas y fiables para una experiencia fluida y segura.",
+      },
+    },
+  
+    category:       "Organización",
+    titleMain:      "Mis ",
+    titleHighlight: "Tareas",
+  
+    tachePage: {
+      pageTitle: "Tareas | Vie+",
+      loading:   "Verificando sesión...",
+    },
+  
+    board: {
+      emptyState: {
+        title:     "Sin proyecto activo",
+        subtitle:  "Crea tu primer tablero para organizar tus tareas.",
+        createBtn: "Crear tablero",
+        dialog: {
+          title:       "Nombra tu tablero",
+          subtitle:    "Elige un nombre claro y fácil de recordar.",
+          placeholder: "Ej: Desarrollo Vie+",
+          cancel:      "Cancelar",
+          create:      "Crear",
+          creating:    "Creando...",
+        },
+      },
+      header: {
+        renameTooltip: "Clic para renombrar",
+        progress:      "Progreso global",
+      },
+      shell: {
+        errorTitle: "Ocurrió un error",
+        retry:      "Reintentar",
+      },
+    },
+  
+    card: {
+      today: "Hoy",
+      addInput: {
+        placeholder: "Título de la tarjeta...",
+        submit:      "Añadir tarjeta",
+        cancel:      "Cancelar",
+      },
+    },
+  
+    column: {
+      addCard:              "Añadir tarjeta",
+      addColumnPlaceholder: "Nombre de la lista...",
+      addColumnSubmit:      "Añadir",
+      createFirst:          "Crear lista",
+      addAnother:           "Añadir otra lista",
+      menuRename:           "Renombrar",
+      menuDelete:           "Eliminar lista",
+    },
+  
+    taskModal: {
+      addBlockBtn:            "Añadir",
+      addBlockTitle:          "Añadir a la tarjeta",
+      blockLabels:            "Etiquetas",
+      blockLabelsDesc:        "Organizar por color",
+      blockChecklist:         "Lista de tareas",
+      blockChecklistDesc:     "Subtareas para marcar",
+      blockDates:             "Fechas",
+      blockDatesDesc:         "Fecha de vencimiento",
+      descriptionTitle:       "Descripción",
+      descriptionPlaceholder: "Añade una descripción más detallada...",
+      unsaved:                "SIN GUARDAR",
+      editBtn:                "Editar",
+      saveBtn:                "Guardar",
+      cancelBtn:              "Cancelar",
+      notFound:               "Tarjeta no encontrada.",
+      closeBtn:               "Cerrar",
+      deleteCard:             "Eliminar tarjeta",
+    },
+  
+    checklistBlock: {
+      defaultTitle:       "Lista de tareas",
+      newListPlaceholder: "Título de la lista...",
+      create:             "Crear",
+      cancel:             "Cancelar",
+      addAnotherList:     "+ Añadir otra lista",
+      showAll:            "Ver todo",
+      hideChecked:        "Ocultar marcados",
+      deleteList:         "Eliminar",
+      newItemPlaceholder: "Nuevo elemento...",
+      addItem:            "Añadir",
+      addItemBtn:         "+ Añadir elemento",
+    },
+  
+    datesBlock: {
+      title:      "Fecha de vencimiento",
+      hide:       "Ocultar",
+      clearTitle: "Quitar fecha",
+      saving:     "Guardando...",
+      save:       "Guardar fecha",
+      status: {
+        overdue: "Vencido",
+        today:   "Hoy",
+        soon:    "Próximo",
+        ok:      "Programado",
+      },
+    },
+  
+    labelsBlock: {
+      title:             "Etiquetas",
+      hide:              "Ocultar",
+      edit:              "Editar",
+      searchPlaceholder: "Buscar etiqueta...",
+      loading:           "Cargando...",
+      noResult:          "Sin resultados",
+      noLabels:          "Sin etiquetas creadas",
+      deleteLabel:       "Eliminar esta etiqueta",
+      preview:           "Vista previa de etiqueta",
+      namePlaceholder:   "Nombre de la etiqueta",
+      creating:          "Creando...",
+      createAndAdd:      "Crear y añadir",
+      cancel:            "Cancelar",
+      createNew:         "+ Crear nueva etiqueta",
+    },
+  
+    meta: {
+      locale: "es-ES",
+    },
+  },
 };
 
 export type TranslationType = typeof translations.fr;

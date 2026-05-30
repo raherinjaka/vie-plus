@@ -1,5 +1,6 @@
 "use client";
 
+// Sidebar.tsx
 import { useEffect, useRef, useState, RefObject } from "react";
 import { usePathname } from "next/navigation";
 import { useTheme } from "next-themes";
@@ -40,7 +41,7 @@ function SettingsCascade({
   open: boolean;
   onClose: () => void;
   lang: string;
-  setLang: (l: "fr" | "en") => void;
+  setLang: (l: "fr" | "en" | "de" | "es") => void;
   theme: string;
   setTheme: (t: string) => void;
   t: any;
@@ -75,7 +76,7 @@ function SettingsCascade({
           exit={{    opacity: 0, scale: 0.95, x: -10 }}
           transition={{ duration: 0.18, ease: "easeOut" }}
           style={{ top: pos.top, left: pos.left }}
-          className="fixed z-[10000] w-56 rounded-2xl overflow-hidden
+          className="fixed z-[9998] w-56 rounded-2xl overflow-hidden
             bg-slate-900/90 backdrop-blur-2xl
             border border-white/[0.08]
             shadow-[0_20px_50px_rgba(0,0,0,0.7),0_0_0_1px_rgba(255,255,255,0.04)]"
@@ -201,6 +202,8 @@ function SettingsCascade({
                   {[
                     { key: "fr" as const, flag: "🇫🇷", label: "Français" },
                     { key: "en" as const, flag: "🇺🇸", label: "English"  },
+                    { key: "de" as const, flag: "🇩🇪", label: "Deutsch"  },
+                    { key: "es" as const, flag: "🇪🇸", label: "Español" },
                   ].map(({ key, flag, label }) => (
                     <button
                       key={key}

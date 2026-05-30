@@ -1,5 +1,5 @@
-
 "use client";
+// dashboard/page.tsx
 
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
@@ -8,9 +8,9 @@ import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 
 import Sidebar from "@/components/Sidebar";
-import MobileHeader from "@/components/MobileHeader";
+
 import MobileNav from "@/components/MobileNav";
-import NavDrawer from "@/components/NavDrawer";
+import Navbar from "@/components/Navbar";
 
 import { useOnboarding } from "@/hooks/useOnboarding";
 import OnboardingModal from "@/components/onboarding/OnboardingModal";
@@ -20,6 +20,7 @@ import DashboardStats    from "@/components/dashboard/DashboardStats";
 import DashboardBudget   from "@/components/dashboard/DashboardBudget";
 import DashboardActivity, { type ActivityItem }  from "@/components/dashboard/DashboardActivity";
 import DashboardObjectifs, { type ObjectifPreview } from "@/components/dashboard/DashboardObjectifs";
+
 
 
 // ─── Raw data types ───────────────────────────────────────────────────────────
@@ -155,11 +156,12 @@ export default function DashboardPage() {
     <div className="flex min-h-screen w-full bg-[#080c12] text-slate-100 overflow-x-hidden"
       style={{ scrollbarWidth: "thin", scrollbarColor: "#1e293b transparent" }}
     >
+      <Navbar/>
       {/* Sidebar — desktop uniquement */}
       <Sidebar />
 
       {/* Header fixe — mobile uniquement */}
-      <MobileHeader />
+      
 
       {/* Background ambiance */}
       <div className="pointer-events-none fixed inset-0 z-0">
@@ -174,9 +176,8 @@ export default function DashboardPage() {
         <div className="absolute top-1/2 right-0 w-72 h-72 rounded-full bg-emerald-500/[0.03] blur-[80px]" />
       </div>
 
-      {/* NavDrawer — desktop seulement, mobile a déjà MobileHeader */}
       <div className="hidden lg:block fixed top-4 right-4 z-[100]">
-        <NavDrawer />
+        {/*<NavDrawer />*/}
       </div>
 
       {/* ── MAIN CONTENT ── */}

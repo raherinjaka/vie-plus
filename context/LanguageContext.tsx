@@ -3,22 +3,22 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { translations, TranslationType } from "@/lib/translations";
 
 interface LanguageContextType {
-  lang: "fr" | "en";
-  setLang: (lang: "fr" | "en") => void;
+  lang: "fr" | "en" | "de" | "es";
+  setLang: (lang: "fr" | "en" | "de" | "es") => void;
   t: TranslationType;
 }
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<"fr" | "en">("fr");
+  const [lang, setLang] = useState<"fr" | "en" | "de" | "es">("fr");
 
   useEffect(() => {
     const saved = localStorage.getItem("app_lang") as "fr" | "en";
     if (saved) setLang(saved);
   }, []);
 
-  const handleSetLang = (newLang: "fr" | "en") => {
+  const handleSetLang = (newLang: "fr" | "en" | "de" | "es") => {
     setLang(newLang);
     localStorage.setItem("app_lang", newLang);
   };

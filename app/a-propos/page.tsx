@@ -1,8 +1,8 @@
 "use client";
 
 import NavDrawer from "@/components/NavDrawer";
-import MobileHeader from "@/components/MobileHeader";
 import MobileNav from "@/components/MobileNav";
+
 import FeaturesSection from "@/components/a-propos/FeaturesSection";
 import HowItWorksSection from "@/components/a-propos/HowitworksSection";
 import TechStackSection from "@/components/a-propos/TechstackSection";
@@ -36,10 +36,6 @@ export default function AboutPage() {
         }
       `}</style>
 
-      {/* Mobile header */}
-      <div className="md:hidden">
-        <MobileHeader />
-      </div>
 
       {/* Nav drawer desktop */}
       <div className="fixed top-4 right-4 z-[100]">
