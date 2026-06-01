@@ -42,7 +42,7 @@ export default function Login() {
     setIsLoading(false);
   };
 
-  const handleOAuthLogin = async (provider: 'google' | 'github' | 'facebook') => {
+  const handleOAuthLogin = async (provider: 'google' | 'github') => {
     setIsLoading(true);
     setNotif(null);
     try {
@@ -153,20 +153,6 @@ export default function Login() {
                 : <GithubIcon size={18} />
               }
               Entrer avec GitHub
-            </button>
-
-            {/* Bouton Facebook */}
-            <button
-              onClick={() => handleOAuthLogin('facebook')}
-              disabled={isLoading}
-              className="flex items-center justify-center gap-3 w-full bg-[#1877F2] hover:bg-[#165fc7] text-white text-sm font-semibold py-3.5 px-5 rounded-full transition-all active:scale-[0.98] disabled:opacity-50"
-            >
-              {isLoading ? (
-                <Loader2 size={18} className="animate-spin" />
-              ) : (
-                <FacebookIcon size={18} />
-              )}
-              Entrer avec Facebook
             </button>
           </div>
 
