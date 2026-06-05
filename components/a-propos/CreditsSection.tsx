@@ -63,7 +63,7 @@ export default function CreditsSection() {
           <ContactButton />
 
           <a
-            href="https://github.com"
+            href="https://github.com/raherinjaka"
             target="_blank"
             rel="noopener noreferrer"
             className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2.5 px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900/50 text-slate-300 text-xs font-medium hover:border-cyan-500/30 hover:text-cyan-400 hover:bg-slate-900 transition-all duration-200 group/link focus:outline-none focus:ring-2 focus:ring-cyan-500/20"

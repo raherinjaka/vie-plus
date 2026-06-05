@@ -1,53 +1,103 @@
+// components/contact/ContactModal.tsx
 "use client";
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, ArrowRight, Send, CheckCircle2, AlertCircle, Star } from "lucide-react";
+import { X, Mail, ArrowRight, Send, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { createPortal } from "react-dom";
 
+import ProgressBar from "./ProgressBar";
+import StarRating from "./StarRating";
+import { FuturisticInput, FuturisticTextarea } from "./FuturisticInput";
+import AnimatedEmoji from "./AnimatedEmoji";
+
+// ── Types ──────────────────────────────────────────────────────────────────
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
-  const [step, setStep] = useState<1 | 2>(1);
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [email, setEmail] = useState("");
-  const [message, setMessage] = useState("");
-  const [rating, setRating] = useState(0);
-  const [hoveredStar, setHoveredStar] = useState(0);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSent, setIsSent] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+// ── Constantes d'animation ─────────────────────────────────────────────────
+const SLIDE_VARIANTS = {
+  enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
+  center: { opacity: 1, x: 0 },
+  exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -40 : 40 }),
+};
 
-  const isStep1Valid = firstName.trim().length >= 2 && lastName.trim().length >= 2 && email.includes("@");
+// ── Composant principal ────────────────────────────────────────────────────
+export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
+  // Étapes
+  const [step, setStep] = useState<1 | 2>(1);
+  const [direction, setDirection] = useState(1); // pour l'animation directionnelle
+
+  // Champs
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName]   = useState("");
+  const [email, setEmail]         = useState("");
+  const [message, setMessage]     = useState("");
+  const [rating, setRating]       = useState(0);
+
+  // UI
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSent, setIsSent]           = useState(false);
+  const [error, setError]             = useState<string | null>(null);
+
+  // Validations
+  const isStep1Valid =
+    firstName.trim().length >= 2 &&
+    lastName.trim().length >= 2 &&
+    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+
   const isStep2Valid = message.trim().length >= 10 && rating >= 1;
 
-  const handleContinue = () => {
-    if (isStep1Valid) setStep(2);
+  // ── Handlers ──────────────────────────────────────────────────────────────
+  const goToStep2 = () => {
+    if (!isStep1Valid) return;
+    setDirection(1);
+    setStep(2);
+  };
+
+  const goToStep1 = () => {
+    setDirection(-1);
+    setStep(1);
   };
 
   const handleSubmit = async () => {
     setError(null);
     setIsSubmitting(true);
-
+  
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ firstName, lastName, email, message, rating }),
+        body: JSON.stringify({
+          firstName: firstName.trim(),
+          lastName: lastName.trim(),
+          email: email.trim(),
+          message: message.trim(),
+          rating,                    // number ✅ (pas string)
+        }),
       });
-
-      const data = await res.json();
-
-      if (!res.ok) {
-        setError(data.error ?? "Une erreur est survenue.");
+  
+      // Statuts gérés : 200, 400, 422, 500, 502
+      if (res.status === 200) {
+        setIsSent(true);
         return;
       }
-
-      setIsSent(true);
+  
+      // Pour tous les autres statuts, on lit le message d'erreur Zod/serveur
+      const data = await res.json().catch(() => null);
+      const msg =
+        data?.error ??
+        (res.status === 502
+          ? "L'envoi a échoué. Réessaie dans quelques instants."
+          : res.status === 500
+          ? "Erreur de configuration serveur."
+          : "Une erreur est survenue.");
+  
+      setError(msg);
     } catch {
+      // Erreur réseau pure (pas de connexion, CORS, etc.)
       setError("Impossible de contacter le serveur. Vérifie ta connexion.");
     } finally {
       setIsSubmitting(false);
@@ -55,178 +105,200 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   };
 
   const handleClose = () => {
+    // Reset complet
     setStep(1);
-    setFirstName("");
-    setLastName("");
-    setEmail("");
-    setMessage("");
-    setRating(0);
-    setHoveredStar(0);
-    setError(null);
-    setIsSent(false);
+    setDirection(1);
+    setFirstName(""); setLastName(""); setEmail("");
+    setMessage(""); setRating(0);
+    setError(null); setIsSent(false); setIsSubmitting(false);
     onClose();
   };
 
-  return (
+  if (typeof window === "undefined") return null;
+  
+  // ── Rendu ─────────────────────────────────────────────────────────────────
+  return createPortal(
     <AnimatePresence>
       {isOpen && (
         <>
-          {/* Overlay */}
+          {/* ── Overlay ── */}
           <motion.div
             key="overlay"
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
-            transition={{ duration: 0.2 }}
+            transition={{ duration: 0.25 }}
             onClick={handleClose}
-            className="fixed inset-0 z-40 bg-black/70 backdrop-blur-sm"
+            className="fixed inset-0 z-40 bg-black/75 backdrop-blur-md"
           />
 
-          {/* Modale */}
+          {/* ── Modale ── */}
           <motion.div
             key="modal"
-            initial={{ opacity: 0, scale: 0.95, y: 12 }}
+            initial={{ opacity: 0, scale: 0.9, y: 20 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
-            exit={{ opacity: 0, scale: 0.95, y: 12 }}
-            transition={{ duration: 0.25, ease: "easeOut" }}
+            exit={{ opacity: 0, scale: 0.9, y: 20 }}
+            transition={{ type: "spring", stiffness: 280, damping: 28 }}
             className="fixed inset-0 z-50 flex items-center justify-center p-4"
           >
-            {/* Glow extérieur */}
-            <div className="absolute w-[500px] h-[500px] bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none" />
+            {/* Halo extérieur animé */}
+            <motion.div
+              className="absolute w-[420px] h-[420px] rounded-full pointer-events-none"
+              style={{ background: "radial-gradient(circle, rgba(6,182,212,0.12) 0%, transparent 70%)" }}
+              animate={{ scale: [1, 1.15, 1], opacity: [0.6, 1, 0.6] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+            />
 
             <div className="relative w-full max-w-md">
-              <div className="absolute -inset-[1px] bg-gradient-to-b from-cyan-500/20 via-slate-800/20 to-transparent rounded-2xl pointer-events-none" />
+              {/* Bordure gradient */}
+              <div className="absolute -inset-[1px] bg-gradient-to-b from-cyan-500/30 via-blue-600/10 to-transparent rounded-2xl pointer-events-none" />
 
-              <div className="relative rounded-2xl border border-slate-800 bg-slate-950 shadow-2xl overflow-hidden">
+              <div className="relative rounded-2xl border border-slate-800/80 bg-slate-950 shadow-[0_0_60px_rgba(6,182,212,0.08)] overflow-hidden">
 
                 {/* Barre de progression */}
-                <div className="h-[2px] bg-slate-800 w-full">
-                  <motion.div
-                    className="h-full bg-gradient-to-r from-cyan-500 to-blue-500"
-                    initial={{ width: "50%" }}
-                    animate={{ width: step === 1 ? "50%" : "100%" }}
-                    transition={{ duration: 0.4, ease: "easeInOut" }}
-                  />
-                </div>
+                <ProgressBar step={step} />
 
-                <div className="p-6">
-                  {/* Header */}
-                  <div className="flex items-center justify-between mb-6">
-                    <div className="flex items-center gap-2.5">
-                      <div className="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-900 border border-slate-800">
-                        <Mail size={14} className="text-cyan-400" />
+                <div className="p-7">
+
+                  {/* ── Header ── */}
+                  <div className="flex items-center justify-between mb-7">
+                    <div className="flex items-center gap-3">
+                      <div className="flex items-center justify-center w-9 h-9 rounded-xl bg-cyan-500/10 border border-cyan-500/20">
+                        <Mail size={15} className="text-cyan-400" />
                       </div>
                       <div>
-                        <h2 className="text-sm font-semibold text-slate-200">
-                          Nous contacter
-                        </h2>
-                        <p className="text-[11px] text-slate-500">
-                          Étape {step} sur 2
-                        </p>
+                        <h2 className="text-sm font-bold text-slate-100 tracking-wide">Nous contacter</h2>
+                        <p className="text-[10px] text-slate-500 mt-0.5">Étape {step} sur 2</p>
                       </div>
                     </div>
-                    <button
+                    <motion.button
+                      whileHover={{ rotate: 90, scale: 1.1 }}
+                      whileTap={{ scale: 0.9 }}
                       onClick={handleClose}
-                      className="flex items-center justify-center w-7 h-7 rounded-lg text-slate-500 hover:text-slate-300 hover:bg-slate-800 transition-all duration-200"
+                      transition={{ duration: 0.2 }}
+                      className="flex items-center justify-center w-8 h-8 rounded-xl text-slate-500 hover:text-slate-200 hover:bg-slate-800 transition-colors duration-200"
                     >
-                      <X size={14} />
-                    </button>
+                      <X size={15} />
+                    </motion.button>
                   </div>
 
-                  {/* État succès */}
+                  {/* ── État SUCCÈS ── */}
                   {isSent ? (
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
+                      initial={{ opacity: 0, y: 12 }}
                       animate={{ opacity: 1, y: 0 }}
-                      className="flex flex-col items-center gap-3 py-10 text-center"
+                      transition={{ type: "spring", stiffness: 200, damping: 20 }}
+                      className="flex flex-col items-center gap-4 py-8 text-center"
                     >
-                      <div className="flex items-center justify-center w-14 h-14 rounded-full bg-emerald-500/10 border border-emerald-500/20 mb-2">
-                        <CheckCircle2 size={24} className="text-emerald-400" />
+                      <AnimatedEmoji type="love" size={80} />
+
+                      <div>
+                        <p className="text-base font-bold text-slate-100">Message envoyé !</p>
+                        <p className="text-xs text-slate-500 mt-1 max-w-[220px] mx-auto">
+                          Merci <span className="text-cyan-400 font-medium">{firstName}</span>,
+                          on te répondra très vite 🚀
+                        </p>
                       </div>
-                      <p className="text-base font-semibold text-slate-200">
-                        Message envoyé !
-                      </p>
-                      <p className="text-xs text-slate-500 max-w-[240px]">
-                        Merci {firstName}, on te répondra dans les plus brefs délais.
-                      </p>
-                      {/* Affichage des étoiles dans le succès */}
-                      <div className="flex gap-1 mt-2">
-                        {[1, 2, 3, 4, 5].map((s) => (
-                          <Star
-                            key={s}
-                            size={16}
-                            className={s <= rating ? "text-amber-400 fill-amber-400" : "text-slate-700"}
-                          />
+
+                      {/* Étoiles recap */}
+                      <div className="flex gap-1.5 mt-1">
+                        {[1,2,3,4,5].map(s => (
+                          <svg key={s} viewBox="0 0 24 24" width="18" height="18">
+                            <polygon
+                              points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"
+                              fill={s <= rating ? "#FFD93D" : "#1E293B"}
+                              stroke={s <= rating ? "#FFD93D" : "#334155"}
+                              strokeWidth="1.5"
+                            />
+                          </svg>
                         ))}
                       </div>
+
                       <button
                         onClick={handleClose}
-                        className="mt-4 px-4 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-all duration-200"
+                        className="mt-2 px-5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-all duration-200"
                       >
                         Fermer
                       </button>
                     </motion.div>
+
                   ) : (
-                    <AnimatePresence mode="wait">
+                    /* ── Étapes ── */
+                    <AnimatePresence custom={direction} mode="wait">
+
                       {/* ÉTAPE 1 — Identité */}
                       {step === 1 && (
                         <motion.div
                           key="step1"
-                          initial={{ opacity: 0, x: -20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: -20 }}
-                          transition={{ duration: 0.2 }}
-                          className="flex flex-col gap-4"
+                          custom={direction}
+                          variants={SLIDE_VARIANTS}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="flex flex-col gap-8"
                         >
-                          <p className="text-xs text-slate-500 mb-1">
+                          <p className="text-xs text-slate-500">
                             Dis-nous qui tu es avant de continuer.
                           </p>
 
-                          {/* Nom + Prénom côte à côte */}
-                          <div className="grid grid-cols-2 gap-3">
-                            <div className="flex flex-col gap-1.5">
-                              <label className="text-xs font-medium text-slate-400">Prénom</label>
-                              <input
-                                type="text"
-                                value={firstName}
-                                onChange={(e) => setFirstName(e.target.value)}
-                                placeholder="Jean"
-                                className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/30 transition-all duration-200"
-                              />
-                            </div>
-                            <div className="flex flex-col gap-1.5">
-                              <label className="text-xs font-medium text-slate-400">Nom</label>
-                              <input
-                                type="text"
-                                value={lastName}
-                                onChange={(e) => setLastName(e.target.value)}
-                                placeholder="Dupont"
-                                className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/30 transition-all duration-200"
-                              />
-                            </div>
-                          </div>
-
-                          {/* Email */}
-                          <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-slate-400">Adresse e-mail</label>
-                            <input
-                              type="email"
-                              value={email}
-                              onChange={(e) => setEmail(e.target.value)}
-                              placeholder="jean@exemple.com"
-                              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/30 transition-all duration-200"
+                          {/* Prénom + Nom */}
+                          <div className="grid grid-cols-2 gap-6">
+                            <FuturisticInput
+                              required
+                              label="Prénom"
+                              type="text"
+                              value={firstName}
+                              onChange={e => setFirstName(e.target.value)}
+                              autoComplete="given-name"
+                            />
+                            <FuturisticInput
+                              required
+                              label="Nom"
+                              type="text"
+                              value={lastName}
+                              onChange={e => setLastName(e.target.value)}
+                              autoComplete="family-name"
                             />
                           </div>
 
+                          {/* Email */}
+                          <FuturisticInput
+                            required
+                            label="Adresse e-mail"
+                            type="email"
+                            value={email}
+                            onChange={e => setEmail(e.target.value)}
+                            autoComplete="email"
+                          />
+
                           {/* Bouton Continuer */}
-                          <button
-                            onClick={handleContinue}
+                          <motion.button
+                            type="button"
+                            onClick={goToStep2}
                             disabled={!isStep1Valid}
-                            className="flex items-center justify-center gap-2 w-full px-4 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium hover:bg-cyan-500/20 hover:border-cyan-500/30 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed mt-1"
+                            whileHover={isStep1Valid ? { scale: 1.02, boxShadow: "0 8px 30px rgba(6,182,212,0.25)" } : {}}
+                            whileTap={isStep1Valid ? { scale: 0.97 } : {}}
+                            className="
+                              group relative w-full py-3 rounded-xl
+                              bg-gradient-to-r from-cyan-500/15 to-blue-600/15
+                              border border-cyan-500/25
+                              text-cyan-400 text-sm font-semibold
+                              hover:from-cyan-500/25 hover:to-blue-600/25
+                              hover:border-cyan-400/40
+                              disabled:opacity-35 disabled:cursor-not-allowed
+                              transition-all duration-300
+                              flex items-center justify-center gap-2
+                              overflow-hidden
+                            "
                           >
+                            {/* Shimmer au hover */}
+                            <motion.div
+                              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                            />
                             Continuer
-                            <ArrowRight size={13} />
-                          </button>
+                            <ArrowRight size={14} className="relative z-10" />
+                          </motion.button>
                         </motion.div>
                       )}
 
@@ -234,94 +306,99 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       {step === 2 && (
                         <motion.div
                           key="step2"
-                          initial={{ opacity: 0, x: 20 }}
-                          animate={{ opacity: 1, x: 0 }}
-                          exit={{ opacity: 0, x: 20 }}
-                          transition={{ duration: 0.2 }}
-                          className="flex flex-col gap-4"
+                          custom={direction}
+                          variants={SLIDE_VARIANTS}
+                          initial="enter"
+                          animate="center"
+                          exit="exit"
+                          transition={{ duration: 0.25, ease: "easeInOut" }}
+                          className="flex flex-col gap-7"
                         >
-                          <p className="text-xs text-slate-500 mb-1">
-                            Ton message et ton avis nous aident à améliorer VIE+.
+                          <p className="text-xs text-slate-500">
+                            Ton message et ton avis nous aident à nous améliorer.
                           </p>
 
-                          {/* Message */}
-                          <div className="flex flex-col gap-1.5">
-                            <label className="text-xs font-medium text-slate-400">Ton message</label>
-                            <textarea
-                              value={message}
-                              onChange={(e) => setMessage(e.target.value)}
-                              placeholder="Dis-nous ce que tu penses de VIE+..."
-                              rows={4}
-                              className="w-full px-3 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-sm text-slate-200 placeholder:text-slate-600 focus:outline-none focus:ring-2 focus:ring-cyan-500/20 focus:border-cyan-500/30 transition-all duration-200 resize-none"
-                            />
+                          {/* Textarea futuriste */}
+                          <FuturisticTextarea
+                            required
+                            label="Ton message"
+                            value={message}
+                            onChange={e => setMessage(e.target.value)}
+                            rows={4}
+                          />
+
+                          {/* Séparateur */}
+                          <div className="flex items-center gap-3">
+                            <div className="flex-1 h-px bg-slate-800" />
+                            <span className="text-[10px] text-slate-600 uppercase tracking-widest">Ton avis</span>
+                            <div className="flex-1 h-px bg-slate-800" />
                           </div>
 
-                          {/* Étoiles */}
-                          <div className="flex flex-col gap-2">
-                            <label className="text-xs font-medium text-slate-400">
-                              Ton avis <span className="text-slate-600">(obligatoire)</span>
-                            </label>
-                            <div className="flex items-center gap-1.5">
-                              {[1, 2, 3, 4, 5].map((s) => (
-                                <motion.button
-                                  key={s}
-                                  whileHover={{ scale: 1.2 }}
-                                  whileTap={{ scale: 0.9 }}
-                                  onClick={() => setRating(s)}
-                                  onMouseEnter={() => setHoveredStar(s)}
-                                  onMouseLeave={() => setHoveredStar(0)}
-                                  className="focus:outline-none"
-                                >
-                                  <Star
-                                    size={24}
-                                    className={`transition-colors duration-150 ${
-                                      s <= (hoveredStar || rating)
-                                        ? "text-amber-400 fill-amber-400"
-                                        : "text-slate-700 fill-slate-700"
-                                    }`}
-                                  />
-                                </motion.button>
-                              ))}
-                              {rating > 0 && (
-                                <span className="ml-2 text-xs text-slate-500">
-                                  {["", "Mauvais", "Passable", "Bien", "Très bien", "Excellent"][rating]}
-                                </span>
-                              )}
-                            </div>
-                          </div>
+                          {/* StarRating avec emojis */}
+                          <StarRating value={rating} onChange={setRating} />
 
                           {/* Erreur */}
-                          {error && (
-                            <motion.div
-                              initial={{ opacity: 0, y: -4 }}
-                              animate={{ opacity: 1, y: 0 }}
-                              className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-red-500/20 bg-red-500/10"
-                            >
-                              <AlertCircle size={13} className="text-red-400 shrink-0" />
-                              <p className="text-xs text-red-400">{error}</p>
-                            </motion.div>
-                          )}
+                          <AnimatePresence>
+                            {error && (
+                              <motion.div
+                                initial={{ opacity: 0, y: -6, height: 0 }}
+                                animate={{ opacity: 1, y: 0, height: "auto" }}
+                                exit={{ opacity: 0, y: -6, height: 0 }}
+                                className="flex items-center gap-2 px-3 py-2.5 rounded-xl border border-red-500/20 bg-red-500/10 overflow-hidden"
+                              >
+                                <AlertCircle size={13} className="text-red-400 shrink-0" />
+                                <p className="text-xs text-red-400">{error}</p>
+                              </motion.div>
+                            )}
+                          </AnimatePresence>
 
-                          {/* Boutons */}
-                          <div className="flex gap-2 mt-1">
-                            <button
-                              onClick={() => setStep(1)}
-                              className="px-4 py-2.5 rounded-xl border border-slate-800 bg-slate-900 text-slate-400 text-xs font-medium hover:text-slate-200 hover:border-slate-700 transition-all duration-200"
+                          {/* Boutons Retour + Envoyer */}
+                          <div className="flex gap-3">
+                            <motion.button
+                              type="button"
+                              onClick={goToStep1}
+                              whileHover={{ scale: 1.02 }}
+                              whileTap={{ scale: 0.97 }}
+                              className="px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 text-xs font-medium hover:text-slate-200 hover:border-slate-700 transition-all duration-200"
                             >
                               Retour
-                            </button>
-                            <button
+                            </motion.button>
+
+                            <motion.button
+                              type="button"
                               onClick={handleSubmit}
                               disabled={isSubmitting || !isStep2Valid}
-                              className="flex-1 flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 text-xs font-medium hover:bg-cyan-500/20 hover:border-cyan-500/30 transition-all duration-200 disabled:opacity-40 disabled:cursor-not-allowed"
+                              whileHover={isStep2Valid && !isSubmitting ? { scale: 1.02, boxShadow: "0 8px 30px rgba(6,182,212,0.25)" } : {}}
+                              whileTap={isStep2Valid ? { scale: 0.97 } : {}}
+                              className="
+                                group relative flex-1 flex items-center justify-center gap-2
+                                py-3 rounded-xl
+                                bg-gradient-to-r from-cyan-500/15 to-blue-600/15
+                                border border-cyan-500/25
+                                text-cyan-400 text-xs font-semibold
+                                hover:from-cyan-500/25 hover:to-blue-600/25
+                                hover:border-cyan-400/40
+                                disabled:opacity-35 disabled:cursor-not-allowed
+                                transition-all duration-300
+                                overflow-hidden
+                              "
                             >
+                              <motion.div
+                                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
+                              />
                               {isSubmitting ? (
-                                <span className="animate-spin w-3.5 h-3.5 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full" />
+                                <motion.span
+                                  className="w-4 h-4 border-2 border-cyan-400/30 border-t-cyan-400 rounded-full"
+                                  animate={{ rotate: 360 }}
+                                  transition={{ duration: 0.7, repeat: Infinity, ease: "linear" }}
+                                />
                               ) : (
-                                <Send size={13} />
+                                <Send size={13} className="relative z-10" />
                               )}
-                              {isSubmitting ? "Envoi..." : "Envoyer"}
-                            </button>
+                              <span className="relative z-10">
+                                {isSubmitting ? "Envoi..." : "Envoyer"}
+                              </span>
+                            </motion.button>
                           </div>
                         </motion.div>
                       )}
@@ -333,6 +410,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
           </motion.div>
         </>
       )}
-    </AnimatePresence>
+    </AnimatePresence>,
+    document.body
   );
 }
