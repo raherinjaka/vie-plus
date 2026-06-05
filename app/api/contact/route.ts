@@ -5,6 +5,14 @@ import { z } from "zod";
 const resend = new Resend(process.env.RESEND_API_KEY);
 
 const contactSchema = z.object({
+  firstName: z
+    .string()
+    .min(2, "Le prénom doit contenir au moins 2 caractères.")
+    .max(50, "Prénom trop long."),
+  lastName: z
+    .string()
+    .min(2, "Le nom doit contenir au moins 2 caractères.")
+    .max(50, "Nom trop long."),
   email: z
     .string()
     .email("Adresse e-mail invalide.")
@@ -13,6 +21,10 @@ const contactSchema = z.object({
     .string()
     .min(10, "Le message doit contenir au moins 10 caractères.")
     .max(2000, "Le message ne peut pas dépasser 2000 caractères."),
+  rating: z
+    .number()
+    .min(1, "Une note est requise.")
+    .max(5, "Note invalide."),
 });
 
 export async function POST(req: NextRequest) {
@@ -34,7 +46,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const { email, message } = parsed.data;
+  const { firstName, lastName, email, message, rating } = parsed.data;
 
   const recipientEmail = process.env.CONTACT_EMAIL_TO;
   if (!recipientEmail) {
@@ -45,13 +57,23 @@ export async function POST(req: NextRequest) {
     );
   }
 
+  // Génération visuelle des étoiles
+  const stars = "⭐".repeat(rating) + "☆".repeat(5 - rating);
+
   try {
     await resend.emails.send({
       from: "VIE+ Contact <onboarding@resend.dev>",
       to: recipientEmail,
       replyTo: email,
-      subject: `[VIE+] Nouveau message de ${email}`,
-      text: `De : ${email}\n\n${message}`,
+      subject: `[VIE+] ${stars} Message de ${firstName} ${lastName}`,
+      text: [
+        `Nom      : ${lastName} ${firstName}`,
+        `Email    : ${email}`,
+        `Note     : ${stars} (${rating}/5)`,
+        ``,
+        `Message :`,
+        message,
+      ].join("\n"),
     });
   } catch (err) {
     console.error("[contact] Erreur Resend :", err);
