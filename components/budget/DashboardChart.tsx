@@ -1,4 +1,5 @@
 "use client";
+//DashboardChart.tsx
 
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,6 +9,7 @@ import {
 } from "recharts";
 import { TrendingUp, TrendingDown, BarChart3, Activity } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Mouvement {
@@ -30,6 +32,7 @@ type ViewMode = "evolution" | "daily";
 // ─── Custom Tooltip ───────────────────────────────────────────────────────────
 function CustomTooltip({ active, payload, label, budgetTotal, t }: any) {
   if (!active || !payload?.length) return null;
+  const { format } = useCurrency();
   return (
     <motion.div
       initial={{ opacity: 0, scale: 0.95, y: 4 }}
@@ -50,7 +53,7 @@ function CustomTooltip({ active, payload, label, budgetTotal, t }: any) {
             <span className="text-[11px] text-slate-400 font-medium">{entry.name}</span>
           </div>
           <span className="text-[12px] font-black font-mono" style={{ color: entry.color }}>
-            {Number(entry.value).toLocaleString()} Ar
+            {format(Number(entry.value))}
           </span>
         </div>
       ))}
@@ -92,6 +95,7 @@ function EmptyChart({ t }: { t: any }) {
 // ─── DashboardChart ───────────────────────────────────────────────────────────
 export default function DashboardChart({ mouvements, budgetTotal, dateDebut, dateFin }: Props) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
   const [viewMode, setViewMode] = useState<ViewMode>("evolution");
 
   // ── Génère tous les jours du cycle ──────────────────────────────────────────
@@ -236,7 +240,7 @@ export default function DashboardChart({ mouvements, budgetTotal, dateDebut, dat
             {t?.dashboardChart?.avgPerDay ?? "Moy / jour"}
           </p>
           <p className="text-sm font-black font-mono text-slate-300">
-            {avgParJour.toLocaleString()} Ar
+            {format(avgParJour)}
           </p>
         </div>
         <div className={`p-3 rounded-2xl border
@@ -245,7 +249,7 @@ export default function DashboardChart({ mouvements, budgetTotal, dateDebut, dat
             {t?.dashboardChart?.peakExpense ?? "Pic de dépense"}
           </p>
           <p className="text-sm font-black font-mono text-red-400">
-            {pire.depensesJour > 0 ? `${pire.depensesJour.toLocaleString()} Ar` : "—"}
+            {pire.depensesJour > 0 ? format(pire.depensesJour) : "—"}
           </p>
           {pire.depensesJour > 0 && (
             <p className="text-[9px] text-slate-600 font-mono">{pire.label}</p>

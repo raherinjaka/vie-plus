@@ -1,5 +1,5 @@
 "use client";
-
+//DashboardObjetifs.tsx
 import { motion } from "framer-motion";
 import { Target, ArrowRight, Trophy, Plus } from "lucide-react";
 import Link from "next/link";

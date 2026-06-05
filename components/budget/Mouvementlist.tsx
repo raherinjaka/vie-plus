@@ -1,9 +1,11 @@
 "use client";
+//Mouvementlist.tsx
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, Trash2, AlertTriangle, Filter, ArrowUpDown, Wallet } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface Mouvement {
@@ -58,6 +60,7 @@ function ConfirmModal({ name, onConfirm, onCancel }: {
   name: string; onConfirm: () => void; onCancel: () => void;
 }) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   return (
     <motion.div
@@ -109,7 +112,8 @@ function ConfirmModal({ name, onConfirm, onCancel }: {
 // ─── MouvementList ────────────────────────────────────────────────────────────
 export default function MouvementList({ mouvements, onDelete, loading }: Props) {
   const { t } = useLanguage() as any;
-
+  const { format } = useCurrency(); 
+  
   const [sortKey,    setSortKey]    = useState<SortKey>("date");
   const [filterType, setFilterType] = useState<FilterType>("all");
   const [filterCat,  setFilterCat]  = useState("all");
@@ -344,7 +348,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                     <p className={`text-sm font-black font-mono tabular-nums
                       ${m.type === "depense" ? "text-red-400" : "text-emerald-400"}`}
                     >
-                      {m.type === "depense" ? "-" : "+"}{m.montant.toLocaleString()} Ar
+                      {m.type === "depense" ? "-" : "+"}{format(m.montant)}
                     </p>
                     <button
                       onClick={() => setConfirmDel({ id: m.id, name: m.nom })}

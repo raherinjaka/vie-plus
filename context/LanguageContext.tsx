@@ -3,22 +3,31 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { translations, TranslationType } from "@/lib/translations";
 
 interface LanguageContextType {
-  lang: "fr" | "en" | "de" | "es";
-  setLang: (lang: "fr" | "en" | "de" | "es") => void;
+  lang: "fr" | "en" | "de" | "es" | "mg"
+  setLang: (lang: "fr" | "en" | "de" | "es" | "mg" ) => void;
   t: TranslationType;
+  currency: string;
 }
+
+const CURRENCY: Record<"fr" | "en" | "de" | "es" | "mg", string> = {
+  fr: "Ar",
+  en: "$",
+  de: "€",
+  es: "€",
+  mg: "Ar",
+};
 
 const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
-  const [lang, setLang] = useState<"fr" | "en" | "de" | "es">("fr");
+  const [lang, setLang] = useState<"fr" | "en" | "de" | "es" | "mg">("fr");
 
   useEffect(() => {
     const saved = localStorage.getItem("app_lang") as "fr" | "en";
     if (saved) setLang(saved);
   }, []);
 
-  const handleSetLang = (newLang: "fr" | "en" | "de" | "es") => {
+  const handleSetLang = (newLang: "fr" | "en" | "de" | "es" | "mg") => {
     setLang(newLang);
     localStorage.setItem("app_lang", newLang);
   };
@@ -30,7 +39,8 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
       value={{ 
         lang, 
         setLang: handleSetLang, 
-        t 
+        t,
+        currency: CURRENCY[lang],
       } as any}
     >
       {children}

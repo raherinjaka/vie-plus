@@ -1,8 +1,10 @@
 "use client";
-
+//DashboardHeader.tsx
 import { motion } from "framer-motion";
 import { Sparkles, TrendingUp, TrendingDown, Minus } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
+
 interface Props {
   userName: string;
   solde: number;
@@ -27,6 +29,7 @@ function getMoodConfig(pct: number, t: any) {
 
 export default function DashboardHeader({ userName, solde, budgetTotal, pct }: Props) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   const greeting = getGreeting(t);
   const mood     = getMoodConfig(pct, t);
@@ -120,7 +123,7 @@ export default function DashboardHeader({ userName, solde, budgetTotal, pct }: P
                 {t?.dashboard?.balance}
               </p>
               <p className={`text-2xl font-black font-mono ${mood.color}`}>
-                {solde.toLocaleString()} Ar
+                {format(solde)}
               </p>
             </div>
           )}

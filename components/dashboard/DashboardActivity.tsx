@@ -1,9 +1,11 @@
 "use client";
+//DashboardActivity.tsx
 
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, Target, Clock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 export interface ActivityItem {
   id: string;
@@ -34,6 +36,7 @@ function timeAgo(dateStr: string): string {
 
 export default function DashboardActivity({ items, loading }: Props) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   function timeAgo(dateStr: string): string {
     const diff = Date.now() - new Date(dateStr).getTime();
@@ -131,7 +134,7 @@ export default function DashboardActivity({ items, loading }: Props) {
                   {item.amount !== undefined && (
                     <p className={`text-xs font-black font-mono
                       ${item.type === "depense" ? "text-red-400" : "text-emerald-400"}`}>
-                      {item.type === "depense" ? "-" : "+"}{item.amount.toLocaleString()} Ar
+                      {item.type === "depense" ? "-" : "+"}{format(item.amount)}
                     </p>
                   )}
                   {item.pct !== undefined && (

@@ -1,9 +1,11 @@
 "use client";
+//Budgetsetup.tsx
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Wallet, Clock, Calendar, Zap, ArrowRight, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type PeriodeType = "jours" | "semaines" | "mois";
@@ -86,7 +88,8 @@ function StepDot({ active, done, n }: { active: boolean; done: boolean; n: numbe
 // ─── BudgetSetup ──────────────────────────────────────────────────────────────
 export default function BudgetSetup({ onConfirm }: Props) {
   const { t } = useLanguage() as any;
-
+  const { format } = useCurrency();
+  
   const [step, setStep]             = useState<1 | 2>(1);
   const [montant, setMontant]       = useState("");
   const [periodeType, setPeriode]   = useState<PeriodeType>("semaines");
@@ -225,7 +228,7 @@ export default function BudgetSetup({ onConfirm }: Props) {
                           outline-none placeholder:text-slate-700 font-mono
                           focus:text-cyan-300 transition-colors duration-300 w-full"
                       />
-                      <span className="text-xl font-black text-slate-500 pb-1 font-mono">Ar</span>
+                      <span className="text-xl font-black text-slate-500 pb-1 font-mono">{format(0).replace("0", "").trim()}</span>
                     </div>
 
                     {/* Quick amounts */}
@@ -325,7 +328,7 @@ export default function BudgetSetup({ onConfirm }: Props) {
                           {t?.budgetSetup?.summary?.lockedBudget}
                         </p>
                         <p className="text-lg font-black text-white font-mono">
-                          {montantNum.toLocaleString()} Ar
+                          {format(montantNum)}
                         </p>
                       </div>
                       <div>

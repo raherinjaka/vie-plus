@@ -1,9 +1,10 @@
 "use client";
-
+//Mouvementfrom.tsx
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, X, Check } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export type MvtType = "ajout" | "depense";
@@ -32,6 +33,7 @@ const CATEGORIES = [
 // ─── MouvementForm ────────────────────────────────────────────────────────────
 export default function MouvementForm({ onAdd }: Props) {
   const { t } = useLanguage() as any;
+  const { currency } = useCurrency();
 
   const [open, setOpen]       = useState(false);
   const [type, setType]       = useState<MvtType>("depense");
@@ -184,7 +186,7 @@ export default function MouvementForm({ onAdd }: Props) {
                       focus:border-white/20 focus:bg-white/[0.06]
                       placeholder:text-slate-700 transition-all"
                   />
-                  <span className="text-slate-500 font-black font-mono">Ar</span>
+                  <span className="text-slate-500 font-black font-mono">{currency.symbol}</span>
                 </div>
               </div>
 

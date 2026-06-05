@@ -1,10 +1,12 @@
 "use client";
+//DashboardBudget.tzsx
 
 import { motion } from "framer-motion";
 import { Wallet, Clock, Lock, ArrowRight } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 interface CatBar {
   id: string;
@@ -68,6 +70,7 @@ export default function DashboardBudget({
   montantTotal, montantDepense, montantRestant, pct, dateFin, topCats, configured,
 }: Props) {
   const { t, lang } = useLanguage() as any;
+  const { format } = useCurrency();
 
   if (!configured) {
     return (
@@ -137,20 +140,20 @@ export default function DashboardBudget({
           <div>
             <p className="text-[9px] font-black uppercase tracking-widest text-slate-600">{t.budget.remaining}</p>
             <p className="text-xl font-black font-mono text-white">
-              {montantRestant.toLocaleString()} Ar
+              {format(montantRestant)}
             </p>
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div className="p-2.5 rounded-xl bg-white/[0.02] border border-white/[0.05]">
               <p className="text-[8px] font-black uppercase tracking-widest text-slate-600 mb-0.5">{t.budget.total}</p>
               <p className="text-xs font-black font-mono text-slate-300">
-                {montantTotal.toLocaleString()} Ar
+                {format(montantTotal)}
               </p>
             </div>
             <div className="p-2.5 rounded-xl bg-red-500/[0.05] border border-red-500/10">
               <p className="text-[8px] font-black uppercase tracking-widest text-red-400/50 mb-0.5">{t.budget.spent}</p>
               <p className="text-xs font-black font-mono text-red-400">
-                -{montantDepense.toLocaleString()} Ar
+                -{format(montantDepense)}
               </p>
             </div>
           </div>
@@ -204,7 +207,7 @@ export default function DashboardBudget({
                   <div className="flex justify-between mb-1">
                     <span className={`text-[10px] font-bold ${c.color}`}>{c.label}</span>
                     <span className="text-[10px] font-mono text-slate-500">
-                      {c.total.toLocaleString()} Ar
+                      {format(c.total)}
                     </span>
                   </div>
                   <div className="h-1 w-full rounded-full bg-white/5 overflow-hidden">
@@ -227,7 +230,7 @@ export default function DashboardBudget({
         bg-white/[0.02] border border-white/[0.05] mt-auto">
         <Lock size={10} className="text-slate-600" />
         <p className="text-[9px] font-bold text-slate-600">
-        {t.budget.locked} · {montantTotal.toLocaleString()} Ar
+          {t.budget.locked} · {format(montantTotal)}
         </p>
       </div>
     </motion.div>

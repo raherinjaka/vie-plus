@@ -1,9 +1,10 @@
 "use client";
-
+//DashboardStats.tsx
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Wallet, TrendingDown, Target, CheckSquare, Flame, Sparkles } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 interface Props {
   soldeRestant: number;
@@ -83,6 +84,7 @@ export default function DashboardStats({
   soldeRestant, totalDepenses, scoreObjectifs, tachesRatio, budgetConfigured,
 }: Props) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   const soldeDanger = soldeRestant < (soldeRestant * 0.2);
 
@@ -93,7 +95,7 @@ export default function DashboardStats({
       <KpiCard
         label={t?.stats?.balance?.label}
         value={budgetConfigured
-          ? <AnimNum to={soldeRestant} suffix=" Ar" />
+          ? <span className="font-mono tabular-nums">{format(soldeRestant)}</span>
           : <span className="text-slate-600 text-lg italic">{t?.stats?.notConfigured}</span>
         }
         sub={budgetConfigured ? t?.stats?.balance?.sub : undefined}
@@ -110,7 +112,7 @@ export default function DashboardStats({
       <KpiCard
         label={t?.stats?.expenses?.label}
         value={budgetConfigured
-          ? <AnimNum to={totalDepenses} suffix=" Ar" />
+          ? <span className="font-mono tabular-nums">{format(totalDepenses)}</span>
           : <span className="text-slate-600 text-lg italic">—</span>
         }
         sub={budgetConfigured ? t?.stats?.expenses?.sub : undefined}

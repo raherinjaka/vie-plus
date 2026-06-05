@@ -1,10 +1,11 @@
 "use client";
-
+//Budgetheader.tsx
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Lock, RotateCcw, Clock, AlertTriangle, CheckCircle, Flame } from "lucide-react";
 import type { BudgetConfig } from "./Budgetsetup.tsx";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface Props {
@@ -128,6 +129,7 @@ export default function BudgetHeader({ config, onReset, montantRestant }: Props)
   const { t } = useLanguage() as any;
   const [showReset, setShowReset] = useState(false);
   const countdown = useCountdown(config.dateFin);
+  const { format } = useCurrency();
 
   const periodeLabel = {
     jours:    t?.budgetHeader?.periode?.days?.replace("{n}", config.periodeDuree)
@@ -192,9 +194,8 @@ export default function BudgetHeader({ config, onReset, montantRestant }: Props)
 
                 <div className="flex items-end gap-3 mb-3">
                   <p className="text-4xl font-black text-white font-mono tracking-tight">
-                    {montantRestant.toLocaleString()}
+                    {format(montantRestant)}
                   </p>
-                  <p className="text-lg font-black text-slate-500 mb-1 font-mono">Ar</p>
                 </div>
 
                 <div className="flex items-center gap-2">

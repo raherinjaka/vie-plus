@@ -1,9 +1,10 @@
 "use client";
-
+//budgetgauge.tsx
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Flame, Sparkles, TrendingDown } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Props ────────────────────────────────────────────────────────────────────
 interface Props {
@@ -14,13 +15,12 @@ interface Props {
 }
 
 // ─── Animated counter ─────────────────────────────────────────────────────────
-function AnimCount({ value, suffix = "Ar" }: { value: number; suffix?: string }) {
+function AnimCount({ value }: { value: number }) {
+  const { format } = useCurrency();
   const [display, setDisplay] = useState(0);
   useEffect(() => {
     let raf: number;
-    const dur  = 900;
-    const t0   = performance.now();
-    const from = display;
+    const dur = 900; const t0 = performance.now(); const from = display;
     const tick = (now: number) => {
       const p = Math.min((now - t0) / dur, 1);
       const e = 1 - Math.pow(1 - p, 3);
@@ -30,12 +30,13 @@ function AnimCount({ value, suffix = "Ar" }: { value: number; suffix?: string })
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, [value]);
-  return <span className="font-mono tabular-nums">{display.toLocaleString()} {suffix}</span>;
+  return <span className="font-mono tabular-nums">{format(display)}</span>;
 }
 
 // ─── BudgetGauge ──────────────────────────────────────────────────────────────
 export default function BudgetGauge({ montantTotal, montantDepense, montantRestant, pct }: Props) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   const r       = 56;
   const circ    = 2 * Math.PI * r;

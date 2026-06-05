@@ -1,9 +1,11 @@
 "use client";
+//Budgetstats.tsx
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { TrendingDown, TrendingUp, Wallet, Sparkles, Flame, BarChart3, X } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 export interface CatStat {
@@ -29,7 +31,9 @@ interface Props {
 function AnimNum({ value, prefix = "", className = "" }: {
   value: number; prefix?: string; className?: string;
 }) {
+  const { format } = useCurrency();
   const [display, setDisplay] = useState(0);
+
   useEffect(() => {
     let raf: number;
     const dur  = 800;
@@ -46,7 +50,7 @@ function AnimNum({ value, prefix = "", className = "" }: {
   }, [value]);
   return (
     <span className={`font-mono tabular-nums ${className}`}>
-      {prefix}{display.toLocaleString()} Ar
+      {prefix}{format(display)}
     </span>
   );
 }
@@ -91,6 +95,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
   onClose: () => void;
 }) {
   const { t } = useLanguage() as any;
+  const { format } = useCurrency();
 
   return (
     <motion.div
@@ -132,7 +137,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
                     {c.label}
                   </p>
                   <p className="text-white font-black text-sm font-mono truncate">
-                    {c.total.toLocaleString()} Ar
+                    {format(c.total)}
                   </p>
                   <div className="mt-2 h-1 bg-black/20 rounded-full overflow-hidden">
                     <motion.div
@@ -163,7 +168,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
             <p className="text-xs text-slate-400">
               <span className="font-black text-yellow-300">{catStats[0].label}</span>
               {" "}{t?.budgetStats?.panel?.topCategory
-                ?.replace("{amount}", catStats[0].total.toLocaleString())}
+                ?.replace("{amount}", format(catStats[0].total))} {/* ← format() */}
             </p>
           </motion.div>
         )}

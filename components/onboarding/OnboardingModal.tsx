@@ -8,6 +8,7 @@ import {
   ChevronRight, ChevronLeft, X, Sparkles, Globe,
 } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
+import { useCurrency, CURRENCIES } from "@/context/CurrencyContext";
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 interface Step {
@@ -22,7 +23,8 @@ interface Step {
   imagePath: string;
   imageAlt:  string;
   hasImage:  boolean;
-  isLang?:   boolean; // ← true uniquement pour l'étape langue (cachée du compteur)
+  isLang?:   boolean;
+  isCurrency?: boolean;
 }
 
 interface Props {
@@ -45,6 +47,21 @@ const STEPS: Step[] = [
     imageAlt:  "",
     hasImage:  false,
     isLang:    true,
+  },
+  {
+    id:        -1,
+    icon:      Globe,
+    titleKey:  "",
+    descKey:   "",
+    color:     "text-emerald-300",
+    bg:        "bg-emerald-500/10",
+    border:    "border-emerald-500/25",
+    glow:      "rgba(52,211,153,0.2)",
+    imagePath: "",
+    imageAlt:  "",
+    hasImage:  false,
+    isLang:    false,
+    isCurrency: true,  // ← nouveau marqueur
   },
   // ── Étapes normales 1-4 (inchangées) ──
   {
@@ -102,7 +119,7 @@ const STEPS: Step[] = [
 ];
 
 // Étapes normales uniquement (pour le compteur et les progress dots)
-const NORMAL_STEPS = STEPS.filter((s) => !s.isLang);
+const NORMAL_STEPS = STEPS.filter((s) => !s.isLang && !s.isCurrency);
 
 // ─── Language Picker ──────────────────────────────────────────────────────────
 function FlagFR({ size = 24 }: { size?: number }) {
@@ -162,18 +179,30 @@ function FlagES({ size = 24 }: { size?: number }) {
   );
 }
 
+function FlagMG({ size = 24 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect width="24" height="24" rx="12" fill="#1a1f2e"/>
+      <path d="M3 6h6v12H3z" fill="#EDEDED"/>
+      <path d="M9 6h12v6H9z" fill="#FC3D32"/>
+      <path d="M9 12h12v6H9z" fill="#007E3A"/>
+    </svg>
+  );
+}
+
 function LanguagePicker({
   lang,
   setLang,
 }: {
   lang: string;
-  setLang: (l: "fr" | "en" | "de" | "es") => void; 
+  setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void
 }) {
   const LANGS = [
     { key: "fr" as const, Flag: FlagFR, label: "Français", sub: "Continuer en français", code: "FR" },
     { key: "en" as const, Flag: FlagUS, label: "English",  sub: "Continue in English",   code: "US" },
     { key: "de" as const, Flag: FlagDE, label: "Deutsch",  sub: "Auf Deutsch fortfahren", code: "DE" },
     { key: "es" as const, Flag: FlagES, label: "Español",  sub: "Continuar en español",     code: "ES" },
+    { key: "mg" as const, Flag: FlagMG, label: "Malagasy", sub: "Hanohy amin'ny teny malagasy", code: "MG"},
   ];
 
   return (
@@ -259,6 +288,69 @@ function LanguagePicker({
   );
 }
 
+function CurrencyPicker({
+  currency, setCurrency,
+}: {
+  currency: any;
+  setCurrency: (c: any) => void;
+}) {
+  return (
+    <div className="grid grid-cols-2 gap-2 w-full mt-1">
+      {CURRENCIES.map((c) => {
+        const isSelected = currency.code === c.code;
+        return (
+          <motion.button
+            key={c.code}
+            onClick={() => setCurrency(c)}
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            className={`
+              relative flex items-center gap-3 px-4 py-3 rounded-2xl
+              border-2 transition-all duration-200 text-left
+              ${isSelected
+                ? "border-emerald-500/70 bg-emerald-500/10 shadow-[0_0_16px_rgba(52,211,153,0.12)]"
+                : "border-white/[0.08] bg-white/[0.03] hover:border-white/[0.15]"
+              }
+            `}
+          >
+            {/* Symbole */}
+            <span className={`text-base font-black font-mono w-8 text-center flex-shrink-0
+              ${isSelected ? "text-emerald-300" : "text-slate-400"}`}>
+              {c.symbol}
+            </span>
+
+            {/* Nom */}
+            <div className="flex-1 min-w-0">
+              <p className={`text-xs font-black leading-tight truncate
+                ${isSelected ? "text-emerald-300" : "text-slate-300"}`}>
+                {c.name}
+              </p>
+              <p className={`text-[10px] mt-0.5
+                ${isSelected ? "text-emerald-400/50" : "text-slate-600"}`}>
+                {c.code}
+              </p>
+            </div>
+
+            {/* Check */}
+            {isSelected && (
+              <motion.div
+                initial={{ scale: 0 }}
+                animate={{ scale: 1 }}
+                className="w-4 h-4 rounded-full bg-emerald-400 flex items-center justify-center flex-shrink-0"
+              >
+                <svg viewBox="0 0 10 8" fill="none" className="w-2 h-2">
+                  <path d="M1 4l2.5 2.5L9 1" stroke="#0f172a" strokeWidth="1.8"
+                    strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+              </motion.div>
+            )}
+          </motion.button>
+        );
+      })}
+    </div>
+  );
+}
+
 // ─── Phone Frame ──────────────────────────────────────────────────────────────
 function PhoneFrame({ step }: { step: Step }) {
   const Icon = step.icon;
@@ -328,7 +420,7 @@ function PhoneFrame({ step }: { step: Step }) {
   );
 }
 
-// ─── Progress dots (uniquement les étapes normales) ───────────────────────────
+// ─── Progress dots ───────────────────────────
 function ProgressDots({ currentNormalIndex }: { currentNormalIndex: number }) {
   return (
     <div className="flex items-center gap-2">
@@ -355,18 +447,20 @@ function ProgressDots({ currentNormalIndex }: { currentNormalIndex: number }) {
 // ─── OnboardingModal ──────────────────────────────────────────────────────────
 export default function OnboardingModal({ onComplete }: Props) {
   const { t, lang, setLang } = useLanguage() as any;
+  const { currency, setCurrency } = useCurrency();
   const [current, setCurrent] = useState(0);
   const [direction, setDirection] = useState(1);
 
   const step    = STEPS[current];
   const isLang  = !!step.isLang;
-  const isFirst = current === 0; // étape langue
+  const isCurrency = !!step.isCurrency;
+  const isFirst = current === 0;
   const isLast  = current === STEPS.length - 1;
 
-  // Index dans les étapes normales (pour le compteur affiché)
-  const normalIndex     = isLang ? -1 : current - 1;          // -1 = étape langue
-  const normalTotal     = NORMAL_STEPS.length;                 // 4
-  const displayedStep   = isLang ? null : normalIndex + 1;     // 1, 2, 3, 4
+  // Index dans les étapes normales
+  const normalIndex   = (isLang || isCurrency) ? -1 : current - 2;    
+  const normalTotal     = NORMAL_STEPS.length;               
+  const displayedStep = (isLang || isCurrency) ? null : normalIndex + 1;
 
   const goNext = () => {
     if (isLast) { onComplete(); return; }
@@ -439,6 +533,8 @@ export default function OnboardingModal({ onComplete }: Props) {
             initial={{ width: "0%" }}
             animate={{
               width: isLang
+              ? "4%"
+              : isCurrency
                 ? "8%"  // petite barre sur l'étape langue
                 : `${((normalIndex + 1) / normalTotal) * 100}%`,
             }}
@@ -461,7 +557,7 @@ export default function OnboardingModal({ onComplete }: Props) {
           <div className="p-6 sm:p-8">
 
             {/* ── Header : icône + compteur (masqué sur étape langue) ── */}
-            {!isLang && (
+            {!isLang && !isCurrency && (
               <div className="flex items-center gap-2 mb-5">
                 <div className={`w-7 h-7 rounded-xl ${step.bg} border ${step.border}
                   flex items-center justify-center flex-shrink-0`}>
@@ -492,22 +588,24 @@ export default function OnboardingModal({ onComplete }: Props) {
                         <Globe size={14} className={step.color} />
                       </div>
                       <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
-                        {lang === "fr" ? "Bienvenue" : "Welcome"}
+                        {lang === "fr" ? "Bienvenue" : lang === "mg" ? "Tongasoa" : "Welcome"}
                       </span>
                     </div>
 
                     <h2 className="text-xl font-black text-white leading-tight">
-                    {lang === "fr" ? "Choisis ta langue"
-                    : lang === "de" ? "Sprache wählen"
-                    : lang === "es" ? "Elige tu idioma"
-                    : "Choose your language"}
+                      {lang === "fr" ? "Choisis ta langue"
+                        : lang === "de" ? "Sprache wählen"
+                        : lang === "es" ? "Elige tu idioma"
+                        : lang === "mg" ? "Safidio ny teninao"
+                        : "Choose your language"}
                     </h2>
 
                     <p className="text-slate-400 text-sm leading-relaxed">
                       {lang === "fr" ? "Sélectionne la langue dans laquelle tu veux utiliser l'application."
-                      : lang === "de" ? "Wähle die Sprache, in der du die App nutzen möchtest."
-                      : lang === "es" ? "Selecciona el idioma en el que quieres usar la aplicación."
-                      : "Select the language you want to use in the app."}
+                        : lang === "de" ? "Wähle die Sprache, in der du die App nutzen möchtest."
+                        : lang === "es" ? "Selecciona el idioma en el que quieres usar la aplicación."
+                        : lang === "mg" ? "Safidio ny teny ho fampiasanao ny fampiharana."
+                        : "Select the language you want to use in the app."}
                     </p>
                   </div>
 
@@ -517,8 +615,47 @@ export default function OnboardingModal({ onComplete }: Props) {
               </AnimatePresence>
             )}
 
+            {/* ══ ÉTAPE DEVISE ══ */}
+            {isCurrency && (
+              <AnimatePresence mode="wait">
+                <motion.div
+                  key="currency-step"
+                  initial={{ opacity: 0, y: 12 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -12 }}
+                  transition={{ duration: 0.25 }}
+                  className="space-y-5"
+                >
+                  <div className="space-y-1.5">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <div className={`w-7 h-7 rounded-xl ${step.bg} border ${step.border}
+                        flex items-center justify-center`}>
+                        <step.icon size={14} className={step.color} />
+                      </div>
+                      <span className="text-[10px] font-black uppercase tracking-widest text-slate-600">
+                        {lang === "fr" ? "Devise" : lang === "de" ? "Währung" : lang === "es" ? "Moneda" : "Currency"}
+                      </span>
+                    </div>
+                    <h2 className="text-xl font-black text-white leading-tight">
+                      {lang === "fr" ? "Choisis ta devise"
+                      : lang === "de" ? "Wähle deine Währung"
+                      : lang === "es" ? "Elige tu moneda"
+                      : "Choose your currency"}
+                    </h2>
+                    <p className="text-slate-400 text-sm leading-relaxed">
+                      {lang === "fr" ? "Les montants seront affichés dans cette devise."
+                      : lang === "de" ? "Beträge werden in dieser Währung angezeigt."
+                      : lang === "es" ? "Los importes se mostrarán en esta moneda."
+                      : "Amounts will be displayed in this currency."}
+                    </p>
+                  </div>
+                  <CurrencyPicker currency={currency} setCurrency={setCurrency} />
+                </motion.div>
+              </AnimatePresence>
+            )}
+
             {/* ══ ÉTAPES NORMALES 1-4 (code original intact) ══ */}
-            {!isLang && (
+            {!isLang && !isCurrency && (
               <div className="flex items-center gap-6 sm:gap-8">
                 <AnimatePresence mode="wait">
                   <motion.div
@@ -557,12 +694,12 @@ export default function OnboardingModal({ onComplete }: Props) {
               </div>
             )}
 
-            {/* Footer : dots + boutons */}
+            {/* Footer */}
             <div className="flex items-center justify-between mt-6 pt-5
               border-t border-white/[0.06]">
 
               {/* Progress dots (cachés sur étape langue) */}
-              {!isLang
+              {!isLang && !isCurrency
                 ? <ProgressDots currentNormalIndex={normalIndex} />
                 : <div />
               }
@@ -570,7 +707,7 @@ export default function OnboardingModal({ onComplete }: Props) {
               {/* Boutons navigation */}
               <div className="flex items-center gap-2">
                 {/* Retour : visible sur étapes normales sauf étape 1 */}
-                {!isLang && normalIndex > 0 && (
+                {!isLang && !isCurrency && normalIndex > 0 && (
                   <button
                     onClick={goPrev}
                     className="flex items-center gap-1.5 px-3 py-2 rounded-2xl
@@ -605,8 +742,15 @@ export default function OnboardingModal({ onComplete }: Props) {
                         ? (lang === "fr" ? "Continuer"
                         : lang === "de" ? "Weiter"
                         : lang === "es" ? "Continuar"
+                        : lang === "mg" ? "Hanohy"
                         : "Continue")
-                        : (t?.onboarding?.next ?? "Suivant")
+                        : isCurrency
+                          ? (lang === "fr" ? "Continuer" 
+                            : lang === "de" ? "Weiter" 
+                            : lang === "es" ? "Continuar"
+                            : lang === "mg" ? "Hanohy"
+                            : "Continue")
+                          : (t?.onboarding?.next ?? "Suivant")
                       }
                       <ChevronRight size={14} />
                     </>
@@ -618,7 +762,7 @@ export default function OnboardingModal({ onComplete }: Props) {
         </div>
 
         {/* Hint skip sous la card (étape langue uniquement) */}
-        {isLang && (
+        {(isLang || isCurrency) && (
           <motion.p
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

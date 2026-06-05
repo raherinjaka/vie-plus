@@ -1,4 +1,5 @@
 "use client";
+// MenuButton.tsx
 
 import { useEffect, useRef, useState, RefObject } from "react";
 import {
@@ -9,8 +10,9 @@ import { supabase } from "@/lib/supabase";
 import { motion, AnimatePresence } from "framer-motion";
 import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
+import { useCurrency, CURRENCIES, Currency } from "@/context/CurrencyContext";
 
-type SettingsPanel = "root" | "theme" | "language";
+type SettingsPanel = "root" | "theme" | "language" | "currency";
 
 const slideVariants = {
   enterFromRight: { x: 40,  opacity: 0 },
@@ -22,16 +24,18 @@ const slideVariants = {
 
 // ─── SettingsCascade (desktop uniquement) ────────────────────────────────────
 function SettingsCascade({
-  open, onClose, lang, setLang, theme, setTheme, t, anchorRef,
+  open, onClose, lang, setLang, theme, setTheme, t, anchorRef, currency, setCurrency,
 }: {
   open: boolean;
   onClose: () => void;
-  lang: "fr" | "en" | "de" | "es";
-  setLang: (l: "fr" | "en" | "de" | "es") => void;
+  lang: "fr" | "en" | "de" | "es" | "mg";
+  setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
   theme: string;
   setTheme: (v: string) => void;
   t: any;
   anchorRef: RefObject<HTMLButtonElement | null>;
+  currency:    Currency;
+  setCurrency: (c: Currency) => void;
 }) {
   const [panel, setPanel]         = useState<SettingsPanel>("root");
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -81,14 +85,22 @@ function SettingsCascade({
                 {panel === "root" && (
                   <motion.div key="root" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.2 }} className="p-2 space-y-0.5">
                     <p className="px-3 pt-1.5 pb-2 text-[9px] font-black uppercase tracking-widest text-slate-600">{t.settings?.title ?? "Paramètres"}</p>
+                    
                     <button onClick={() => navigate("theme")} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] transition-all group">
                       {theme === "dark" ? <Moon size={15} className="text-violet-400 flex-shrink-0" /> : <Sun size={15} className="text-amber-400 flex-shrink-0" />}
                       <span className="flex-1 text-left text-[13px] font-semibold">{t.settings?.theme ?? "Thème"}</span>
                       <ChevronRight size={13} className="opacity-40 group-hover:opacity-80 transition-transform group-hover:translate-x-0.5" />
                     </button>
+
                     <button onClick={() => navigate("language")} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] transition-all group">
                       <Languages size={15} className="text-cyan-400 flex-shrink-0" />
                       <span className="flex-1 text-left text-[13px] font-semibold">{t.settings?.language ?? "Langue"}</span>
+                      <ChevronRight size={13} className="opacity-40 group-hover:opacity-80 transition-transform group-hover:translate-x-0.5" />
+                    </button>
+
+                    <button onClick={() => navigate("currency")} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] transition-all group">
+                      <span className="text-emerald-400 font-black text-sm flex-shrink-0 w-4 text-center">{currency.symbol}</span>
+                      <span className="flex-1 text-left text-[13px] font-semibold">{t.settings?.currency ?? "Devise"}</span>
                       <ChevronRight size={13} className="opacity-40 group-hover:opacity-80 transition-transform group-hover:translate-x-0.5" />
                     </button>
                   </motion.div>
@@ -123,12 +135,30 @@ function SettingsCascade({
                       { key: "en" as const, flag: "🇺🇸", label: "English"  },
                       { key: "de" as const, flag: "🇩🇪", label: "Deutsch"  },
                       { key: "es" as const, flag: "🇪🇸", label: "Español" },
+                      { key: "mg" as const, flag: "🇲🇬", label: "Malagasy" },
                     ]).map(({ key, flag, label }) => (
                       <button key={key} onClick={() => { setLang(key); onClose(); }}
                         className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
                           ${lang === key ? "text-cyan-400 bg-cyan-500/10 border border-cyan-500/20" : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] border border-transparent"}`}>
                         <span className="text-base leading-none">{flag}</span>{label}
                         {lang === key && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400" />}
+                      </button>
+                    ))}
+                  </motion.div>
+                )}
+
+                {panel === "currency" && (
+                  <motion.div key="currency" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.2 }} className="p-2 space-y-0.5 overflow-y-auto max-h-[280px]">
+                    <button onClick={() => navigate("root")} className="w-full flex items-center gap-1.5 px-3 py-1.5 mb-1 text-slate-600 hover:text-slate-400 rounded-lg">
+                      <ArrowLeft size={12} /><span className="text-[9px] font-black uppercase tracking-widest">{t.settings?.back ?? "Retour"}</span>
+                    </button>
+                    {CURRENCIES.map((c) => (
+                      <button key={c.code} onClick={() => { setCurrency(c); onClose(); }}
+                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
+                          ${currency.code === c.code ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20" : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] border border-transparent"}`}>
+                        <span className="w-8 text-center font-black text-[11px] flex-shrink-0">{c.symbol}</span>
+                        <span className="flex-1 text-left">{c.name}</span>
+                        {currency.code === c.code && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-emerald-400" />}
                       </button>
                     ))}
                   </motion.div>
@@ -145,15 +175,17 @@ function SettingsCascade({
 
 // ─── MobileSettingsPage ───────────────────────────────────────────────────────
 function MobileSettingsPage({
-  open, onClose, lang, setLang, theme, setTheme, t,
+  open, onClose, lang, setLang, theme, setTheme, t, currency, setCurrency,
 }: {
   open: boolean;
   onClose: () => void;
-  lang: "fr" | "en" | "de" | "es";
-  setLang: (l: "fr" | "en" | "de" | "es") => void;
+  lang: "fr" | "en" | "de" | "es" | "mg";
+  setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
   theme: string;
   setTheme: (v: string) => void;
   t: any;
+  currency:    Currency;
+  setCurrency: (c: Currency) => void;
 }) {
   const [panel, setPanel]         = useState<SettingsPanel>("root");
   const [direction, setDirection] = useState<"forward" | "back">("forward");
@@ -195,9 +227,16 @@ function MobileSettingsPage({
                     <span className="flex-1 text-left text-[15px] font-medium">{t.settings?.theme ?? "Thème"}</span>
                     <ChevronRight size={16} className="opacity-30 group-hover:opacity-70" />
                   </button>
+
                   <button onClick={() => navigate("language")} className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/[0.04] transition-all group">
                     <Languages size={20} className="text-cyan-400 flex-shrink-0" />
                     <span className="flex-1 text-left text-[15px] font-medium">{t.settings?.language ?? "Langue"}</span>
+                    <ChevronRight size={16} className="opacity-30 group-hover:opacity-70" />
+                  </button>
+
+                  <button onClick={() => navigate("currency")} className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/[0.04] transition-all group">
+                    <span className="text-emerald-400 font-black text-base w-5 text-center flex-shrink-0">{currency.symbol}</span>
+                    <span className="flex-1 text-left text-[15px] font-medium">{t.settings?.currency ?? "Devise"}</span>
                     <ChevronRight size={16} className="opacity-30 group-hover:opacity-70" />
                   </button>
                 </motion.div>
@@ -228,12 +267,28 @@ function MobileSettingsPage({
                     { key: "en" as const, flag: "🇺🇸", label: "English"  },
                     { key: "de" as const, flag: "🇩🇪", label: "Deutsch"  },
                     { key: "es" as const, flag: "🇪🇸", label: "Español"  },
+                    { key: "mg" as const, flag: "🇲🇬", label: "Malagasy" },
                   ]).map(({ key, flag, label }) => (
                     <button key={key} onClick={() => { setLang(key); navigate("root"); }}
                       className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[15px] font-medium transition-all
                         ${lang === key ? "text-cyan-400 bg-cyan-500/10 border border-cyan-500/20" : "text-slate-300 hover:bg-white/[0.04] border border-transparent"}`}>
                       <span className="text-2xl leading-none">{flag}</span>{label}
                       {lang === key && <span className="ml-auto w-2 h-2 rounded-full bg-cyan-400" />}
+                    </button>
+                  ))}
+                </motion.div>
+              )}
+
+              {panel === "currency" && (
+                <motion.div key="currency" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.22 }} className="absolute inset-0 p-4 space-y-1 overflow-y-auto">
+                  <p className="px-5 pt-2 pb-3 text-[10px] font-black uppercase tracking-widest text-slate-600">{t.settings?.currency ?? "Devise"}</p>
+                  {CURRENCIES.map((c) => (
+                    <button key={c.code} onClick={() => { setCurrency(c); navigate("root"); }}
+                      className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[15px] font-medium transition-all
+                        ${currency.code === c.code ? "text-emerald-400 bg-emerald-500/10 border border-emerald-500/20" : "text-slate-300 hover:bg-white/[0.04] border border-transparent"}`}>
+                      <span className="font-black text-base w-8 text-center flex-shrink-0">{c.symbol}</span>
+                      <span className="flex-1 text-left">{c.name}</span>
+                      {currency.code === c.code && <span className="ml-auto w-2 h-2 rounded-full bg-emerald-400" />}
                     </button>
                   ))}
                 </motion.div>
@@ -249,15 +304,17 @@ function MobileSettingsPage({
 
 // ─── MobileFullScreen ────────────────────────────────────────────────────────
 function MobileFullScreen({
-  onClose, userData, t, lang, setLang, theme, setTheme,
+  onClose, userData, t, lang, setLang, theme, setTheme, currency, setCurrency,
 }: {
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
-  lang: "fr" | "en" | "de" | "es";
-  setLang: (l: "fr" | "en" | "de" | "es") => void;
+  lang: "fr" | "en" | "de" | "es" | "mg";
+  setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
   theme: string;
   setTheme: (v: string) => void;
+  currency:    Currency;
+  setCurrency: (c: Currency) => void;
 }) {
   const [settingsOpen, setSettingsOpen] = useState(false);
 
@@ -327,6 +384,7 @@ function MobileFullScreen({
           lang={lang} setLang={setLang}
           theme={theme} setTheme={setTheme}
           t={t}
+          currency={currency} setCurrency={setCurrency}
         />
       </div>
 
@@ -340,15 +398,17 @@ function MobileFullScreen({
 
 // ─── DesktopDropdown ─────────────────────────────────────────────────────────
 function DesktopDropdown({
-  onClose, userData, t, lang, setLang, theme, setTheme,
+  onClose, userData, t, lang, setLang, theme, setTheme, currency, setCurrency,
 }: {
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
-  lang: "fr" | "en" | "de" | "es";
-  setLang: (l: "fr" | "en" | "de" | "es") => void;
+  lang: "fr" | "en" | "de" | "es" | "mg";
+  setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
   theme: string;
   setTheme: (v: string) => void;
+  currency:    Currency;
+  setCurrency: (c: Currency) => void;
 }) {
   const settingsBtnRef = useRef<HTMLButtonElement>(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -368,8 +428,7 @@ function DesktopDropdown({
       <motion.div
         initial={{ opacity: 0, scale: 0.95, y: -8 }}
         animate={{ opacity: 1, scale: 1,    y: 0 }}
-        exit={{    opacity: 0, scale: 0.95, y: -8 }}
-        transition={{ duration: 0.2, ease: "easeOut" }}
+        exit={{ opacity: 0, scale: 0.2, transition: { ease: "easeOut" } }}
         className="w-80 rounded-3xl overflow-hidden
           bg-[#1a2030]/98 backdrop-blur-2xl
           border border-white/[0.08]
@@ -432,6 +491,7 @@ function DesktopDropdown({
         lang={lang} setLang={setLang}
         theme={theme} setTheme={setTheme}
         t={t} anchorRef={settingsBtnRef}
+        currency={currency} setCurrency={setCurrency}
       />
     </>
   );
@@ -440,6 +500,7 @@ function DesktopDropdown({
 // ─── MenuButton ───────────────────────────────────────────────────────────────
 export default function MenuButton() {
   const { lang, setLang, t } = useLanguage();
+  const { currency, setCurrency } = useCurrency();
   const [theme, setTheme]       = useState<string>("dark");
   const [isOpen, setIsOpen]     = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
@@ -492,7 +553,7 @@ export default function MenuButton() {
   // ── Évite le flash SSR ──────────────────────────────────────────────────────
   if (isMobile === null) return null;
 
-  const sharedProps = { onClose: () => setIsOpen(false), userData, t, lang, setLang, theme, setTheme };
+  const sharedProps = { onClose: () => setIsOpen(false), userData, t, lang, setLang, theme, setTheme, currency, setCurrency, };
 
   return (
     <>
