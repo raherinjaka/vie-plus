@@ -45,7 +45,7 @@ const STEPS: Step[] = [
     glow:      "rgba(34,211,238,0.2)",
     imagePath: "",
     imageAlt:  "",
-    hasImage:  false,
+    hasImage:  true,
     isLang:    true,
   },
   {
@@ -59,7 +59,7 @@ const STEPS: Step[] = [
     glow:      "rgba(52,211,153,0.2)",
     imagePath: "",
     imageAlt:  "",
-    hasImage:  false,
+    hasImage:  true,
     isLang:    false,
     isCurrency: true,  // ← nouveau marqueur
   },
@@ -73,9 +73,9 @@ const STEPS: Step[] = [
     bg:        "bg-cyan-500/10",
     border:    "border-cyan-500/25",
     glow:      "rgba(34,211,238,0.2)",
-    imagePath: "/onboarding/step-1.png",
+    imagePath: "/onboarding/step-1.jpg",
     imageAlt:  "Page budget",
-    hasImage:  false,
+    hasImage:  true,
   },
   {
     id:        2,
@@ -86,9 +86,9 @@ const STEPS: Step[] = [
     bg:        "bg-violet-500/10",
     border:    "border-violet-500/25",
     glow:      "rgba(167,139,250,0.2)",
-    imagePath: "/onboarding/step-2.png",
+    imagePath: "/onboarding/step-2.jpg",
     imageAlt:  "Page objectifs",
-    hasImage:  false,
+    hasImage:  true,
   },
   {
     id:        3,
@@ -99,9 +99,9 @@ const STEPS: Step[] = [
     bg:        "bg-emerald-500/10",
     border:    "border-emerald-500/25",
     glow:      "rgba(52,211,153,0.2)",
-    imagePath: "/onboarding/step-3.png",
+    imagePath: "/onboarding/step-3.jpg",
     imageAlt:  "Page tâches",
-    hasImage:  false,
+    hasImage:  true,
   },
   {
     id:        4,
@@ -112,9 +112,9 @@ const STEPS: Step[] = [
     bg:        "bg-orange-500/10",
     border:    "border-orange-500/25",
     glow:      "rgba(251,146,60,0.2)",
-    imagePath: "/onboarding/step-4.png",
+    imagePath: "/onboarding/step-4.jpg",
     imageAlt:  "Export PDF",
-    hasImage:  false,
+    hasImage:  true,
   },
 ];
 
