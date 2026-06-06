@@ -159,7 +159,7 @@ export default function Login() {
           {/* Séparateur */}
           <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px bg-white/10" />
-            <div className="my-7 h-px w-full bg-white/10" />
+            <div className="my-3 h-px w-full bg-white/10" />
             <div className="flex-1 h-px bg-white/10" />
           </div>
           

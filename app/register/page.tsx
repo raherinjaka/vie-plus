@@ -130,7 +130,7 @@ export default function Register() {
             {/* Bouton GitHub */}
             <button
               onClick={() => handleOAuthLogin('github')}
-              disabled={isLoading}
+              disabled={isLoading || !acceptedTerms}
               className="flex items-center justify-center gap-3 w-full bg-transparent hover:bg-white/5 text-white text-sm font-semibold py-3.5 px-5 rounded-full border border-white/20 hover:border-white/40 transition-all active:scale-[0.98] disabled:opacity-50"
             >
               {isLoading ? <Loader2 size={18} className="animate-spin" /> : <GithubIcon size={18} />}
