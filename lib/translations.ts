@@ -448,6 +448,7 @@ export const translations = {
         email:   "contact@vieplus.app",
         github:  "GitHub",
         version: "VIE+ · v1.0.0 · 2025",
+        contactBtn: "Nous contacter",
       },
     
       // FeaturesSection
@@ -1059,6 +1060,7 @@ export const translations = {
         email:   "contact@vieplus.app",
         github:  "GitHub",
         version: "VIE+ · v1.0.0 · 2025",
+        contactBtn: "Contact us",
       },
     
       features: {
@@ -1651,6 +1653,7 @@ export const translations = {
         email:   "contact@vieplus.app",
         github:  "GitHub",
         version: "VIE+ · v1.0.0 · 2025",
+        contactBtn: "Uns kontaktieren",
       },
       features: {
         sectionLabel: "Funktionen",
@@ -2231,6 +2234,7 @@ export const translations = {
         email:   "contact@vieplus.app",
         github:  "GitHub",
         version: "VIE+ · v1.0.0 · 2025",
+        contactBtn: "Contactar con nosotros",
       },
       features: {
         sectionLabel: "Funciones",
@@ -2812,6 +2816,7 @@ export const translations = {
         email:   "contact@vieplus.app",
         github:  "GitHub",
         version: "VIE+ · v1.0.0 · 2025",
+        contactBtn: "Mandefa mailaka",
       },
       features: {
         sectionLabel: "Fitaovana",

@@ -155,39 +155,104 @@ export default function Register() {
       </div>
 
       {/* ── COLONNE DROITE : DÉCORATION ── */}
-      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-[#111111] border-l border-white/5">
-        {/* Glow central */}
+      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-[#0f0f0f] border-l border-white/5">
+
+        {/* Glow de fond — respiration */}
         <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.3, 0.55, 0.3] }}
-          transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ scale: [1, 1.25, 1], opacity: [0.12, 0.28, 0.12] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="absolute w-[500px] h-[500px] rounded-full bg-cyan-500/20 blur-[120px]"
         />
-        {/* Logo géant décoratif */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.8 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 select-none"
-        >
-          <span className="text-[180px] font-black italic tracking-tighter leading-none text-white/5 select-none">
-            VIE<span className="text-cyan-400/10">+</span>
-          </span>
-          {/* Anneau décoratif */}
-          <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 m-auto w-64 h-64 rounded-full border border-cyan-500/10"
-          />
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute inset-0 m-auto w-48 h-48 rounded-full border border-white/5"
-          />
-          {/* Point central */}
-          <div className="absolute inset-0 m-auto w-3 h-3 rounded-full bg-cyan-400/60 blur-sm" />
-        </motion.div>
-      </div>
 
+        <div className="relative z-10 flex flex-col items-center justify-center select-none">
+
+          {/* ── ANNEAUX — explosion au chargement puis rotation idle ── */}
+          {[
+            { size: 360, duration: 28, delay: 0.1, reverse: false, opacity: "border-cyan-500/15" },
+            { size: 280, duration: 20, delay: 0.2, reverse: true,  opacity: "border-white/[0.06]" },
+            { size: 440, duration: 45, delay: 0.0, reverse: false, opacity: "border-cyan-500/5"  },
+          ].map((ring, i) => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: ring.reverse ? -360 : 360 }}
+              transition={{
+                scale:   { duration: 0.9, delay: ring.delay, ease: [0.34, 1.56, 0.64, 1] },
+                opacity: { duration: 0.6, delay: ring.delay },
+                rotate:  { duration: ring.duration, repeat: Infinity, ease: "linear", delay: ring.delay },
+              }}
+              className={`absolute rounded-full border ${ring.opacity}`}
+              style={{ width: ring.size, height: ring.size }}
+            />
+          ))}
+
+          {/* ── PARTICULES ORBITALES ── */}
+          {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: 360 }}
+              transition={{
+                scale:   { duration: 0.6, delay: 0.4 + i * 0.06, ease: "backOut" },
+                opacity: { duration: 0.4, delay: 0.4 + i * 0.06 },
+                rotate:  { duration: 25, repeat: Infinity, ease: "linear" },
+              }}
+              className="absolute w-[320px] h-[320px]"
+              style={{ rotate: deg }}
+            >
+              <motion.div
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.4, 0.8] }}
+                transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-cyan-400"
+              />
+            </motion.div>
+          ))}
+
+          {/* ── ORBE CENTRAL — explosion + respiration idle ── */}
+          <motion.div
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.15, ease: [0.34, 1.56, 0.64, 1] }}
+            className="relative w-36 h-36 flex items-center justify-center"
+          >
+            {/* Halo externe — respiration */}
+            <motion.div
+              animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full bg-cyan-500/20 blur-2xl"
+            />
+            {/* Halo interne — respiration décalée */}
+            <motion.div
+              animate={{ scale: [1.1, 1.35, 1.1], opacity: [0.35, 0.6, 0.35] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute inset-0 rounded-full bg-cyan-400/15 blur-lg"
+            />
+            {/* Cercle border */}
+            <motion.div
+              animate={{ boxShadow: [
+                "0 0 0px 0px rgba(6,182,212,0)",
+                "0 0 30px 8px rgba(6,182,212,0.15)",
+                "0 0 0px 0px rgba(6,182,212,0)",
+              ]}}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full border border-cyan-500/40 bg-cyan-500/5 backdrop-blur-sm"
+            />
+
+            {/* Logo VIE+ — respiration légère */}
+            <motion.span
+              animate={{ scale: [1, 1.04, 1], opacity: [0.9, 1, 0.9] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative z-10 text-4xl font-black italic tracking-tighter text-white"
+            >
+              VIE<motion.span
+                animate={{ color: ["#22d3ee", "#67e8f9", "#22d3ee"] }}
+                transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              >+</motion.span>
+            </motion.span>
+          </motion.div>
+
+        </div>
+      </div>
     </section>
   );
 }

@@ -85,12 +85,6 @@ function SettingsCascade({
                 {panel === "root" && (
                   <motion.div key="root" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.2 }} className="p-2 space-y-0.5">
                     <p className="px-3 pt-1.5 pb-2 text-[9px] font-black uppercase tracking-widest text-slate-600">{t.settings?.title ?? "Paramètres"}</p>
-                    
-                    <button onClick={() => navigate("theme")} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] transition-all group">
-                      {theme === "dark" ? <Moon size={15} className="text-violet-400 flex-shrink-0" /> : <Sun size={15} className="text-amber-400 flex-shrink-0" />}
-                      <span className="flex-1 text-left text-[13px] font-semibold">{t.settings?.theme ?? "Thème"}</span>
-                      <ChevronRight size={13} className="opacity-40 group-hover:opacity-80 transition-transform group-hover:translate-x-0.5" />
-                    </button>
 
                     <button onClick={() => navigate("language")} className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] transition-all group">
                       <Languages size={15} className="text-cyan-400 flex-shrink-0" />
@@ -106,24 +100,6 @@ function SettingsCascade({
                   </motion.div>
                 )}
 
-                {panel === "theme" && (
-                  <motion.div key="theme" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.2 }} className="p-2 space-y-0.5">
-                    <button onClick={() => navigate("root")} className="w-full flex items-center gap-1.5 px-3 py-1.5 mb-1 text-slate-600 hover:text-slate-400 rounded-lg">
-                      <ArrowLeft size={12} /><span className="text-[9px] font-black uppercase tracking-widest">{t.settings?.back ?? "Retour"}</span>
-                    </button>
-                    {([
-                      { key: "dark"  as const, icon: Moon, label: t.settings?.dark  ?? "Sombre", color: "text-violet-400" },
-                      { key: "light" as const, icon: Sun,  label: t.settings?.light ?? "Clair",  color: "text-amber-400"  },
-                    ]).map(({ key, icon: Icon, label, color }) => (
-                      <button key={key} onClick={() => { setTheme(key); onClose(); }}
-                        className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl text-[13px] font-semibold transition-all
-                          ${theme === key ? "text-cyan-400 bg-cyan-500/10 border border-cyan-500/20" : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] border border-transparent"}`}>
-                        <Icon size={15} className={`${color} flex-shrink-0`} />{label}
-                        {theme === key && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400" />}
-                      </button>
-                    ))}
-                  </motion.div>
-                )}
 
                 {panel === "language" && (
                   <motion.div key="language" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.2 }} className="p-2 space-y-0.5">
@@ -242,23 +218,7 @@ function MobileSettingsPage({
                 </motion.div>
               )}
 
-              {panel === "theme" && (
-                <motion.div key="theme" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.22 }} className="absolute inset-0 p-4 space-y-1">
-                  <p className="px-5 pt-2 pb-3 text-[10px] font-black uppercase tracking-widest text-slate-600">{t.settings?.theme ?? "Thème"}</p>
-                  {([
-                    { key: "dark"  as const, icon: Moon, label: t.settings?.dark  ?? "Sombre", color: "text-violet-400" },
-                    { key: "light" as const, icon: Sun,  label: t.settings?.light ?? "Clair",  color: "text-amber-400"  },
-                  ]).map(({ key, icon: Icon, label, color }) => (
-                    <button key={key} onClick={() => { setTheme(key); navigate("root"); }}
-                      className={`w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-[15px] font-medium transition-all
-                        ${theme === key ? "text-cyan-400 bg-cyan-500/10 border border-cyan-500/20" : "text-slate-300 hover:bg-white/[0.04] border border-transparent"}`}>
-                      <Icon size={20} className={`${color} flex-shrink-0`} />{label}
-                      {theme === key && <span className="ml-auto w-2 h-2 rounded-full bg-cyan-400" />}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
-
+            
               {panel === "language" && (
                 <motion.div key="language" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.22 }} className="absolute inset-0 p-4 space-y-1">
                   <p className="px-5 pt-2 pb-3 text-[10px] font-black uppercase tracking-widest text-slate-600">{t.settings?.language ?? "Langue"}</p>

@@ -107,23 +107,6 @@ function SettingsCascade({
                     {t.settings?.title ?? "Paramètres"}
                   </p>
 
-                  {/* Thème */}
-                  <button
-                    onClick={() => navigate("theme")}
-                    className="w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl
-                      text-slate-400 hover:text-slate-200 hover:bg-white/[0.05]
-                      transition-all duration-150 group"
-                  >
-                    {theme === "dark"
-                      ? <Moon size={15} className="text-violet-400 flex-shrink-0" />
-                      : <Sun  size={15} className="text-amber-400  flex-shrink-0" />
-                    }
-                    <span className="flex-1 text-left text-[13px] font-semibold">
-                      {t.settings?.theme ?? "Thème"}
-                    </span>
-                    <ChevronRight size={13} className="opacity-40 group-hover:opacity-80
-                      group-hover:translate-x-0.5 transition-transform" />
-                  </button>
 
                   {/* Langue */}
                   <button
@@ -160,49 +143,6 @@ function SettingsCascade({
                 </motion.div>
               )}
 
-              {/* ── LEVEL 2 : Thème ── */}
-              {panel === "theme" && (
-                <motion.div
-                  key="theme"
-                  variants={slideVariants}
-                  initial={enterVariant}
-                  animate="center"
-                  exit={exitVariant}
-                  transition={{ duration: 0.2, ease: "easeInOut" }}
-                  className="p-2 space-y-0.5"
-                >
-                  <button
-                    onClick={() => navigate("root")}
-                    className="w-full flex items-center gap-1.5 px-3 py-1.5 mb-1
-                      text-slate-600 hover:text-slate-400 transition-colors rounded-lg"
-                  >
-                    <ArrowLeft size={12} />
-                    <span className="text-[9px] font-black uppercase tracking-widest">
-                      {t.settings?.back ?? "Retour"}
-                    </span>
-                  </button>
-
-                  {[
-                    { key: "dark",  icon: Moon, label: t.settings?.dark  ?? "Sombre", color: "text-violet-400" },
-                    { key: "light", icon: Sun,  label: t.settings?.light ?? "Clair",  color: "text-amber-400"  },
-                  ].map(({ key, icon: Icon, label, color }) => (
-                    <button
-                      key={key}
-                      onClick={() => { toggleTheme(); onClose(); }}
-                      className={`w-full flex items-center gap-2.5 px-3 py-2.5 rounded-xl
-                        transition-all duration-150 font-semibold text-[13px]
-                        ${theme === key
-                          ? "text-cyan-400 bg-cyan-500/10 border border-cyan-500/20"
-                          : "text-slate-400 hover:text-slate-200 hover:bg-white/[0.05] border border-transparent"
-                        }`}
-                    >
-                      <Icon size={15} className={`${color} flex-shrink-0`} />
-                      {label}
-                      {theme === key && <span className="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400" />}
-                    </button>
-                  ))}
-                </motion.div>
-              )}
 
               {/* ── LEVEL 2 : Langue ── */}
               {panel === "language" && (

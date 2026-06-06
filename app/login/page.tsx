@@ -159,20 +159,46 @@ export default function Login() {
           {/* Séparateur */}
           <div className="flex items-center gap-4 my-7">
             <div className="flex-1 h-px bg-white/10" />
-            <span className="text-xs text-white/30 uppercase tracking-widest"></span>
+            <div className="my-7 h-px w-full bg-white/10" />
             <div className="flex-1 h-px bg-white/10" />
           </div>
           
           {/* ── FORMULAIRE CLASSIQUE ── */}
-          <form onSubmit={handleLogin} className="flex flex-col gap-4">         
-            <button
+          <form onSubmit={handleLogin} className="flex flex-col gap-4">
+            <motion.button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-cyan-500 hover:bg-cyan-400 text-[#0f0f0f] font-bold py-4 rounded-2xl transition-all active:scale-[0.98] disabled:opacity-50 flex items-center justify-center"
+              whileHover={{ scale: isLoading ? 1 : 1.01 }}
+              whileTap={{ scale: isLoading ? 1 : 0.98 }}
+              transition={{ type: "spring", stiffness: 400, damping: 20 }}
+              className="relative w-full overflow-hidden group flex items-center justify-center gap-2 py-3.5 rounded-2xl font-semibold text-sm transition-all disabled:opacity-40
+                bg-transparent border border-cyan-500/40 text-cyan-400
+                hover:border-cyan-500/70 hover:text-white hover:bg-cyan-500/10"
             >
-              {isLoading ? <Loader2 className="animate-spin" /> : "Se connecter"}
-            </button>
+              {/* Shimmer au hover */}
+              <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-cyan-500/10 to-transparent" />
+
+              {isLoading ? (
+                <Loader2 size={16} className="animate-spin" />
+              ) : (
+                <>
+                  <span className="relative z-10">Se connecter</span>
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    className="relative z-10 w-3.5 h-3.5 transition-transform duration-200 group-hover:translate-x-0.5"
+                  >
+                    <path d="M5 12h14M12 5l7 7-7 7" />
+                  </svg>
+                </>
+              )}
+            </motion.button>
           </form><br />
+            
           <p className="text-sm text-white/40 text-center">
             Pas encore de profil ?{" "}
             <Link href="/register" className="text-white hover:text-cyan-400 font-semibold transition-colors underline underline-offset-4">
@@ -183,52 +209,117 @@ export default function Login() {
       </div>
 
       {/* ── COLONNE DROITE : DÉCORATION ── */}
-      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-[#111111] border-l border-white/5">
-        {/* Glow */}
+      <div className="hidden lg:flex flex-1 relative items-center justify-center overflow-hidden bg-[#0f0f0f] border-l border-white/5">
+
+        {/* Glow de fond — respiration */}
         <motion.div
-          animate={{ scale: [1, 1.15, 1], opacity: [0.25, 0.5, 0.25] }}
-          transition={{ duration: 10, repeat: Infinity, ease: "easeInOut" }}
+          animate={{ scale: [1, 1.25, 1], opacity: [0.12, 0.28, 0.12] }}
+          transition={{ duration: 5, repeat: Infinity, ease: "easeInOut" }}
           className="absolute w-[500px] h-[500px] rounded-full bg-cyan-500/20 blur-[120px]"
         />
 
-        {/* Icône verrou décorative */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.85 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 0.8, ease: "easeOut" }}
-          className="relative z-10 flex flex-col items-center gap-6"
-        >
-          {/* Anneau externe */}
+        <div className="relative z-10 flex flex-col items-center justify-center select-none">
+
+          {/* Anneaux orbitaux — explosion + rotation */}
+          {[
+            { size: 360, duration: 28, delay: 0.1, reverse: false, border: "border-cyan-500/15" },
+            { size: 280, duration: 20, delay: 0.2, reverse: true,  border: "border-white/[0.06]" },
+            { size: 440, duration: 45, delay: 0.0, reverse: false, border: "border-cyan-500/5"  },
+          ].map((ring, i) => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: ring.reverse ? -360 : 360 }}
+              transition={{
+                scale:   { duration: 0.9, delay: ring.delay, ease: [0.34, 1.56, 0.64, 1] },
+                opacity: { duration: 0.6, delay: ring.delay },
+                rotate:  { duration: ring.duration, repeat: Infinity, ease: "linear", delay: ring.delay },
+              }}
+              className={`absolute rounded-full border ${ring.border}`}
+              style={{ width: ring.size, height: ring.size }}
+            />
+          ))}
+
+          {/* Particules orbitales */}
+          {[0, 60, 120, 180, 240, 300].map((deg, i) => (
+            <motion.div
+              key={i}
+              initial={{ scale: 0, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1, rotate: 360 }}
+              transition={{
+                scale:   { duration: 0.6, delay: 0.4 + i * 0.06, ease: "backOut" },
+                opacity: { duration: 0.4, delay: 0.4 + i * 0.06 },
+                rotate:  { duration: 25, repeat: Infinity, ease: "linear" },
+              }}
+              className="absolute w-[320px] h-[320px]"
+              style={{ rotate: deg }}
+            >
+              <motion.div
+                animate={{ opacity: [0.3, 1, 0.3], scale: [0.8, 1.4, 0.8] }}
+                transition={{ duration: 3, repeat: Infinity, delay: i * 0.5, ease: "easeInOut" }}
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-1 h-1 rounded-full bg-cyan-400"
+              />
+            </motion.div>
+          ))}
+
+          {/* Orbe central — explosion + respiration */}
           <motion.div
-            animate={{ rotate: 360 }}
-            transition={{ duration: 30, repeat: Infinity, ease: "linear" }}
-            className="absolute w-72 h-72 rounded-full border border-cyan-500/10"
-          />
-          <motion.div
-            animate={{ rotate: -360 }}
-            transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
-            className="absolute w-52 h-52 rounded-full border border-white/5"
-          />
+            initial={{ scale: 0, opacity: 0 }}
+            animate={{ scale: 1, opacity: 1 }}
+            transition={{ duration: 1, delay: 0.15, ease: [0.34, 1.56, 0.64, 1] }}
+            className="relative w-36 h-36 flex items-center justify-center"
+          >
+            {/* Halo externe */}
+            <motion.div
+              animate={{ scale: [1, 1.5, 1], opacity: [0.2, 0.5, 0.2] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full bg-cyan-500/20 blur-2xl"
+            />
+            {/* Halo interne décalé */}
+            <motion.div
+              animate={{ scale: [1.1, 1.35, 1.1], opacity: [0.35, 0.6, 0.35] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
+              className="absolute inset-0 rounded-full bg-cyan-400/15 blur-lg"
+            />
+            {/* Border pulsante */}
+            <motion.div
+              animate={{ boxShadow: [
+                "0 0 0px 0px rgba(6,182,212,0)",
+                "0 0 30px 8px rgba(6,182,212,0.15)",
+                "0 0 0px 0px rgba(6,182,212,0)",
+              ]}}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="absolute inset-0 rounded-full border border-cyan-500/40 bg-cyan-500/5 backdrop-blur-sm"
+            />
 
-          {/* Icône centrale */}
-          <div className="relative z-10 w-20 h-20 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-10 h-10 text-cyan-400/70">
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
-            </svg>
-          </div>
+            {/* Icône cadenas — respiration */}
+            <motion.div
+              animate={{ scale: [1, 1.06, 1], opacity: [0.7, 1, 0.7] }}
+              transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
+              className="relative z-10"
+            >
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+                strokeWidth={1.4}
+                stroke="currentColor"
+                className="w-12 h-12 text-cyan-400"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </motion.div>
+          </motion.div>
 
-          {/* Texte discret */}
-          <p className="relative z-10 text-white/10 text-xs uppercase tracking-[0.4em] font-bold">
-            Accès sécurisé
-          </p>
-        </motion.div>
+        </div>
 
-        {/* Watermark logo */}
-        <span className="absolute bottom-10 right-10 text-[80px] font-black italic tracking-tighter leading-none text-white/[0.03] select-none pointer-events-none">
+        {/* Watermark discret */}
+        <span className="absolute bottom-10 right-10 text-[80px] font-black italic tracking-tighter leading-none text-white/[0.025] select-none pointer-events-none">
           VIE<span className="text-cyan-400/5">+</span>
         </span>
-      </div>
 
+      </div>
+      
     </section>
   );
 }

@@ -1,34 +1,85 @@
 "use client";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import LandingNavbar from "@/components/landing/Navbar";
 
 const features = [
   {
-    icon: "⚡",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-cyan-400">
+        <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z" />
+      </svg>
+    ),
     title: "Gestion intelligente",
     desc: "Organisez votre quotidien avec des outils pensés pour aller droit au but. Moins de friction, plus d'impact.",
   },
   {
-    icon: "📊",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-cyan-400">
+        <path d="M18 20V10M12 20V4M6 20v-6" />
+      </svg>
+    ),
     title: "Suivi en temps réel",
     desc: "Visualisez vos progrès jour après jour. Des tableaux de bord clairs qui vous donnent le contrôle.",
   },
   {
-    icon: "🔒",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-cyan-400">
+        <rect x="3" y="11" width="18" height="11" rx="2" />
+        <path d="M7 11V7a5 5 0 0 1 10 0v4" />
+      </svg>
+    ),
     title: "Privé par défaut",
     desc: "Vos données vous appartiennent. Aucune publicité, aucun tracking. Juste vous et vos objectifs.",
   },
   {
-    icon: "🤝",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-6 h-6 text-cyan-400">
+        <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+        <circle cx="9" cy="7" r="4" />
+        <path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75" />
+      </svg>
+    ),
     title: "Collaboratif",
     desc: "Invitez votre entourage, partagez vos avancées et avancez ensemble vers ce qui compte vraiment.",
   },
 ];
 
+
 const steps = [
-  { num: "01", title: "Créez votre compte", desc: "Inscription gratuite en moins de 30 secondes. Pas de carte bancaire requise." },
-  { num: "02", title: "Définissez vos objectifs", desc: "Renseignez vos priorités et laissez Vie+ structurer votre parcours." },
-  { num: "03", title: "Avancez chaque jour", desc: "Suivez vos habitudes, célébrez vos victoires et ajustez en continu." },
+  {
+    num: "01",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-cyan-400">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+        <circle cx="12" cy="7" r="4" />
+      </svg>
+    ),
+    title: "Créez votre compte",
+    desc: "Inscription gratuite en moins de 30 secondes. Pas de carte bancaire requise."
+  },
+  {
+    num: "02",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-cyan-400">
+        <circle cx="12" cy="12" r="10" />
+        <path d="M12 8v4l3 3" />
+      </svg>
+    ),
+    title: "Définissez vos objectifs",
+    desc: "Renseignez vos priorités et laissez Vie+ structurer votre parcours."
+  },
+  {
+    num: "03",
+    icon: (
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.6} strokeLinecap="round" strokeLinejoin="round" className="w-5 h-5 text-cyan-400">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+        <path d="M22 4L12 14.01l-3-3" />
+      </svg>
+    ),
+    title: "Avancez chaque jour",
+    desc: "Suivez vos habitudes, célébrez vos victoires et ajustez en continu."
+  },
 ];
 
 const faqs = [
@@ -44,30 +95,7 @@ export default function Home() {
     <div className="bg-black min-h-screen font-sans selection:bg-cyan-500 selection:text-white">
 
       {/* ── NAV ── */}
-      <nav className="fixed top-0 w-full px-6 py-4 flex justify-between items-center z-50 backdrop-blur-md border-b border-white/5">
-        <h1 className="text-white text-2xl font-black italic tracking-tighter">
-          VIE<span className="text-cyan-400">+</span>
-        </h1>
-        <div className="hidden md:flex items-center gap-8 text-sm text-slate-400 font-medium">
-          <a href="#fonctionnalites" className="hover:text-white transition-colors">Fonctionnalités</a>
-          <a href="#comment" className="hover:text-white transition-colors">Comment ça marche</a>
-          <a href="#faq" className="hover:text-white transition-colors">FAQ</a>
-        </div>
-        <div className="flex gap-3 items-center">
-          <button
-            onClick={() => router.push('/login')}
-            className="text-slate-400 hover:text-white text-sm font-semibold transition-colors px-3 py-2"
-          >
-            Se connecter
-          </button>
-          <button
-            onClick={() => router.push('/register')}
-            className="bg-cyan-500 hover:bg-cyan-400 text-black text-sm font-black px-5 py-2 rounded-full transition-colors"
-          >
-            Commencer
-          </button>
-        </div>
-      </nav>
+      <LandingNavbar />
 
       {/* ── HERO ── */}
       <section className="relative flex flex-col items-center justify-center min-h-screen pt-20 px-6 text-center overflow-hidden">
@@ -161,7 +189,7 @@ export default function Home() {
               transition={{ delay: i * 0.1 }}
               className="bg-black p-10 hover:bg-white/[0.02] transition-colors group"
             >
-              <div className="text-3xl mb-5">{f.icon}</div>
+              <div className="mb-5 w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center">{f.icon}</div>
               <h4 className="text-white text-xl font-bold mb-3 tracking-tight group-hover:text-cyan-400 transition-colors">{f.title}</h4>
               <p className="text-slate-500 leading-relaxed">{f.desc}</p>
             </motion.div>
@@ -188,9 +216,9 @@ export default function Home() {
                 transition={{ delay: i * 0.15 }}
                 className="flex gap-8 items-start p-8 border border-white/5 rounded-2xl hover:border-cyan-500/20 hover:bg-cyan-500/[0.02] transition-all group"
               >
-                <span className="text-5xl font-black text-white/10 group-hover:text-cyan-500/30 transition-colors leading-none mt-1 select-none">
-                  {s.num}
-                </span>
+                <div className="flex-shrink-0 w-12 h-12 rounded-2xl bg-white/5 border border-white/10 group-hover:border-cyan-500/30 group-hover:bg-cyan-500/5 flex items-center justify-center transition-all mt-1">
+                  {s.icon}
+                </div>
                 <div>
                   <h4 className="text-white text-xl font-bold mb-2 tracking-tight">{s.title}</h4>
                   <p className="text-slate-500 leading-relaxed">{s.desc}</p>
@@ -256,13 +284,23 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
             {/* Brand */}
             <div className="md:col-span-2">
+
               <h2 className="text-white text-2xl font-black italic tracking-tighter mb-3">
                 VIE<span className="text-cyan-400">+</span>
               </h2>
+
               <p className="text-slate-500 text-sm leading-relaxed max-w-xs">
                 La plateforme nouvelle génération pour reprendre le contrôle de votre quotidien.
               </p>
-              <p className="text-slate-600 text-xs mt-4">Fait avec soin · Madagascar 🇲🇬</p>
+
+              <p className="text-slate-600 text-xs mt-4 inline-flex items-center gap-1.5">
+                Fait avec
+                <svg viewBox="0 0 24 24" fill="currentColor" className="w-3 h-3 text-rose-500/60">
+                  <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+                </svg>
+                · Madagascar 🇲🇬
+              </p>
+
             </div>
 
             {/* Produit */}
