@@ -607,7 +607,48 @@ export const translations = {
       cancel: "Annuler",
       createNew: "+ Créer une nouvelle étiquette",
     },
-
+    contact: {
+      emojis: {
+        crying: "Mauvais",
+        sad: "Passable",
+        neutral: "Moyen",
+        happy: "Bien",
+        excited: "Très bien",
+        love: "Excellent"
+      },
+      modal: {
+        title: "Nous contacter",
+        step: "Étape {step} / 2",
+      },
+      fields: {
+        firstName:   "Prénom",
+        lastName:    "Nom",
+        email:       "Adresse e-mail",
+        message:     "Ton message",
+        ratingLabel: "Note",
+      },
+      step1: { desc: "Remplis tes informations pour qu'on puisse te répondre." },
+      step2: { desc: "Dis-nous ce que tu penses de VIE+." },
+      buttons: {
+        continue: "Continuer",
+        back:     "Retour",
+        send:     "Envoyer",
+        sending:  "Envoi…",
+        close:    "Fermer",
+      },
+      success: {
+        title: "Message envoyé !",
+        desc:  "Merci {name}, on te répondra très vite 🚀",
+      },
+      errors: {
+        default:     "Une erreur est survenue.",
+        network:     "Erreur réseau, vérifie ta connexion.",
+        serverError: "Erreur serveur, réessaie plus tard.",
+        badGateway:  "Service temporairement indisponible.",
+      },
+      rating: { placeholder: "ton\navis" },
+    },
+    
     meta: {
       locale: "fr-FR",
     }
@@ -1217,6 +1258,25 @@ export const translations = {
       cancel: "Cancel",
       createNew: "+ Create a new label",
     },
+
+    contact: {
+      emojis: {
+        crying: "Bad",
+        sad: "Poor",
+        neutral: "Average",
+        happy: "Good",
+        excited: "Very good",
+        love: "Excellent"
+      },
+      modal: { title: "Contact us", step: "Step {step} / 2" },
+      fields: { firstName: "First name", lastName: "Last name", email: "Email address", message: "Your message", ratingLabel: "Rating" },
+      step1: { desc: "Fill in your details so we can get back to you." },
+      step2: { desc: "Tell us what you think of VIE+." },
+      buttons: { continue: "Continue", back: "Back", send: "Send", sending: "Sending…", close: "Close" },
+      success: { title: "Message sent!", desc: "Thanks {name}, we'll get back to you soon 🚀" },
+      errors: { default: "Something went wrong.", network: "Network error, check your connection.", serverError: "Server error, try again later.", badGateway: "Service temporarily unavailable." },
+      rating: { placeholder: "your\nrating" }
+    },
     meta: {
       locale: "en-US",
     }
@@ -1797,7 +1857,25 @@ export const translations = {
       cancel:            "Abbrechen",
       createNew:         "+ Neues Etikett erstellen",
     },
-  
+
+    contact: {
+      emojis: {
+        crying: "Schlecht",
+        sad: "Passabel",
+        neutral: "Mittel",
+        happy: "Gut",
+        excited: "Sehr gut",
+        love: "Ausgezeichnet"
+      },
+      modal: { title: "Kontakt", step: "Schritt {step} / 2" },
+      fields: { firstName: "Vorname", lastName: "Nachname", email: "E-Mail-Adresse", message: "Deine Nachricht", ratingLabel: "Bewertung" },
+      step1: { desc: "Füll deine Daten aus, damit wir dir antworten können." },
+      step2: { desc: "Sag uns, was du von VIE+ hältst." },
+      buttons: { continue: "Weiter", back: "Zurück", send: "Senden", sending: "Wird gesendet…", close: "Schließen" },
+      success: { title: "Nachricht gesendet!", desc: "Danke {name}, wir melden uns bald 🚀" },
+      errors: { default: "Ein Fehler ist aufgetreten.", network: "Netzwerkfehler, prüfe deine Verbindung.", serverError: "Serverfehler, versuch es später.", badGateway: "Dienst vorübergehend nicht verfügbar." },
+      rating: { placeholder: "deine\nMeinung" }
+    },
     meta: {
       locale: "de-DE",
     },
@@ -2378,7 +2456,25 @@ export const translations = {
       cancel:            "Cancelar",
       createNew:         "+ Crear nueva etiqueta",
     },
-  
+
+    contact: {
+      emojis: {
+        crying: "Malo",
+        sad: "Regular",
+        neutral: "Normal",
+        happy: "Bien",
+        excited: "Muy bien",
+        love: "Excelente"
+      },
+      modal: { title: "Contáctanos", step: "Paso {step} / 2" },
+      fields: { firstName: "Nombre", lastName: "Apellido", email: "Correo electrónico", message: "Tu mensaje", ratingLabel: "Valoración" },
+      step1: { desc: "Rellena tus datos para que podamos responderte." },
+      step2: { desc: "Dinos qué piensas de VIE+." },
+      buttons: { continue: "Continuar", back: "Volver", send: "Enviar", sending: "Enviando…", close: "Cerrar" },
+      success: { title: "¡Mensaje enviado!", desc: "Gracias {name}, te responderemos pronto 🚀" },
+      errors: { default: "Ocurrió un error.", network: "Error de red, verifica tu conexión.", serverError: "Error del servidor, inténtalo más tarde.", badGateway: "Servicio temporalmente no disponible." },
+      rating: { placeholder: "tu\nopinión" }  
+    },
     meta: {
       locale: "es-ES",
     },
@@ -2960,7 +3056,25 @@ export const translations = {
       cancel:            "Hanafoana",
       createNew:         "+ Mamorona marika vaovao",
     },
-  
+    contact: {
+      emojis: {
+        crying: "Ratsy",
+        sad: "Banban-javatra",
+        neutral: "Santonona",
+        happy: "Tsara",
+        excited: "Tsara be",
+        love: "Tena tsara"
+      },
+      modal: { title: "Mifandraisa aminay", step: "Dingana {step} / 2" },
+      fields: { firstName: "Anarana", lastName: "Fanampiny", email: "Adiresy mailaka", message: "Hafatrao", ratingLabel: "Naoty" },
+      step1: { desc: "Fenoy ny mombamomba anao mba hamaly anao izahay." },
+      step2: { desc: "Lazao aminay izay hevitrao momba ny VIE+." },
+      buttons: { continue: "Manaraka", back: "Hiverina", send: "Alefa", sending: "Alefaina…", close: "Hanakatona" },
+      success: { title: "Voalefa ny hafatra!", desc: "Misaotra {name}, hamaly anao faingana izahay 🚀" },
+      errors: { default: "Nisy hadisoana.", network: "Olana ara-tambajotra, jereo ny fifandraisanao.", serverError: "Hadisoana an-tsekoly, andrama avy eo.", badGateway: "Tsy misy ny serivisy ankehitriny." },
+      rating: { placeholder: "ny\hevitrao" }  
+    },
+    
     meta: {
       locale: "mg-MG",
     },

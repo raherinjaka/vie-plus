@@ -3,6 +3,7 @@
 
 import { type JSX } from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "@/context/LanguageContext";
 
 type EmojiType = "crying" | "sad" | "neutral" | "happy" | "excited" | "love";
 
@@ -21,7 +22,7 @@ const emojiData: Record<EmojiType, {
   bounceY?: number[];
 }> = {
   crying: {
-    label: "Mauvais",
+    label: "crying",
     face: "#FFD93D",
     bounceY: [0, -4, 0, -2, 0],
     eyes: (
@@ -59,7 +60,7 @@ const emojiData: Record<EmojiType, {
   },
 
   sad: {
-    label: "Passable",
+    label: "sad",
     face: "#FFD93D",
     bounceY: [0, -2, 0],
     eyes: (
@@ -82,7 +83,7 @@ const emojiData: Record<EmojiType, {
   },
 
   neutral: {
-    label: "Moyen",
+    label: "neutral",
     face: "#FFD93D",
     bounceY: [0, -1, 0],
     eyes: (
@@ -97,7 +98,7 @@ const emojiData: Record<EmojiType, {
   },
 
   happy: {
-    label: "Bien",
+    label: "happy",
     face: "#FFD93D",
     bounceY: [0, -5, 0, -3, 0],
     eyes: (
@@ -120,7 +121,7 @@ const emojiData: Record<EmojiType, {
   },
 
   excited: {
-    label: "Très bien",
+    label: "excited",
     face: "#FFD93D",
     bounceY: [0, -8, 2, -5, 0],
     eyes: (
@@ -157,7 +158,7 @@ const emojiData: Record<EmojiType, {
   },
 
   love: {
-    label: "Excellent",
+    label: "love",
     face: "#FFD93D",
     bounceY: [0, -10, 2, -6, 0],
     eyes: (
@@ -202,7 +203,9 @@ const emojiData: Record<EmojiType, {
 
 export default function AnimatedEmoji({ type, size = 56, animate = true }: AnimatedEmojiProps) {
   const emoji = emojiData[type];
-
+  const { t } = useLanguage() as { t: any };
+  const labelTraduit = t.contact.emojis[emoji.label];
+  
   return (
     <motion.div
       animate={animate ? { y: emoji.bounceY ?? [0, -4, 0] } : {}}

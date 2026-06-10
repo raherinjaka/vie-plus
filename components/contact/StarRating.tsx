@@ -4,6 +4,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import AnimatedEmoji, { EmojiType } from "./AnimatedEmoji";
+import { useLanguage } from "@/context/LanguageContext";
 
 interface StarRatingProps {
   value: number;
@@ -18,12 +19,13 @@ const ratingToEmoji: Record<number, EmojiType> = {
   5: "excited",  // ou "love" si tu préfères
 };
 
+const { t } = useLanguage() as { t: any };
 const ratingLabels: Record<number, string> = {
-  1: "Mauvais",
-  2: "Passable",
-  3: "Moyen",
-  4: "Bien",
-  5: "Excellent !",
+  1: t.contact.emojis.crying,
+  2: t.contact.emojis.sad,
+  3: t.contact.emojis.neutral,
+  4: t.contact.emojis.happy,
+  5: t.contact.emojis.excited,
 };
 
 const ratingColors: Record<number, string> = {
@@ -60,7 +62,7 @@ export default function StarRating({ value, onChange }: StarRatingProps) {
             exit={{ opacity: 0 }}
             className="w-[72px] h-[72px] rounded-full border-2 border-dashed border-slate-700 flex items-center justify-center"
           >
-            <span className="text-slate-600 text-xs text-center leading-tight px-1">ton<br/>avis</span>
+            <span className="text-slate-600 text-xs text-center leading-tight px-1">ton<br/>{t.contact.rating.placeholder}</span>
           </motion.div>
         )}
       </AnimatePresence>

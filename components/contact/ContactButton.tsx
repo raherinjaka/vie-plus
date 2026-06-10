@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useLanguage } from "@/context/LanguageContext";
 import ContactModal from "./ContactModal";
 
 export default function ContactButton() {

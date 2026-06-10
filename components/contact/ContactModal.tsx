@@ -10,6 +10,7 @@ import ProgressBar from "./ProgressBar";
 import StarRating from "./StarRating";
 import { FuturisticInput, FuturisticTextarea } from "./FuturisticInput";
 import AnimatedEmoji from "./AnimatedEmoji";
+import { useLanguage } from "@/context/LanguageContext";
 
 // ── Types ──────────────────────────────────────────────────────────────────
 interface ContactModalProps {
@@ -26,6 +27,7 @@ const SLIDE_VARIANTS = {
 
 // ── Composant principal ────────────────────────────────────────────────────
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
+  const { t } = useLanguage() as { t: any };
   // Étapes
   const [step, setStep] = useState<1 | 2>(1);
   const [direction, setDirection] = useState(1); // pour l'animation directionnelle
@@ -90,15 +92,15 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
       const msg =
         data?.error ??
         (res.status === 502
-          ? "L'envoi a échoué. Réessaie dans quelques instants."
+          ? t.contact.errors.badGateway
           : res.status === 500
-          ? "Erreur de configuration serveur."
-          : "Une erreur est survenue.");
+          ? t.contact.errors.serverError
+          : t.contact.errors.default);
   
       setError(msg);
     } catch {
       // Erreur réseau pure (pas de connexion, CORS, etc.)
-      setError("Impossible de contacter le serveur. Vérifie ta connexion.");
+      setError(t.contact.errors.network);
     } finally {
       setIsSubmitting(false);
     }
@@ -167,8 +169,8 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                         <Mail size={15} className="text-cyan-400" />
                       </div>
                       <div>
-                        <h2 className="text-sm font-bold text-slate-100 tracking-wide">Nous contacter</h2>
-                        <p className="text-[10px] text-slate-500 mt-0.5">Étape {step} sur 2</p>
+                        <h2 className="text-sm font-bold text-slate-100 tracking-wide">{t.contact.modal.title}</h2>
+                        <p className="text-[10px] text-slate-500 mt-0.5">{t.contact.modal.step.replace("{step}", step.toString())}</p>
                       </div>
                     </div>
                     <motion.button
@@ -193,10 +195,9 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                       <AnimatedEmoji type="love" size={80} />
 
                       <div>
-                        <p className="text-base font-bold text-slate-100">Message envoyé !</p>
+                      < p className="text-base font-bold text-slate-100">{t.contact.success.title}</p>
                         <p className="text-xs text-slate-500 mt-1 max-w-[220px] mx-auto">
-                          Merci <span className="text-cyan-400 font-medium">{firstName}</span>,
-                          on te répondra très vite 🚀
+                          {t.contact.success.desc.replace("{name}", firstName)}
                         </p>
                       </div>
 
@@ -218,7 +219,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                         onClick={handleClose}
                         className="mt-2 px-5 py-2 rounded-xl bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300 hover:text-slate-100 hover:border-slate-700 transition-all duration-200"
                       >
-                        Fermer
+                        {t.contact.buttons.close}
                       </button>
                     </motion.div>
 
@@ -239,14 +240,14 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           className="flex flex-col gap-8"
                         >
                           <p className="text-xs text-slate-500">
-                            Dis-nous qui tu es avant de continuer.
+                            {t.contact.step1.desc}
                           </p>
 
                           {/* Prénom + Nom */}
                           <div className="grid grid-cols-2 gap-6">
                             <FuturisticInput
                               required
-                              label="Prénom"
+                              label={t.contact.fields.firstName}
                               type="text"
                               value={firstName}
                               onChange={e => setFirstName(e.target.value)}
@@ -254,7 +255,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                             />
                             <FuturisticInput
                               required
-                              label="Nom"
+                              label={t.contact.fields.lastName}
                               type="text"
                               value={lastName}
                               onChange={e => setLastName(e.target.value)}
@@ -265,7 +266,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           {/* Email */}
                           <FuturisticInput
                             required
-                            label="Adresse e-mail"
+                            label={t.contact.fields.email}
                             type="email"
                             value={email}
                             onChange={e => setEmail(e.target.value)}
@@ -296,7 +297,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                             <motion.div
                               className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700"
                             />
-                            Continuer
+                            {t.contact.buttons.continue}
                             <ArrowRight size={14} className="relative z-10" />
                           </motion.button>
                         </motion.div>
@@ -315,13 +316,13 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           className="flex flex-col gap-7"
                         >
                           <p className="text-xs text-slate-500">
-                            Ton message et ton avis nous aident à nous améliorer.
+                            {t.contact.step2.desc}
                           </p>
 
                           {/* Textarea futuriste */}
                           <FuturisticTextarea
                             required
-                            label="Ton message"
+                            label={t.contact.fields.message}
                             value={message}
                             onChange={e => setMessage(e.target.value)}
                             rows={4}
@@ -330,7 +331,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           {/* Séparateur */}
                           <div className="flex items-center gap-3">
                             <div className="flex-1 h-px bg-slate-800" />
-                            <span className="text-[10px] text-slate-600 uppercase tracking-widest">Ton avis</span>
+                            <span className="text-[10px] text-slate-600 uppercase tracking-widest">{t.contact.fields.ratingLabel}</span>
                             <div className="flex-1 h-px bg-slate-800" />
                           </div>
 
@@ -361,7 +362,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                               whileTap={{ scale: 0.97 }}
                               className="px-4 py-3 rounded-xl border border-slate-800 bg-slate-900/60 text-slate-400 text-xs font-medium hover:text-slate-200 hover:border-slate-700 transition-all duration-200"
                             >
-                              Retour
+                              {t.contact.buttons.back}
                             </motion.button>
 
                             <motion.button
@@ -396,7 +397,7 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                                 <Send size={13} className="relative z-10" />
                               )}
                               <span className="relative z-10">
-                                {isSubmitting ? "Envoi..." : "Envoyer"}
+                                {isSubmitting ? t.contact.buttons.sending : t.contact.buttons.send}
                               </span>
                             </motion.button>
                           </div>
