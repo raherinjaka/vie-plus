@@ -3,8 +3,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { translations, TranslationType } from "@/lib/translations";
 
 interface LanguageContextType {
-  lang: "fr" | "en" | "de" | "es" | "mg"
-  setLang: (lang: "fr" | "en" | "de" | "es" | "mg" ) => void;
+  lang: "fr" | "en" | "de" | "es" | "mg";
+  setLang: (lang: "fr" | "en" | "de" | "es" | "mg") => void;
   t: TranslationType;
   currency: string;
 }
@@ -17,7 +17,7 @@ const CURRENCY: Record<"fr" | "en" | "de" | "es" | "mg", string> = {
   mg: "Ar",
 };
 
-const LanguageContext = createContext<LanguageContextType | undefined>(undefined);
+const LanguageContext = createContext<LanguageContextType | null>(null);
 
 export function LanguageProvider({ children }: { children: React.ReactNode }) {
   const [lang, setLang] = useState<"fr" | "en" | "de" | "es" | "mg">("fr");
@@ -32,24 +32,43 @@ export function LanguageProvider({ children }: { children: React.ReactNode }) {
     localStorage.setItem("app_lang", newLang);
   };
 
-  const t = translations[lang];
-
   return (
-    <LanguageContext.Provider 
-      value={{ 
-        lang, 
-        setLang: handleSetLang, 
-        t,
+    <LanguageContext.Provider
+      value={{
+        lang,
+        setLang: handleSetLang,
+        t: translations[lang],
         currency: CURRENCY[lang],
-      } as any}
+      }}
     >
       {children}
     </LanguageContext.Provider>
   );
 }
 
-export function useLanguage() {
+export function useLanguage(): LanguageContextType {
+  // Sécurité serveur (Build)
+  if (typeof window === "undefined") {
+    return {
+      lang: "fr",
+      setLang: () => {},
+      t: translations.fr,
+      currency: "Ar",
+    };
+  }
+
   const context = useContext(LanguageContext);
-  if (!context) throw new Error("useLanguage must be used within LanguageProvider");
+  
+  // ⚡ LA SÉCURITÉ ANTI-ÉCRAN NOIR : Si le context est null au démarrage sur Vercel,
+  // on renvoie temporairement les valeurs par défaut au lieu de faire planter le site.
+  if (!context) {
+    return {
+      lang: "fr",
+      setLang: () => {},
+      t: translations.fr,
+      currency: "Ar",
+    };
+  }
+
   return context;
 }

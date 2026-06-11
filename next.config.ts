@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  
   images: {
     unoptimized: true,   // <--- INDISPENSABLE : Pour que tes images s'affichent sur Android
   },
