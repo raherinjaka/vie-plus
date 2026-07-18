@@ -6,6 +6,7 @@ import { useBoardStore } from "@/store/boardStore";
 import { calcCardProgress } from "@/types/tache.types";
 import type { CardWithRelations } from "@/types/tache.types";
 import { useLanguage } from "@/context/LanguageContext";
+import { AlertTriangle } from "lucide-react";
 
 type Props = {
   card: CardWithRelations;
@@ -91,7 +92,8 @@ export default function Card({ card, isDragging = false }: Props) {
                 <polyline points="12,6 12,12 16,14" stroke="currentColor"
                           strokeWidth="2" strokeLinecap="round"/>
               </svg>
-              {isOverdue ? "⚠ " : isToday ? `${t?.card?.today} ` : ""}
+              {isOverdue && <AlertTriangle className="inline w-3.5 h-3.5 mr-1 text-red-400" />}
+              {isOverdue ? null : isToday ? `${t?.card?.today} ` : null}
               {new Date(card.due_date).toLocaleDateString(locale, {
                 day: "numeric", month: "short",
               })}

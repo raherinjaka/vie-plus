@@ -2,6 +2,7 @@
 
 import { motion, AnimatePresence } from "framer-motion";
 import { getCatMeta, normKey, type Objectif } from "./types";
+import { Trophy } from "lucide-react";
 
 interface Props {
   objectifs: Objectif[];
@@ -23,7 +24,7 @@ export default function ObjectifTrophies({ objectifs, t, locale }: Props) {
       >
         {/* Section header */}
         <div className="flex items-center gap-3 mb-6">
-          <span className="text-lg">🏆</span>
+          <Trophy className="w-[1.125rem] h-[1.125rem]" />
           <h2 className="text-sm font-black uppercase tracking-[0.2em] text-slate-400">
             {t?.objectifsPage?.trophyWall?.title ?? "Objectifs accomplis"}
           </h2>
@@ -60,9 +61,9 @@ export default function ObjectifTrophies({ objectifs, t, locale }: Props) {
                   {/* Info */}
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 mb-0.5">
-                      <span className={`text-[10px] font-bold ${catMeta.color}`}>
-                        {catMeta.icon} {t?.objectifsPage?.categories?.[catLabelKey] ?? catMeta.label}
-                      </span>
+                    <span className={`text-[10px] font-bold flex items-center gap-1 ${catMeta.color}`}>
+                      <catMeta.icon size={11} /> {t?.objectifsPage?.categories?.[catLabelKey] ?? catMeta.label}
+                    </span>
                     </div>
                     <p className="text-slate-300 text-sm font-semibold truncate leading-snug">
                       {obj.titre}

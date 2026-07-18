@@ -12,7 +12,7 @@ import { useLanguage } from "@/context/LanguageContext";
 import { createPortal } from "react-dom";
 import { useCurrency, CURRENCIES, Currency } from "@/context/CurrencyContext";
 
-type SettingsPanel = "root" | "theme" | "language" | "currency";
+type SettingsPanel = "root" | "language" | "currency";
 
 const slideVariants = {
   enterFromRight: { x: 40,  opacity: 0 },
@@ -24,14 +24,12 @@ const slideVariants = {
 
 // ─── SettingsCascade (desktop uniquement) ────────────────────────────────────
 function SettingsCascade({
-  open, onClose, lang, setLang, theme, setTheme, t, anchorRef, currency, setCurrency,
+  open, onClose, lang, setLang, t, anchorRef, currency, setCurrency,
 }: {
   open: boolean;
   onClose: () => void;
   lang: "fr" | "en" | "de" | "es" | "mg";
   setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
-  theme: string;
-  setTheme: (v: string) => void;
   t: any;
   anchorRef: RefObject<HTMLButtonElement | null>;
   currency:    Currency;
@@ -151,14 +149,12 @@ function SettingsCascade({
 
 // ─── MobileSettingsPage ───────────────────────────────────────────────────────
 function MobileSettingsPage({
-  open, onClose, lang, setLang, theme, setTheme, t, currency, setCurrency,
+  open, onClose, lang, setLang, t, currency, setCurrency,
 }: {
   open: boolean;
   onClose: () => void;
   lang: "fr" | "en" | "de" | "es" | "mg";
   setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
-  theme: string;
-  setTheme: (v: string) => void;
   t: any;
   currency:    Currency;
   setCurrency: (c: Currency) => void;
@@ -198,12 +194,6 @@ function MobileSettingsPage({
 
               {panel === "root" && (
                 <motion.div key="root" variants={slideVariants} initial={enter} animate="center" exit={exit} transition={{ duration: 0.22 }} className="absolute inset-0 p-4 space-y-1">
-                  <button onClick={() => navigate("theme")} className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/[0.04] transition-all group">
-                    {theme === "dark" ? <Moon size={20} className="text-violet-400 flex-shrink-0" /> : <Sun size={20} className="text-amber-400 flex-shrink-0" />}
-                    <span className="flex-1 text-left text-[15px] font-medium">{t.settings?.theme ?? "Thème"}</span>
-                    <ChevronRight size={16} className="opacity-30 group-hover:opacity-70" />
-                  </button>
-
                   <button onClick={() => navigate("language")} className="w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-slate-300 hover:bg-white/[0.04] transition-all group">
                     <Languages size={20} className="text-cyan-400 flex-shrink-0" />
                     <span className="flex-1 text-left text-[15px] font-medium">{t.settings?.language ?? "Langue"}</span>
@@ -264,15 +254,13 @@ function MobileSettingsPage({
 
 // ─── MobileFullScreen ────────────────────────────────────────────────────────
 function MobileFullScreen({
-  onClose, userData, t, lang, setLang, theme, setTheme, currency, setCurrency,
+  onClose, userData, t, lang, setLang, currency, setCurrency,
 }: {
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
   lang: "fr" | "en" | "de" | "es" | "mg";
   setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
-  theme: string;
-  setTheme: (v: string) => void;
   currency:    Currency;
   setCurrency: (c: Currency) => void;
 }) {
@@ -342,7 +330,6 @@ function MobileFullScreen({
           open={settingsOpen}
           onClose={() => setSettingsOpen(false)}
           lang={lang} setLang={setLang}
-          theme={theme} setTheme={setTheme}
           t={t}
           currency={currency} setCurrency={setCurrency}
         />
@@ -358,15 +345,13 @@ function MobileFullScreen({
 
 // ─── DesktopDropdown ─────────────────────────────────────────────────────────
 function DesktopDropdown({
-  onClose, userData, t, lang, setLang, theme, setTheme, currency, setCurrency,
+  onClose, userData, t, lang, setLang, currency, setCurrency,
 }: {
   onClose: () => void;
   userData: { name: string; email: string; avatar: string };
   t: any;
   lang: "fr" | "en" | "de" | "es" | "mg";
   setLang: (l: "fr" | "en" | "de" | "es" | "mg") => void;
-  theme: string;
-  setTheme: (v: string) => void;
   currency:    Currency;
   setCurrency: (c: Currency) => void;
 }) {
@@ -449,7 +434,6 @@ function DesktopDropdown({
         open={settingsOpen}
         onClose={handleSettingsClose}
         lang={lang} setLang={setLang}
-        theme={theme} setTheme={setTheme}
         t={t} anchorRef={settingsBtnRef}
         currency={currency} setCurrency={setCurrency}
       />
@@ -461,7 +445,6 @@ function DesktopDropdown({
 export default function MenuButton() {
   const { lang, setLang, t } = useLanguage();
   const { currency, setCurrency } = useCurrency();
-  const [theme, setTheme]       = useState<string>("dark");
   const [isOpen, setIsOpen]     = useState(false);
   const [isMobile, setIsMobile] = useState<boolean | null>(null);
   const [userData, setUserData] = useState({ name: "", email: "", avatar: "" });
@@ -513,7 +496,7 @@ export default function MenuButton() {
   // ── Évite le flash SSR ──────────────────────────────────────────────────────
   if (isMobile === null) return null;
 
-  const sharedProps = { onClose: () => setIsOpen(false), userData, t, lang, setLang, theme, setTheme, currency, setCurrency, };
+  const sharedProps = { onClose: () => setIsOpen(false), userData, t, lang, setLang, currency, setCurrency, };
 
   return (
     <>

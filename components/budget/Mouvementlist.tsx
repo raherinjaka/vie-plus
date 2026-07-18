@@ -3,7 +3,8 @@
 
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { PlusCircle, MinusCircle, Trash2, AlertTriangle, Filter, ArrowUpDown, Wallet } from "lucide-react";
+import { PlusCircle, MinusCircle, Trash2, AlertTriangle, Filter, ArrowUpDown, Wallet, LucideIcon } from "lucide-react";
+import { Zap, UtensilsCrossed, Car, Gamepad2, Pill, BookOpen } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCurrency } from "@/context/CurrencyContext";
 
@@ -28,13 +29,13 @@ interface Props {
 }
 
 // ─── Categories meta ──────────────────────────────────────────────────────────
-const CAT_META: Record<string, { icon: string; labelKey: string; color: string; bg: string; border: string }> = {
-  general:      { icon: "⚡", labelKey: "general",      color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/20"  },
-  alimentation: { icon: "🍱", labelKey: "alimentation", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/20" },
-  transport:    { icon: "🚗", labelKey: "transport",    color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/20"   },
-  loisirs:      { icon: "🎮", labelKey: "loisirs",      color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/20" },
-  sante:        { icon: "💊", labelKey: "sante",        color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/20"},
-  education:    { icon: "📚", labelKey: "education",    color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/20"   },
+const CAT_META: Record<string, { icon: LucideIcon; labelKey: string; color: string; bg: string; border: string }> = {
+  general:      { icon: Zap, labelKey: "general",      color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/20"  },
+  alimentation: { icon: UtensilsCrossed, labelKey: "alimentation", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/20" },
+  transport:    { icon: Car, labelKey: "transport",    color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/20"   },
+  loisirs:      { icon: Gamepad2, labelKey: "loisirs",      color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/20" },
+  sante:        { icon: Pill, labelKey: "sante",        color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/20"},
+  education:    { icon: BookOpen, labelKey: "education",    color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/20"   },
 };
 const getCat = (id: string) => CAT_META[id] ?? CAT_META["general"];
 
@@ -256,7 +257,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                           : "bg-white/[0.03] border-white/[0.07] text-slate-500 hover:text-slate-300"
                         }`}
                     >
-                      <span>{c.icon}</span>
+                      <span><c.icon className="w-4 h-4" /></span>
                       <span>{t?.mouvementForm?.categories?.[c.labelKey]}</span>
                     </button>
                   ))}
@@ -332,7 +333,7 @@ export default function MouvementList({ mouvements, onDelete, loading }: Props) 
                           px-1.5 py-0.5 rounded-md text-[9px] font-black
                           ${cat.bg} ${cat.color} border ${cat.border}`}
                         >
-                          {cat.icon} {t?.mouvementForm?.categories?.[cat.labelKey]}
+                          <cat.icon size={10} /> {t?.mouvementForm?.categories?.[cat.labelKey]}
                         </span>
                       </div>
                       <p className="text-slate-600 text-[10px] font-mono mt-1 uppercase tracking-wide">

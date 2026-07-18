@@ -2,7 +2,7 @@
 //DashboardBudget.tzsx
 
 import { motion } from "framer-motion";
-import { Wallet, Clock, Lock, ArrowRight } from "lucide-react";
+import { Wallet, Clock, Lock, ArrowRight, type LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useMemo } from "react";
 import { useLanguage } from "@/context/LanguageContext";
@@ -11,7 +11,7 @@ import { useCurrency } from "@/context/CurrencyContext";
 interface CatBar {
   id: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   bg: string;
   border: string;
@@ -202,7 +202,7 @@ export default function DashboardBudget({
                 transition={{ delay: 0.4 + i * 0.07 }}
                 className="flex items-center gap-2.5"
               >
-                <span className="text-sm flex-shrink-0">{c.icon}</span>
+                <c.icon className={`w-3.5 h-3.5 flex-shrink-0 ${c.color}`} />
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between mb-1">
                     <span className={`text-[10px] font-bold ${c.color}`}>{c.label}</span>

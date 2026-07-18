@@ -1,3 +1,4 @@
+//components/apropos/creditSection.tsx
 "use client";
 
 import { motion } from "framer-motion";

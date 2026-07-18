@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { TrendingDown, TrendingUp, Wallet, Sparkles, Flame, BarChart3, X } from "lucide-react";
+import { TrendingDown, TrendingUp, Wallet, Sparkles, Flame, BarChart3, X, LucideIcon } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCurrency } from "@/context/CurrencyContext";
 
@@ -11,7 +11,7 @@ import { useCurrency } from "@/context/CurrencyContext";
 export interface CatStat {
   id: string;
   label: string;
-  icon: string;
+  icon: LucideIcon;
   color: string;
   bg: string;
   border: string;
@@ -96,6 +96,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
 }) {
   const { t } = useLanguage() as any;
   const { format } = useCurrency();
+  const TopIcon = catStats[0]?.icon;
 
   return (
     <motion.div
@@ -131,7 +132,7 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
                 transition={{ delay: i * 0.05 }}
                 className={`p-4 rounded-2xl ${c.bg} border ${c.border} flex items-center gap-3`}
               >
-                <span className="text-2xl flex-shrink-0">{c.icon}</span>
+                <span className="flex-shrink-0"><c.icon size={24} /></span>
                 <div className="flex-1 min-w-0">
                   <p className={`text-[10px] font-black uppercase tracking-wider mb-0.5 ${c.color}`}>
                     {c.label}
@@ -164,7 +165,9 @@ function StatsPanel({ catStats, totalDepenses, onClose }: {
             className="mt-4 flex items-center gap-3 p-3 rounded-2xl
               bg-yellow-500/[0.05] border border-yellow-500/10"
           >
-            <span className="text-lg">{catStats[0].icon}</span>
+            <span className="flex-shrink-0">
+              {TopIcon && <TopIcon size={18} />}
+            </span>
             <p className="text-xs text-slate-400">
               <span className="font-black text-yellow-300">{catStats[0].label}</span>
               {" "}{t?.budgetStats?.panel?.topCategory

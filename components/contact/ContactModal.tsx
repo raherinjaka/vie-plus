@@ -1,9 +1,9 @@
 // components/contact/ContactModal.tsx
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react"; // ◄ Ajoute bien useEffect ici
 import { motion, AnimatePresence } from "framer-motion";
-import { X, Mail, ArrowRight, Send, CheckCircle2, AlertCircle, Eye, EyeOff } from "lucide-react";
+import { X, Mail, ArrowRight, Send, CheckCircle2, AlertCircle } from "lucide-react";
 import { createPortal } from "react-dom";
 
 import ProgressBar from "./ProgressBar";
@@ -12,25 +12,32 @@ import { FuturisticInput, FuturisticTextarea } from "./FuturisticInput";
 import AnimatedEmoji from "./AnimatedEmoji";
 import { useLanguage } from "@/context/LanguageContext";
 
-// ── Types ──────────────────────────────────────────────────────────────────
 interface ContactModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
 
-// ── Constantes d'animation ─────────────────────────────────────────────────
 const SLIDE_VARIANTS = {
   enter: (dir: number) => ({ opacity: 0, x: dir > 0 ? 40 : -40 }),
   center: { opacity: 1, x: 0 },
   exit: (dir: number) => ({ opacity: 0, x: dir > 0 ? -40 : 40 }),
 };
 
-// ── Composant principal ────────────────────────────────────────────────────
 export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   const { t } = useLanguage() as { t: any };
-  // Étapes
+  
+  // ── Ajoute ce state de sécurité ici ──
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+  
+  // honeypot anti-bot
+  const [website, setWebsite] = useState(""); 
+
+  // États
   const [step, setStep] = useState<1 | 2>(1);
-  const [direction, setDirection] = useState(1); // pour l'animation directionnelle
+  const [direction, setDirection] = useState(1);
 
   // Champs
   const [firstName, setFirstName] = useState("");
@@ -41,8 +48,8 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
   // UI
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [isSent, setIsSent]           = useState(false);
-  const [error, setError]             = useState<string | null>(null);
+  const [isSent, setIsSent]             = useState(false);
+  const [error, setError]               = useState<string | null>(null);
 
   // Validations
   const isStep1Valid =
@@ -52,22 +59,12 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
 
   const isStep2Valid = message.trim().length >= 10 && rating >= 1;
 
-  // ── Handlers ──────────────────────────────────────────────────────────────
-  const goToStep2 = () => {
-    if (!isStep1Valid) return;
-    setDirection(1);
-    setStep(2);
-  };
-
-  const goToStep1 = () => {
-    setDirection(-1);
-    setStep(1);
-  };
+  const goToStep2 = () => { if (isStep1Valid) { setDirection(1); setStep(2); } };
+  const goToStep1 = () => { setDirection(-1); setStep(1); };
 
   const handleSubmit = async () => {
     setError(null);
-    setIsSubmitting(true);
-  
+    setIsSubmitting(true);  
     try {
       const res = await fetch("/api/contact", {
         method: "POST",
@@ -77,29 +74,23 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
           lastName: lastName.trim(),
           email: email.trim(),
           message: message.trim(),
-          rating,                    // number ✅ (pas string)
+          rating,
+          website,
         }),
       });
   
-      // Statuts gérés : 200, 400, 422, 500, 502
       if (res.status === 200) {
         setIsSent(true);
         return;
       }
   
-      // Pour tous les autres statuts, on lit le message d'erreur Zod/serveur
       const data = await res.json().catch(() => null);
-      const msg =
-        data?.error ??
-        (res.status === 502
-          ? t.contact.errors.badGateway
-          : res.status === 500
-          ? t.contact.errors.serverError
-          : t.contact.errors.default);
-  
+      const msg = data?.error ?? (
+        res.status === 502 ? t.contact.errors.badGateway :
+        res.status === 500 ? t.contact.errors.serverError : t.contact.errors.default
+      );
       setError(msg);
     } catch {
-      // Erreur réseau pure (pas de connexion, CORS, etc.)
       setError(t.contact.errors.network);
     } finally {
       setIsSubmitting(false);
@@ -107,20 +98,20 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
   };
 
   const handleClose = () => {
-    // Reset complet
-    setStep(1);
-    setDirection(1);
-    setFirstName(""); setLastName(""); setEmail("");
-    setMessage(""); setRating(0);
+    setStep(1); setDirection(1);
+    setFirstName(""); setLastName(""); setEmail(""); setMessage(""); setRating(0);
+    setWebsite("");
     setError(null); setIsSent(false); setIsSubmitting(false);
     onClose();
   };
 
-  if (typeof window === "undefined") return null;
+  // ⚡ LA SÉCURITÉ ABSOLUE : Si le composant n'est pas complètement ancré dans le navigateur,
+  // ou si la modale est fermée, on ne cherche même pas à appeler document.body !
+  if (!mounted) return null;
   
   // ── Rendu ─────────────────────────────────────────────────────────────────
   return createPortal(
-    <AnimatePresence>
+    <AnimatePresence mode="wait">
       {isOpen && (
         <>
           {/* ── Overlay ── */}
@@ -239,6 +230,23 @@ export default function ContactModal({ isOpen, onClose }: ContactModalProps) {
                           transition={{ duration: 0.25, ease: "easeInOut" }}
                           className="flex flex-col gap-8"
                         >
+
+                          <div
+                            style={{ position: "absolute", left: "-9999px", width: "1px", height: "1px", overflow: "hidden" }}
+                            aria-hidden="true"
+                          >
+                            <label htmlFor="website">Ne pas remplir</label>
+                            <input
+                              type="text"
+                              id="website"
+                              name="website"
+                              tabIndex={-1}
+                              autoComplete="off"
+                              value={website}
+                              onChange={(e) => setWebsite(e.target.value)}
+                            />
+                          </div>
+
                           <p className="text-xs text-slate-500">
                             {t.contact.step1.desc}
                           </p>

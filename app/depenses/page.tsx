@@ -4,6 +4,7 @@ import { useState, useEffect, useMemo, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { X } from "lucide-react";
+import { Zap, UtensilsCrossed, Car, Gamepad2, Pill, BookOpen, ClipboardList } from "lucide-react";
 
 import { supabase } from "@/lib/supabase";
 import NavDrawer from "@/components/NavDrawer";
@@ -79,12 +80,12 @@ export default function DepensePage() {
 
   // ─── Categories for stats ─────────────────────────────────────────────────────
   const CATEGORIES = useMemo(() => [
-    { id: "general",      label: t?.mouvementForm?.categories?.general,      icon: "⚡", color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
-    { id: "alimentation", label: t?.mouvementForm?.categories?.alimentation, icon: "🍱", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
-    { id: "transport",    label: t?.mouvementForm?.categories?.transport,    icon: "🚗", color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
-    { id: "loisirs",      label: t?.mouvementForm?.categories?.loisirs,      icon: "🎮", color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
-    { id: "sante",        label: t?.mouvementForm?.categories?.sante,        icon: "💊", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
-    { id: "education",    label: t?.mouvementForm?.categories?.education,    icon: "📚", color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
+    { id: "general",      label: t?.mouvementForm?.categories?.general,      icon: Zap, color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
+    { id: "alimentation", label: t?.mouvementForm?.categories?.alimentation, icon: UtensilsCrossed, color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
+    { id: "transport",    label: t?.mouvementForm?.categories?.transport,    icon: Car, color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
+    { id: "loisirs",      label: t?.mouvementForm?.categories?.loisirs,      icon: Gamepad2, color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
+    { id: "sante",        label: t?.mouvementForm?.categories?.sante,        icon: Pill, color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
+    { id: "education",    label: t?.mouvementForm?.categories?.education,    icon: BookOpen, color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
   ], [t]);
 
   // ── Auto-dismiss toast ────────────────────────────────────────────────────────
@@ -448,7 +449,7 @@ export default function DepensePage() {
                   }`}
               >
                 <div className="flex items-center gap-2.5">
-                  <span className="text-base">📋</span>
+                  <ClipboardList className="w-4 h-4" />
                   <span>
                     {showList
                       ? (t?.mouvementList?.hideHistory ?? "Masquer l'historique")

@@ -2,7 +2,8 @@
 
 import { motion } from "framer-motion";
 import { CATEGORY_LIST, CATEGORY_META, normKey, type Category } from "./types";
-
+import type { LucideIcon } from "lucide-react";
+  
 interface Props {
   active: Category | "all";
   onChange: (cat: Category | "all") => void;
@@ -34,12 +35,13 @@ export default function ObjectifFilters({ active, onChange, counts, t }: Props) 
             key={cat}
             active={active === cat}
             onClick={() => onChange(cat)}
-            label={`${meta.icon} ${t?.objectifsPage?.categories?.[key] ?? meta.label}`}
+            icon={meta.icon}
+            label={t?.objectifsPage?.categories?.[key] ?? meta.label}
             count={counts[cat] ?? 0}
             color={meta.color}
             bg="bg-slate-800/60 border-slate-700/50"
             activeBg={meta.bg}
-          />
+          />  
         );
       })}
     </div>
@@ -47,7 +49,7 @@ export default function ObjectifFilters({ active, onChange, counts, t }: Props) 
 }
 
 function FilterPill({
-  active, onClick, label, count, color, bg, activeBg,
+  active, onClick, label, count, color, bg, activeBg, icon: Icon,
 }: {
   active: boolean;
   onClick: () => void;
@@ -56,23 +58,20 @@ function FilterPill({
   color: string;
   bg: string;
   activeBg: string;
+  icon?: LucideIcon;
 }) {
   return (
     <motion.button
       whileTap={{ scale: 0.95 }}
       onClick={onClick}
-      className={`
-        relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl
+      className={`relative flex items-center gap-1.5 px-3 py-1.5 rounded-xl
         text-xs font-semibold border transition-all duration-200
-        ${active ? `${activeBg} ${color}` : `${bg} text-slate-500 hover:text-slate-300 hover:border-slate-600`}
-      `}
+        ${active ? `${activeBg} ${color}` : `${bg} text-slate-500 hover:text-slate-300 hover:border-slate-600`}`}
     >
+      {Icon && <Icon size={12} />}
       {label}
       {count > 0 && (
-        <span className={`
-          text-[10px] font-bold px-1.5 py-0.5 rounded-md
-          ${active ? "bg-white/10" : "bg-slate-700/60"}
-        `}>
+        <span className={`text-[10px] font-bold px-1.5 py-0.5 rounded-md ${active ? "bg-white/10" : "bg-slate-700/60"}`}>
           {count}
         </span>
       )}

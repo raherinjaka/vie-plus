@@ -138,7 +138,7 @@ export default function ObjectifModal({ open, onClose, onCreate, t }: Props) {
                             }
                           `}
                         >
-                          <span>{m.icon}</span>
+                          <span><m.icon size={18} /></span>
                           <span>{t?.objectifsPage?.categories?.[normKey(cat)] ?? m.label}</span>
                           {selected && (
                             <motion.span

@@ -4,6 +4,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { motion } from "framer-motion";
+import { Zap, UtensilsCrossed, Car, Gamepad2, Pill, BookOpen } from "lucide-react";
 import { supabase } from "@/lib/supabase";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -46,12 +47,12 @@ export default function DashboardPage() {
 
   // ─── Category meta (pour les barres) ─────────────────────────────────────────
   const CATEGORIES_TRADUITES = useMemo(() => [
-    { id: "general",      label: t.dashboard.categories.general,   icon: "⚡", color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25" },
-    { id: "alimentation", label: t.dashboard.categories.food,      icon: "🍱", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
-    { id: "transport",    label: t.dashboard.categories.transport, icon: "🚗", color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25" },
-    { id: "loisirs",      label: t.dashboard.categories.leisure,   icon: "🎮", color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
-    { id: "sante",        label: t.dashboard.categories.health,    icon: "💊", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25" },
-    { id: "education",    label: t.dashboard.categories.education, icon: "📚", color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25" },
+    { id: "general",      label: t.dashboard.categories.general,   icon: Zap, color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25" },
+    { id: "alimentation", label: t.dashboard.categories.food,      icon: UtensilsCrossed, color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
+    { id: "transport",    label: t.dashboard.categories.transport, icon: Car, color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25" },
+    { id: "loisirs",      label: t.dashboard.categories.leisure,   icon: Gamepad2, color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
+    { id: "sante",        label: t.dashboard.categories.health,    icon: Pill, color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25" },
+    { id: "education",    label: t.dashboard.categories.education, icon: BookOpen, color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25" },
   ], [t]);
   const [userName,      setUserName]      = useState("Utilisateur");
   const [mouvements,    setMouvements]    = useState<Mouvement[]>([]);

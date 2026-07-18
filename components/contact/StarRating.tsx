@@ -19,15 +19,6 @@ const ratingToEmoji: Record<number, EmojiType> = {
   5: "excited",  // ou "love" si tu préfères
 };
 
-const { t } = useLanguage() as { t: any };
-const ratingLabels: Record<number, string> = {
-  1: t.contact.emojis.crying,
-  2: t.contact.emojis.sad,
-  3: t.contact.emojis.neutral,
-  4: t.contact.emojis.happy,
-  5: t.contact.emojis.excited,
-};
-
 const ratingColors: Record<number, string> = {
   1: "#FF4757",
   2: "#FF6348",
@@ -37,6 +28,15 @@ const ratingColors: Record<number, string> = {
 };
 
 export default function StarRating({ value, onChange }: StarRatingProps) {
+  const { t } = useLanguage() as { t: any };
+  const ratingLabels: Record<number, string> = {
+    1: t.contact.emojis.crying,
+    2: t.contact.emojis.sad,
+    3: t.contact.emojis.neutral,
+    4: t.contact.emojis.happy,
+    5: t.contact.emojis.excited,
+  };
+
   const [hovered, setHovered] = useState(0);
   const active = hovered || value;
 

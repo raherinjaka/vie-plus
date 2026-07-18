@@ -1,7 +1,7 @@
 "use client";
 //DashboardObjetifs.tsx
 import { motion } from "framer-motion";
-import { Target, ArrowRight, Trophy, Plus } from "lucide-react";
+import { Target, ArrowRight, Trophy, Plus, Zap, HeartPulse, Wallet, Brain, LucideIcon } from "lucide-react";
 import Link from "next/link";
 import { useLanguage } from "@/context/LanguageContext";
 
@@ -19,11 +19,11 @@ interface Props {
 }
 
 // ─── Category colors ──────────────────────────────────────────────────────────
-const CAT_COLORS: Record<string, { color: string; bg: string; icon: string }> = {
-  Projet: { color: "text-violet-300",  bg: "bg-violet-500/15",  icon: "⚡" },
-  Santé:  { color: "text-emerald-300", bg: "bg-emerald-500/15", icon: "💚" },
-  Argent: { color: "text-yellow-300",  bg: "bg-yellow-500/15",  icon: "💰" },
-  Études: { color: "text-cyan-300",    bg: "bg-cyan-500/15",    icon: "🧠" },
+const CAT_COLORS: Record<string, { color: string; bg: string; icon: LucideIcon }> = {
+  Projet: { color: "text-violet-300",  bg: "bg-violet-500/15",  icon: Zap },
+  Santé:  { color: "text-emerald-300", bg: "bg-emerald-500/15", icon: HeartPulse },
+  Argent: { color: "text-yellow-300",  bg: "bg-yellow-500/15",  icon: Wallet },
+  Études: { color: "text-cyan-300",    bg: "bg-cyan-500/15",    icon: Brain },
 };
 const getCat = (c: string) =>
   CAT_COLORS[c] ?? { color: "text-slate-300", bg: "bg-slate-500/15", icon: "⚡" };
@@ -162,7 +162,7 @@ export default function DashboardObjectifs({ objectifs, scoreGlobal, loading }: 
                     <p className="text-slate-200 text-xs font-bold truncate">{obj.titre}</p>
                     <span className={`inline-flex items-center gap-1 text-[9px] font-bold px-1.5 py-0.5
                       rounded-md ${cat.bg} ${cat.color} mt-0.5`}>
-                      {cat.icon} {obj.categorie}
+                      <cat.icon size={11} /> {obj.categorie}
                     </span>
                   </div>
                   <span className="text-[10px] font-black font-mono text-slate-500 flex-shrink-0">

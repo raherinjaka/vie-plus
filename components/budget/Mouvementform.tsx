@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { PlusCircle, MinusCircle, X, Check } from "lucide-react";
+import { Zap, UtensilsCrossed, Car, Gamepad2, Pill, BookOpen } from "lucide-react";
 import { useLanguage } from "@/context/LanguageContext";
 import { useCurrency } from "@/context/CurrencyContext";
 
@@ -22,12 +23,12 @@ interface Props {
 
 // ─── Categories ───────────────────────────────────────────────────────────────
 const CATEGORIES = [
-  { id: "general",      labelKey: "general",      icon: "⚡", color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
-  { id: "alimentation", labelKey: "alimentation", icon: "🍱", color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
-  { id: "transport",    labelKey: "transport",    icon: "🚗", color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
-  { id: "loisirs",      labelKey: "loisirs",      icon: "🎮", color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
-  { id: "sante",        labelKey: "sante",        icon: "💊", color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
-  { id: "education",    labelKey: "education",    icon: "📚", color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
+  { id: "general",      labelKey: "general",      icon: Zap, color: "text-slate-300",   bg: "bg-slate-500/15",   border: "border-slate-500/25"  },
+  { id: "alimentation", labelKey: "alimentation", icon: UtensilsCrossed, color: "text-orange-300",  bg: "bg-orange-500/15",  border: "border-orange-500/25" },
+  { id: "transport",    labelKey: "transport",    icon: Car, color: "text-blue-300",    bg: "bg-blue-500/15",    border: "border-blue-500/25"   },
+  { id: "loisirs",      labelKey: "loisirs",      icon: Gamepad2, color: "text-violet-300",  bg: "bg-violet-500/15",  border: "border-violet-500/25" },
+  { id: "sante",        labelKey: "sante",        icon: Pill, color: "text-emerald-300", bg: "bg-emerald-500/15", border: "border-emerald-500/25"},
+  { id: "education",    labelKey: "education",    icon: BookOpen, color: "text-cyan-300",    bg: "bg-cyan-500/15",    border: "border-cyan-500/25"   },
 ];
 
 // ─── MouvementForm ────────────────────────────────────────────────────────────
@@ -208,7 +209,7 @@ export default function MouvementForm({ onAdd }: Props) {
                             : "bg-white/[0.03] text-slate-500 border-white/[0.07] hover:border-white/15 hover:text-slate-300"
                           }`}
                       >
-                        <span>{c.icon}</span>
+                        <span><c.icon className="w-4 h-4" /></span>
                         <span>{t?.mouvementForm?.categories?.[c.labelKey]}</span>
                       </button>
                     ))}

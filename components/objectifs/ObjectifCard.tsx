@@ -7,6 +7,7 @@ import {
 } from "framer-motion";
 import { Trash2, ChevronDown, RotateCcw } from "lucide-react";
 import { getCatMeta, daysLeft, normKey, type Objectif } from "./types";
+import { Timer } from "lucide-react";
 
 // ─── Circular Progress ────────────────────────────────────────────────────────
 function ProgressRing({ pct }: { pct: number }) {
@@ -216,15 +217,16 @@ export default function ObjectifCard({
           <div className="flex-1 min-w-0 space-y-1.5">
             <span className={`inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-wider
               px-2 py-0.5 rounded-lg border ${catMeta.bg} ${catMeta.color}`}>
-              {catMeta.icon} {t?.objectifsPage?.categories?.[catLabelKey] ?? catMeta.label}
+              <catMeta.icon size={11} /> {t?.objectifsPage?.categories?.[catLabelKey] ?? catMeta.label}
             </span>
             <h3 className="text-slate-100 font-bold text-base leading-snug line-clamp-2">
               {obj.titre}
             </h3>
             {dl && (
-              <span className={`inline-block text-[10px] font-mono font-semibold ${dl.color}`}>
-                ⏱ {dl.text}
-              </span>
+              <>
+                <Timer className="w-3.5 h-3.5 inline -mt-0.5 mr-1" />
+                {dl.text}
+              </>
             )}
           </div>
           <ProgressRing pct={obj.progression} />
